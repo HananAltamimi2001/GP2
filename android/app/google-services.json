@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "840373323269",
+    "firebase_url": "https://pnustudenthousing-5f74c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "pnustudenthousing-5f74c",
+    "storage_bucket": "pnustudenthousing-5f74c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840373323269:android:ea7d5f8b06a6ad6d40fe6c",
+        "android_client_info": {
+          "package_name": "com.studenthousing.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFXSS2-nRlZE1lfPLFdqZVgXMMsuPM6Do"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
