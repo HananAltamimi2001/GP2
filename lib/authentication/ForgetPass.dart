@@ -1,5 +1,5 @@
 import 'package:pnustudenthousing/helpers/Design.dart';
-import 'package:pnustudenthousing/Authentication/firbase_auth_services.dart';
+import 'package:pnustudenthousing/authentication/firbase_auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -41,10 +41,8 @@ class _ForgetpassState extends State<Forgetpass> {
                         30.0,
                         0.0,
                         30.0,
-                        8.0 ,
-                          
+                        8.0,
                       ),
-
                       child: Column(
                         children: [
                           Form(
@@ -64,10 +62,10 @@ class _ForgetpassState extends State<Forgetpass> {
                                 Padding(
                                   padding: EdgeInsets.only(
                                     top: 0.02 *
-                                      MediaQuery.of(context).size.height ,
-                                  bottom: 0.01 *
-                                      MediaQuery.of(context).size.height ,
-                               ),
+                                        MediaQuery.of(context).size.height,
+                                    bottom: 0.01 *
+                                        MediaQuery.of(context).size.height,
+                                  ),
                                   child: Titletext(
                                     t: "Enter your information to send reset password email",
                                     align: TextAlign.center,
@@ -104,14 +102,15 @@ class _ForgetpassState extends State<Forgetpass> {
                                   validator: (val) {
                                     if (val == null || val.isEmpty) {
                                       return "Please write your PNU email";
-                                    } else {
-                                      final RegExp emailRegExp =
-                                          RegExp(r'^[0-9]{9}@pnu.edu.sa$');
-                                      final isValid = emailRegExp.hasMatch(val);
-                                      if (!isValid) {
-                                        return "There is an error in your PNU email";
-                                      }
                                     }
+                                    //  else {
+                                    //   final RegExp emailRegExp =
+                                    //       RegExp(r'^[0-9]{9}@pnu.edu.sa$');
+                                    //   final isValid = emailRegExp.hasMatch(val);
+                                    //   if (!isValid) {
+                                    //     return "There is an error in your PNU email";
+                                    //   }
+                                    // }
                                     return null;
                                   },
                                 ),
@@ -127,6 +126,7 @@ class _ForgetpassState extends State<Forgetpass> {
                                   onPressed: () async {
                                     if (formKey.currentState!.validate()) {
                                       await verifyUser();
+              
                                     }
                                   },
                                 ),
@@ -145,7 +145,7 @@ class _ForgetpassState extends State<Forgetpass> {
       ),
     );
   }
-  
+
   // Method to check if email and NID match in Firestore and send reset password email
   Future<void> verifyUser() async {
     try {
@@ -174,8 +174,8 @@ class _ForgetpassState extends State<Forgetpass> {
             emailController.text, context); // User verified
       }
     } catch (e) {
+      
       print('Error fetching user data: $e');
     }
   }
-
 }

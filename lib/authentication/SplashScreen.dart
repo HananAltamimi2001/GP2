@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
-import 'package:pnustudenthousing/authentication/RouteUsers.dart';
+import 'package:pnustudenthousing/helpers/RouteUsers.dart';
 
 class splashScreen extends StatefulWidget {
   const splashScreen({super.key});
@@ -30,6 +30,7 @@ class splashScreenState extends State<splashScreen>
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: const Color(0xff007580),
       body: SafeArea(

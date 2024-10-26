@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:go_router/go_router.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:pnustudenthousing/Authentication/firbase_auth_services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -16,13 +18,13 @@ class studentprofileState extends State<studentprofile> {
   String? userId;
 
   DocumentSnapshot? studentData;
-  final FirbaseAuthService _auth = FirbaseAuthService();
+  final FirbaseAuthService auth = FirbaseAuthService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: OurAppBar(
-        title: "Profile",
+        title: "Student Profile",
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -112,17 +114,18 @@ class studentprofileState extends State<studentprofile> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        userId == null
-                            ? QrImageView(
-                                data: userId!, 
-                                version: QrVersions.auto,
-                                size: 120.0,
-                              )
-                            : Icon(
-                                Icons.error_outlined, 
-                                size: 40.0, 
-                                color: Colors.grey, 
-                              ),
+                        if (userId != null)
+                          QrImageView(
+                            data: userId!,
+                            version: QrVersions.auto,
+                            size: 120.0,
+                          )
+                        else
+                          Icon(
+                            MdiIcons.qrcodeRemove,
+                            size: 40.0,
+                            color: red1,
+                          ),
                       ],
                     ),
                   ],
@@ -141,25 +144,19 @@ class studentprofileState extends State<studentprofile> {
                   children: [
                     Row(children: [
                       Dtext(
-                        t: 'Social Security Certificate: ',
-                        size: 0.03,
+                        t: 'Medical Report: ',
+                        size: 0.035,
                         align: TextAlign.start,
                         color: dark1,
                       ),
-                      ElevatedButton(
+                      Dactionbutton(
+                        text: 'View File',
+                        background: dark1,
+                        fontsize: 0.03,
                         onPressed: () {},
-                        child: Dtext(
-                          t: 'View File',
-                          size: 0.03,
-                          align: TextAlign.start,
-                          color: Colors.white,
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: light1,
-                          foregroundColor: Colors.white,
-                        ),
-                      )
+                      ),
                     ]),
+                    Heightsizedbox(h: 0.02),
                     Row(children: [
                       Dtext(
                         t: 'Social Security Certificate: ',
@@ -167,20 +164,13 @@ class studentprofileState extends State<studentprofile> {
                         align: TextAlign.start,
                         color: dark1,
                       ),
-                      ElevatedButton(
+                      Dactionbutton(
+                        text: 'View File',
+                        background: dark1,
+                        fontsize: 0.03,
                         onPressed: () {},
-                        child: Dtext(
-                          t: 'View File',
-                          size: 0.03,
-                          align: TextAlign.start,
-                          color: Colors.white,
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: light1,
-                          foregroundColor: Colors.white,
-                        ),
                       ),
-                    ])
+                    ]),
                   ],
                 ),
               ),
@@ -245,8 +235,19 @@ class studentprofileState extends State<studentprofile> {
               children: [
                 actionbutton(
                   onPressed: () {
-                    _auth.signout(context);
-                  },
+                  ErrorDialog(
+                    "Confirm logout",
+                    context,
+                    buttons: [
+                      {
+                        "Confirm": () async => auth.signout(context),
+                      },
+                      {
+                        "Cancel": () async => context.pop(),
+                      }
+                    ],
+                  );
+                },
                   text: "Logout",
                   background: red1,
                 )

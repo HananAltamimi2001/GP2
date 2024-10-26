@@ -1,6 +1,7 @@
+import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
-import 'package:pnustudenthousing/authentication/RouteUsers.dart';
-import 'package:pnustudenthousing/Authentication/firbase_auth_services.dart';
+import 'package:pnustudenthousing/helpers/RouteUsers.dart';
+import 'package:pnustudenthousing/authentication/firbase_auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,12 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Padding(
                     padding: EdgeInsets.all(10.0),
                     child: Padding(
-                      padding: EdgeInsets.fromLTRB(
-                        30.0,
-                        30.0,
-                        30.0,
-                        8.0
-                      ),
+                      padding: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 8.0),
                       child: Column(children: [
                         Form(
                           key: formKey,
@@ -65,10 +61,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               // Form title
                               Padding(
                                 padding: EdgeInsets.only(
-                                  top: 0.02 *
-                                      MediaQuery.of(context).size.height ,
-                                  bottom: 0.01 *
-                                      MediaQuery.of(context).size.height ,
+                                  top:
+                                      0.02 * MediaQuery.of(context).size.height,
+                                  bottom:
+                                      0.01 * MediaQuery.of(context).size.height,
                                 ),
                                 child: Titletext(
                                   t: "Login",
@@ -78,15 +74,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               // Email
                               textform(
-                                controller: emailController,
-                                hinttext: "Email",
-                                lines: 1,
-                                icon: Icons.email,
-                                iconColor: dark1,
-                                validator: (val) {
-                                  if (val == null || val.isEmpty) {
-                                    return "Please write your PNU email";
-                                  } /*
+                                  controller: emailController,
+                                  hinttext: "Email",
+                                  lines: 1,
+                                  icon: Icons.email,
+                                  iconColor: dark1,
+                                  validator: (val) {
+                                    if (val == null || val.isEmpty) {
+                                      return "Please write your PNU email";
+                                    } /*
                                   commented for testing purpose
                                   else {
                                     final RegExp emailRegExp =
@@ -97,8 +93,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     }*/
                                     return null;
                                   }
-                               // },
-                              ),
+                                  // },
+                                  ),
 
                               Heightsizedbox(
                                 h: 0.018,
@@ -124,9 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 children: [
                                   TextButton(
                                     onPressed: () {
-                                      Navigator.of(context).pushNamed(
-                                        '/forgetpass',
-                                      );
+                                      context.goNamed("/forgetpass");
                                     },
                                     child: const Dtext(
                                         t: "Forget your Pssword?",
@@ -169,9 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 size: 0.03),
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pushNamed(
-                                  '/register',
-                                );
+                                context.goNamed("/register");
                               },
                               child: const Dtext(
                                 t: "Register Here",
@@ -207,12 +199,22 @@ class _LoginScreenState extends State<LoginScreen> {
         // Save the login status
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
-      RouteUsers.routes(context,user.uid);
+        RouteUsers.routes(context, user.uid);
+      } else {
+        ErrorDialog(
+          "An error occurred. Please try again later.",
+          context,
+          buttons: [
+            {"Ok": () => context.pop(),},
+          ],
+        );
       }
     } catch (e) {
-     
+      // ErrorDialog('Login Failed. Incorrect email or password', context,
+      //     onPressed: () {
+      //   Navigator.pop(context);
+      // });
       print('Error: $e');
     }
   }
-    }
- 
+}

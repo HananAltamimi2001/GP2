@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:pnustudenthousing/Authentication/firbase_auth_services.dart';
 
@@ -20,7 +21,7 @@ class StaffprofileState extends State<Staffprofile> {
     String role = staffData?['role'] ?? 'N/A';
     return Scaffold(
       appBar: OurAppBar(
-        title: "Profile",
+        title: "Staff Profile",
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -80,10 +81,21 @@ class StaffprofileState extends State<Staffprofile> {
             Heightsizedbox(h: 0.02),
             actionbutton(
                 onPressed: () {
-                  _auth.signout(context);
+                  ErrorDialog(
+                    "Confirm logout",
+                    context,
+                    buttons: [
+                      {
+                        "Confirm": () async => _auth.signout(context),
+                      },
+                      {
+                        "Cancel": () async => context.pop(),
+                      }
+                    ],
+                  );
                 },
                 text: "Logout",
-                background: red1)
+                background: red1),
           ]),
         ),
       ),

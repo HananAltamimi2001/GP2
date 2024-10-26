@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pnustudenthousing/helpers/Design.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pnustudenthousing/helpers/Design.dart';
 
 class FirbaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -19,6 +18,8 @@ class FirbaseAuthService {
       checkSignInStatus();
       return credential.user;
     } on FirebaseAuthException catch (e) {
+      return null;
+      /*
       Fluttertoast.showToast(
         msg: "An error occurred during registration $e",
         toastLength: Toast.LENGTH_SHORT,
@@ -26,9 +27,8 @@ class FirbaseAuthService {
         backgroundColor: Colors.red,
         textColor: Colors.white,
         fontSize: 16.0,
-      );
+      );*/
     }
-    return null;
   }
 
   // For test purpose check sign in status
@@ -44,7 +44,6 @@ class FirbaseAuthService {
   }
 
   // Signin
-
   Future<User?> signinWithEmailAndPassword(
       BuildContext context, String email, String password) async {
     try {
@@ -55,8 +54,8 @@ class FirbaseAuthService {
         return credential.user;
       }
     } on FirebaseAuthException catch (e) {
-      // Handle login error and show a toast message
-      print('Error: $e');
+      return null;
+      /* print('Error: $e');
       Fluttertoast.showToast(
         msg: 'Login Failed. Incorrect email or password',
         toastLength: Toast.LENGTH_SHORT,
@@ -64,17 +63,17 @@ class FirbaseAuthService {
         backgroundColor: Colors.red,
         textColor: Colors.white,
         fontSize: 16.0,
-      );
+      );*/
     }
     return null;
   }
 
   Future<void> signout(context) async {
+    
     await FirebaseAuth.instance.signOut();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', false);
-
-    Navigator.pushReplacementNamed(context, '/login');
+    GoRouter.of(context).go('/login');
   }
 
   // Reset password
@@ -82,14 +81,47 @@ class FirbaseAuthService {
     {
       try {
         await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-
-        
-      } catch (e) {
-        Fluttertoast.showToast(
-          msg: 'Error sending password reset email: ${e.toString()}',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
+        InfoDialog(
+          "Reset password email was sent please check your email inbox",
+          context,
+          buttons: [
+            {
+              "Ok": () => context.pop(),
+            },
+          ],
         );
+
+        // InfoDialog(
+        //     "Reset password email was sent please check your email inbox",
+        //     "Ok",
+        //     context, onPressed: () {
+        //   context.pop();
+        // });
+      } catch (e) {
+        ErrorDialog(
+          "Error sending password reset email, Please try again later.",
+          context,
+          buttons: [
+            {
+              "Ok": () => context.pop(),
+            },
+          ],
+        );
+        // ErrorDialog(
+        //     "Error sending password reset email, Please try again later.",
+        //     "Ok",
+        //     context, onPressed: () {
+        //   context.pop();
+        // });
+        //  Fluttertoast.showToast(
+        // msg: 'Error sending password reset email',
+        // toastLength: Toast.LENGTH_SHORT,
+        // gravity: ToastGravity.CENTER,
+        // backgroundColor: Colors.red,
+        // textColor: Colors.white,
+        // fontSize: 16.0,
+
+        // );
       }
     }
   }

@@ -1,7 +1,6 @@
 import 'dart:io';
-
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart'; //if there is error here write : auto_size_text: ^3.0.0 in dependencies: under the cupertino_icons on pubspec.yaml file and press pub get
 import 'package:get/get.dart'; //if there is error here write : get: ^4.6.6 in dependencies: under the cupertino_icons on pubspec.yaml file and press pub get
 import 'package:image_picker/image_picker.dart'; //if there is error here write : image_picker: ^1.1.2 in dependencies: under the cupertino_icons on pubspec.yaml file and press pub get
 
@@ -15,7 +14,7 @@ class Design extends StatelessWidget {
 }
 
 /// 1- color palette
-/// 2-Size Helper
+/// 2- Size Helper
 /// 3- OurAppBar
 /// 4- Heightsizedbox --> dynamic
 /// 5- Widthsizedbox --> dynamic
@@ -26,18 +25,26 @@ class Design extends StatelessWidget {
 /// 10- home button2 --> dynamic
 /// 11- Internal Pages Button --> dynamic
 /// 12- action button --> dynamic
-/// 13- Dialog --> dynamic
-/// 14- Error Dialog --> dynamic
-/// 15- Text Form Field --> dynamic
-/// 16- Password Field --> dynamic
-/// 17- custom Form Field--> dynamic
-/// 18- pickTime Function
-/// 19- pickDate Function
+/// 13- Dynamic action button --> dynamic
+/// 14- Information Dialog --> dynamic
+/// 15- Error Dialog --> dynamic
+/// 16- Text Form Field --> dynamic
+/// 17- Password Field --> dynamic
+/// 18- Our Form Field--> dynamic
+/// 19- pickTime Function
+/// 20- pickDate Function
+/// 21- pickImage Function
+/// 22- TextCapitalizer
+/// 23- RowInfo
+/// 24- DropdownList
+/// 25- Our List View Widget
+/// 26- Our Loading Indicator
 
-/// 1111111111111111--color palette--1111111111111111  //1
+/// ------------------ color palette -------------------  //1
 Color dark1 = Color(0xff007580); // for Titles
 Color light1 = Color(0xff339199); // for Sub Titles
 Color grey1 = Color(0xff98989A); // for descriptions
+Color grey2 = grey1.withOpacity(0.1);
 Color green1 = Color(0xff4ca585); // for success operation
 Color blue1 = Color(0xff00a6ce); // for information
 Color red1 = Color(
@@ -51,7 +58,7 @@ Color yellow1 = Color(0xffF6cf7f); // for waiting
 * Ex: color: red1
 * i already used in this file you can see full examples in the following Widgets, functions and classes*/
 
-/// 222222222222222--Size Helper class--22222222222222222  //2
+/// ------------------ Size Helper class -------------------  //2
 /*A helper class to adjust dynamic sized by calculate and return the smaller of the screen's width or height
  * i invented it To ensure that the size of our texts and other page components is appropriate for different screen sizes.*/
 class SizeHelper {
@@ -66,12 +73,12 @@ class SizeHelper {
 }
 
 /* example for used it :
-* first don`t forget the import: import 'package:pnustudenthousing/Design.dart';;
+* first don`t forget the import: import 'package:pnustudenthousing/Design.dart';
 * then just you need call SizeHelper class in any thing you need adjest his size in your page
 * Ex: fontSize: SizeHelper.getSize(context) * 0.07 ,
 * i already used in this file you can see full examples in the following Widgets, functions and classes*/
 
-/// 333333333333333--OurAppBar--333333333333333  //3
+/// ------------------ Our AppBar -------------------  //3
 // customizable AppBar with dynamic height and title handling.
 class OurAppBar extends StatelessWidget implements PreferredSizeWidget {
   const OurAppBar({super.key, this.title, this.icon, this.onIconPressed});
@@ -156,7 +163,7 @@ class OurAppBar extends StatelessWidget implements PreferredSizeWidget {
         title: 'Emergency Service' ), );
  */
 
-///  444444444444444--Height sized box-- 444444444444444 //4
+/// ------------------ Height sized box -------------------  //4
 // Heightsizedbox dynamically scales based on screen height
 class Heightsizedbox extends StatelessWidget {
   const Heightsizedbox({super.key, required this.h});
@@ -178,7 +185,7 @@ class Heightsizedbox extends StatelessWidget {
 * Ex: Heightsizedbox(h: 0.10),
 * it not work in rows */
 
-/// 555555555555555--width sized box--555555555555555  //5
+/// ------------------ width sized box -------------------  //5
 // Widthsizedbox dynamically scales based on screen width
 class Widthsizedbox extends StatelessWidget {
   const Widthsizedbox({super.key, required this.w});
@@ -199,7 +206,7 @@ class Widthsizedbox extends StatelessWidget {
 * Ex: Widthsizedbox(w: 0.05),
 * it not work in columns */
 
-/// 66666666666666--Titletext--66666666666666  //6
+/// ------------------ Title text -------------------  //6
 //Title text with dynamic sizing based on SizeHelper class
 class Titletext extends StatelessWidget {
   const Titletext({
@@ -233,7 +240,7 @@ class Titletext extends StatelessWidget {
                 align: TextAlign.start, ),
 */
 
-/// 777777777777777--text--7777777777777777777  //7
+/// ------------------ text -------------------  //7
 // Text with dynamic sizing based on SizeHelper class
 class text extends StatelessWidget {
   const text({
@@ -268,7 +275,7 @@ class text extends StatelessWidget {
             color: Colors.black, ),
 */
 
-/// 888888888888888--Dtext--8888888888888888888  //8
+/// ------------------ Dynamic text -------------------  //8
 // Text with dynamic sizing based on SizeHelper class and the entered size
 class Dtext extends StatelessWidget {
   const Dtext({
@@ -301,6 +308,7 @@ class Dtext extends StatelessWidget {
     );
   }
 }
+
 /* example for used it :
 * first don`t forget the import: import 'package:pnustudenthousing/Design.dart';
 * then just you need call Dtext Widget in your page and get it your text , color,size values and manage text Alignment
@@ -311,7 +319,7 @@ class Dtext extends StatelessWidget {
               size: 0.05,)
 */
 
-/// 9999999999999-- home button1--999999999999999  //9
+/// ------------------ home button1 -------------------   //9
 // Dynamic Button with icon in left side used in the home screens
 class HomeButton1 extends StatelessWidget {
   const HomeButton1({
@@ -362,7 +370,7 @@ class HomeButton1 extends StatelessWidget {
           onPressed: onPressed,
           child: AutoSizeText(
             name,
-            textAlign: TextAlign.start,
+            textAlign: TextAlign.center,
             maxLines: 2, // Allow up to 2 lines of text
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -391,7 +399,7 @@ class HomeButton1 extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => HousingServices()));
 */
 
-/// 101010101010101010101010--Home Button2--1010101010101010101010  //10
+/// ------------------ Home Button2 -------------------  //10
 // Dynamic Button with icon in right side used in the home screens
 class HomeButton2 extends StatelessWidget {
   const HomeButton2({
@@ -432,7 +440,7 @@ class HomeButton2 extends StatelessWidget {
               onPressed: onPressed,
               child: AutoSizeText(
                 name,
-                textAlign: TextAlign.start,
+                textAlign: TextAlign.center,
                 maxLines: 2, // Allow up to 2 lines of text
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -481,17 +489,18 @@ class HomeButton2 extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => HousingServices()));
 */
 
-/// 1111111111111111111111--Internal Pages Button -111111111111111111111111  //11
+/// ------------------ Internal Pages Button -------------------  //11
 // A customizable button used for navigating between internal pages.
 class PagesButton extends StatelessWidget {
   const PagesButton({
     super.key,
     required this.name,
     this.onPressed,
+    this.background,
   });
   final String name; // Button text to display
   final VoidCallback? onPressed; // Action triggered when the button is pressed
-
+  final Color? background;
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context)
@@ -508,15 +517,15 @@ class PagesButton extends StatelessWidget {
         width: screenWidth *
             0.9, // Set dynamic container width based on the screen width
         decoration: BoxDecoration(
-          color: light1, // Background color for the button
-          borderRadius: BorderRadius.all(
+          color: (background ?? light1), // Background color for the button
+          borderRadius: const BorderRadius.all(
               Radius.circular(40)), // Rounded corners for a softer look
         ),
         child: TextButton(
           onPressed:
               onPressed, // Assign the passed action to the button's onPressed event
           child: AutoSizeText(
-            "$name", // Display the name text
+            name, // Display the name text
             style: TextStyle(
               color: Colors.white,
               fontSize:
@@ -545,7 +554,7 @@ class PagesButton extends StatelessWidget {
               );
 */
 
-/// 1212121212121212121212--action button--1212121212121212121212  //12
+/// ----------------- action button -------------------  //12
 // button for cancel , reject , accept , set, login and register buttons
 class actionbutton extends StatelessWidget {
   const actionbutton({
@@ -570,23 +579,19 @@ class actionbutton extends StatelessWidget {
       ),
       onPressed:
           onPressed, // Assign the passed action to the button's onPressed event
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-            vertical: 11,
-            horizontal: 5), // Vertical and horizontal padding inside the button
-        child: Text(
-          '${text}', // Display the button text
-          style: TextStyle(
-            color: Colors.white, // Button text color set to white
-            fontSize: SizeHelper.getSize(context) *
-                (fontsize ??
-                    0.04), // Set the font size for the text dynamically
-          ),
+      child: // Vertical and horizontal padding inside the button
+          Text(
+        '${text}', // Display the button text
+        style: TextStyle(
+          color: Colors.white, // Button text color set to white
+          fontSize: SizeHelper.getSize(context) *
+              (fontsize ?? 0.04), // Set the font size for the text dynamically
         ),
       ),
     );
   }
 }
+
 /* example for used it :
 * first don`t forget the import: import 'package:pnustudenthousing/Design.dart';
 * then just you need call actionbutton widget in your page and get it your button name , background color  , font size  and your on preseed
@@ -598,100 +603,182 @@ class actionbutton extends StatelessWidget {
 * to mange button alignment in your page warp it in Row
 */
 
-/// 13131313131313131313--Dialog--13131313131313131313  //13
+/// ------------------ Dynamic action button -------------------  //13
+// A custom action button widget that adapts its size based on screen dimensions.
+class Dactionbutton extends StatelessWidget {
+  const Dactionbutton({
+    super.key,
+    required this.onPressed,
+    required this.text,
+    required this.background,
+    this.fontsize,
+    this.height,
+    this.width,
+  });
+
+  final VoidCallback? onPressed; // Action triggered when the button is pressed
+  final String text; // Button text to display
+  final Color background; // Background color of the button
+  final double? fontsize; // Font size of the button text
+  final double? height; // Height ratio of the button relative to screen height
+  final double? width; // Width ratio of the button relative to screen width
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width; // Get screen width
+    double screenHeight =
+        MediaQuery.of(context).size.height; // Get screen height
+
+    return SizedBox(
+      height: screenHeight * (height ?? 0.033), // Set button height
+      width: screenWidth * (width ?? 0.25), // Set button width
+      child: actionbutton(
+        text: text, // Display button text
+        background: background, // Set button background color
+        onPressed: onPressed, // Define button action
+        fontsize: fontsize, // Optional font size
+      ),
+    );
+  }
+}
+
+/* example for used it :
+* first don`t forget the import: import 'package:pnustudenthousing/Design.dart';
+* then just you need call Dactionbutton widget in your page and get it your button text , background color  , font size and your on preseed
+* the mange your on pressed method
+* Ex:  Dactionbutton(
+                     text: 'View File',
+                     background: dark1,
+                     fontsize: 0.03,
+                     onPressed: () {},  // you need Define what happens when the button is pressed
+                      ),
+
+* to mange button alignment in your page warp it in Row
+*/
+
+/// ------------------ Information Dialog -------------------  //14
 // A reusable function to display a InfoDialog box with a message and an "OK" button.
 // The dialog box takes in a message and a callback function that triggers when the "OK" button is pressed.
 Future<dynamic> InfoDialog(String message, BuildContext context,
-    {required VoidCallback onPressed}) async {
+    {required List<Map<String, VoidCallback>> buttons}) async {
   showDialog(
-    context: context,
-    builder: (context) => SimpleDialog(
-      backgroundColor: light1, // Sets the background color of the dialog
-      contentPadding: const EdgeInsets.fromLTRB(
-          20, 30, 20, 30), // Padding around the dialog content
-      children: [
-        Center(
-          child: Text(
-            "$message", // Displays the message passed to the dialog
-            style: TextStyle(color: Colors.white), // Text color
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-              10, 20, 10, 0), // Padding for the button
-          child: TextButton(
-            onPressed:
-                onPressed, // Executes the callback when the button is pressed
-            child: Text("OK",
-                style: TextStyle(color: Colors.white)), // Button text
-            style: TextButton.styleFrom(
-              backgroundColor: dark1, // Background color of the button
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
+      context: context,
+      builder: (context) => SimpleDialog(
+            backgroundColor: light1, // Sets the background color of the dialog
+            contentPadding: const EdgeInsets.fromLTRB(
+                20, 30, 20, 30), // Padding around the dialog content
+            children: [
+              Center(
+                child: Dtext(
+                  t: message,
+                  color: Colors.white,
+                  align: TextAlign.center,
+                  size: 0.03,
+                ), // Dialog message text
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: buttons.map((button) {
+                    return ElevatedButton(
+                      onPressed: button.values.first,
+                      child: Dtext(
+                        t: button.keys.first,
+                        color: Colors.white,
+                        align: TextAlign.center,
+                        size: 0.03,
+                      ),
+                      style: TextButton.styleFrom(
+                        backgroundColor: dark1,
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ));
 }
-
 /* example for used it :
 * first don`t forget the import: import 'package:pnustudenthousing/Design.dart';
 * then just you need call dialog method in your page and get it your massege , context  values and manage onPressed
-* Ex: dialog("Event created successfully", context, onPressed: () {
-      Navigator.of(context).pop();
-      },);
+* Ex: infoDialog(
+          
+                    "Confirm logout",
+                    context,
+                    buttons: [
+                      {
+                        "Confirm": () async => _auth.signout(context),
+                      },
+                      {
+                        "Cancel": () async => context.pop(),
+                      }
+                    ],
+                  );
 */
 
-/// 141414141414141414--Error Dialog--141414141414141414  //14
+/// ------------------ Error Dialog -------------------  //15
 // A reusable function to display a custom error dialog box with a message and an "OK" button.
 // The dialog box takes in a message and a callback function that triggers when the "OK" button is pressed.
 Future<dynamic> ErrorDialog(String message, BuildContext context,
-    {required VoidCallback onPressed}) async {
+    {required List<Map<String, VoidCallback>> buttons}) async {
   showDialog(
-    context: context,
-    builder: (context) => SimpleDialog(
-      backgroundColor:
-          red1, // Sets the background color of the dialog to signify an error
-      contentPadding: const EdgeInsets.fromLTRB(
-          20, 30, 20, 30), // Padding around the dialog content
-      children: [
-        Center(
-          child: Text(
-            "$message", // Displays the error message passed to the dialog
-            style: TextStyle(
-                color: Colors
-                    .white), // Text color to ensure readability against red background
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-              10, 20, 10, 0), // Padding for the button
-          child: TextButton(
-            onPressed:
-                onPressed, // Executes the callback when the button is pressed
-            child: Text("OK",
-                style: TextStyle(color: Colors.white)), // Button text
-            style: TextButton.styleFrom(
-              backgroundColor:
-                  red2, // Background color of the button to match error theme
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
+      context: context,
+      builder: (context) => SimpleDialog(
+            backgroundColor: red1, // Sets the background color of the dialog
+            contentPadding: const EdgeInsets.fromLTRB(
+                20, 30, 20, 30), // Padding around the dialog content
+            children: [
+              Center(
+                child: Dtext(
+                  t: message,
+                  color: Colors.white,
+                  align: TextAlign.center,
+                  size: 0.03,
+                ), // Dialog message text
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: buttons.map((button) {
+                    return ElevatedButton(
+                      onPressed: button.values.first,
+                      child: Dtext(
+                        t: button.keys.first,
+                        color: Colors.white,
+                        align: TextAlign.center,
+                        size: 0.03,
+                      ),
+                      style: TextButton.styleFrom(
+                        backgroundColor: red2,
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ));
 }
 
 /* example for used it :
 * first don`t forget the import: import 'package:pnustudenthousing/Design.dart';
 * then just you need call dialog method in your page and get it your massege , context  values and manage onPressed
-* Ex: ErrorDialog("An unexpected error occurred", context,
-///   onPressed: () {
-//       Navigator.of(context).pop();
-//       },);
+* Ex:    ErrorDialog(
+                    "Confirm logout",
+                    context,
+                    buttons: [
+                      {
+                        "Confirm": () async => _auth.signout(context),
+                      },
+                      {
+                        "Cancel": () async => context.pop(),
+                      }
+                    ],
+                  );
 */
 
-/// 151515151515151515--Text Form Field--151515151515151515  //15
+/// ------------------ Text Form Field -------------------  //16
 // A reusable text form field widget for handling user input.
 //It supports customization of the input controller, hint text, number of lines, and validator function.
 class textform extends StatelessWidget {
@@ -778,7 +865,7 @@ class textform extends StatelessWidget {
 * ex for use controller in save data method: eventName': Enamecontroller.text,
 */
 
-/// 161616161616161616--Password Field--161616161616161616  //16
+/// ------------------ Password Field -------------------  //17
 /* A specialized text form field for password input with an "obscure text" toggle,
 It hides the password by default and allows the user to toggle the visibility.*/
 class PasswordField extends StatelessWidget {
@@ -854,11 +941,11 @@ class PasswordField extends StatelessWidget {
   }
 }
 
-/// 171717171717171717--custom Form Field--171717171717171717  //17
+/// ------------------ Our Form Field -------------------  //18
 /* A reusable custom form field widget that supports image upload, date selection,
   and time selection functionalities.
  * Returns a FormField widget with validation based on the field type. */
-Widget customFormField({
+Widget OurFormField({
   File? imageFile, // For image upload
   DateTime? selectedDate, // For date picker
   TimeOfDay? selectedTime, // For time picker
@@ -895,7 +982,12 @@ Widget customFormField({
         children: [
           Row(
             children: [
-              Text(labelText, style: TextStyle(color: dark1)),
+              Dtext(
+                t: labelText,
+                color: dark1,
+                align: TextAlign.start,
+                size: 0.04,
+              ),
               Widthsizedbox(w: 0.02),
               if (fieldType == 'image') ...[
                 imageFile == null
@@ -943,9 +1035,11 @@ Widget customFormField({
           if (state.hasError)
             Padding(
               padding: const EdgeInsets.only(top: 7.0),
-              child: Text(
-                state.errorText ?? "",
-                style: TextStyle(color: red1),
+              child: Dtext(
+                t: state.errorText ?? "",
+                color: red1,
+                align: TextAlign.center,
+                size: 0.04,
               ),
             ),
         ],
@@ -960,7 +1054,7 @@ Widget customFormField({
 * label text values and your function based on field type(onPickImage or onSelectDate or onSelectTime)
 * Ex for used customFormField for pick image :
 * for image dont forget the import:import 'dart:io';
-  customFormField(
+  OurFormField(
                 fieldType: 'image',
                 imageFile: _image,
                 onPickImage:() async {
@@ -971,10 +1065,10 @@ Widget customFormField({
                     });
                   }
                 },
-                labelText: "Upload Picture:",
+                labelText: "Upload Picture:", // if you don`t need labelText make it  empty : labelText: "",
               ),
  * Ex for used customFormField for select date :
-  customFormField(
+  OurFormField(
                 fieldType: 'date',
                 selectedDate: selectedDate,
                 onSelectDate: () async {
@@ -985,10 +1079,10 @@ Widget customFormField({
                     });
                   }
                 },
-                labelText: "Select Date:",
+                labelText: "Select Date:", // if you don`t need labelText make it  empty : labelText: "",
               ),
  * Ex for used customFormField for select time :
-  customFormField(
+  OurFormField(
                 fieldType: 'time',
                 selectedTime: selectedTime,
                 onSelectTime: () async {
@@ -999,12 +1093,12 @@ Widget customFormField({
                     });
                   }
                 },
-                labelText: "Select Time:",
+                labelText: "Select Time:", // if you don`t need labelText make it  empty : labelText: "",
               ),
 
 */
 
-/// 181818181818181818--pickTime Function--181818181818181818  //18
+/// ------------------ pickTime Function -------------------  //19
 Future<TimeOfDay?> pickTime(BuildContext context) async {
   final TimeOfDay? picked = await showTimePicker(
     context: context,
@@ -1030,10 +1124,9 @@ Future<TimeOfDay?> pickTime(BuildContext context) async {
   return picked; // Return the picked time
 }
 
-/*use same the customFormField for pickTime example
-*/
+/* use same the OorFormField for pickTime example*/
 
-/// 191919191919191919--pickDate Function--191919191919191919  //19
+/// ------------------ pickDate Function -------------------  //20
 Future<DateTime?> pickDate(BuildContext context) async {
   final DateTime? picked = await showDatePicker(
     context: context,
@@ -1054,9 +1147,9 @@ Future<DateTime?> pickDate(BuildContext context) async {
   return picked; // Return the picked date
 }
 
-/*use same the customFormField for pickDate example*/
+/*use same the OurFormField for pickDate example*/
 
-/// 202020202020202020--pickImage Function--202020202020202020  //20
+/// ------------------ pickImage Function -------------------  //21
 // Picks an image from the gallery and returns a File object.
 // If no image is picked, returns null.
 Future<File?> pickImage(BuildContext context) async {
@@ -1072,7 +1165,7 @@ Future<File?> pickImage(BuildContext context) async {
 /* example for used it :
 * first don`t forget the imports: import 'package:pnustudenthousing/Design.dart'; and import:import 'dart:io';
 * then just you need definition file? variable then asign pickimage function to it
-* if you need validator the image use same the customFormField for pick image example
+* if you need validator the image use same the OurFormField for pick image example
 * if you don`t need to validator the image use in action button
 * EX for use pick image in action button:
 * _image == null ? actionbutton(
@@ -1094,51 +1187,71 @@ Future<File?> pickImage(BuildContext context) async {
 *  _image i definition in up my code as : File? _image;
 */
 
+/// ------------------ Text Capitalizer class -------------------  //22
+// This class contains a static method to capitalize the first letter of each word in a string.
 class TextCapitalizer {
+  // Method to capitalize the first letter of each word in a given string.
+  //If the string is empty, it returns the original string.
   static String CtextS(String string) {
     if (string.isEmpty) {
       return string;
     }
 
+    // Split the string by spaces to get individual words.
     List<String> words = string.split(' ');
+
+    // Capitalize the first letter of each word, and convert the rest to lowercase.
     List<String> capitalizedWords = words.map((word) {
       if (word.isEmpty) {
-        return word;
+        return word; // Return empty word if found.
       }
       return word[0].toUpperCase() + word.substring(1).toLowerCase();
     }).toList();
 
+    // Join the capitalized words back into a single string.
     return capitalizedWords.join(' ');
   }
 }
 
-/*String fullname = firstNameController.text +
-        " " +
-        middleNameController.text +
-        " " +
-        lastNameController.text;
-    print(fullname);
-    fullname = TextCapitalizer.CtextS(fullname);
-    print(fullname); */
+/* Example usage of TextCapitalizer:
+* first don`t forget the imports: import 'package:pnustudenthousing/Design.dart';
+* EX:
+   String fullname = firstNameController.text +
+       " " +
+       middleNameController.text +
+       " " +
+       lastNameController.text;
+   print(fullname);
+   fullname = TextCapitalizer.CtextS(fullname);
+   print(fullname); */
 
+/// ------------------ RowInfo class -------------------  //23
+// This class builds a row widget displaying a label and its corresponding value.
 class RowInfo {
+  // Builds a row with a label and value using custom logic.
+  // - defaultLabel: The default label to display.
+  // - value: The value to display next to the label.
+  // - customLabelLogic: Optional function to apply custom logic to determine the label.
   static Row buildInfoRow({
     required String? defaultLabel,
     String? value,
     String Function(String?)? customLabelLogic,
   }) {
+    // Determine the label using the custom logic or the default label if no custom logic is provided.
     String label = customLabelLogic != null
         ? (customLabelLogic(value) ?? defaultLabel ?? 'N/A')
         : (defaultLabel ?? 'N/A');
 
     return Row(
       children: [
+        // Display the label.
         Dtext(
           t: '$label: ',
           align: TextAlign.center,
           color: dark1,
           size: 0.035,
         ),
+        // Display the value.
         Dtext(
           t: value ?? 'N/A',
           align: TextAlign.center,
@@ -1150,26 +1263,267 @@ class RowInfo {
   }
 }
 
-/*
+/* Example usage of RowInfo:
+* first don`t forget the imports: import 'package:pnustudenthousing/Design.dart';
+* EX1:
 RowInfo.buildInfoRow(
-                      defaultLabel: 'Email',
-                      value: studentData?['email']?.toString(),
-                    ),
-                    RowInfo.buildInfoRow(
-                      defaultLabel: 'Phone Number',
-                      value: studentData?['phone']?.toString(),
-                    ),
-                    RowInfo.buildInfoRow(
-                      defaultLabel: 'ID Type:',
-                      value: studentData?['NID']?.toString(),
-                      customLabelLogic: (value) {
-                        if (value != null && value.startsWith('2')) {
-                          return 'Iqama';
-                        } else if (value != null && value.startsWith('1')) {
-                          return 'National ID';
-                        } else {
-                          return 'Unknown ID Type';
-                        }
-                      },
-                    ),
+  defaultLabel: 'Email',
+  value: studentData?['email']?.toString(),
+),
+* EX2:
+RowInfo.buildInfoRow(
+  defaultLabel: 'Phone Number',
+  value: studentData?['phone']?.toString(),
+),
+* EX3:
+RowInfo.buildInfoRow(
+  defaultLabel: 'ID Type:',
+  value: studentData?['NID']?.toString(),
+  customLabelLogic: (value) {
+    if (value != null && value.startsWith('2')) {
+      return 'Iqama';
+    } else if (value != null && value.startsWith('1')) {
+      return 'National ID';
+    } else {
+      return 'Unknown ID Type';
+    }
+  },
+),
+*/
+
+/// ------------------ DropdownList class -------------------  //24
+// This class represents a custom dropdown list widget with validation and customization.
+class DropdownList extends StatefulWidget {
+  final List<String> items; // The list of dropdown items.
+  final ValueChanged<String>
+      onItemSelected; // Callback when an item is selected.
+  final String hint; // Placeholder hint text.
+
+  // Constructor to initialize the dropdown list.
+  const DropdownList({
+    Key? key,
+    required this.items,
+    required this.onItemSelected,
+    required this.hint,
+  }) : super(key: key);
+
+  @override
+  _DropdownListState createState() => _DropdownListState();
+}
+
+class _DropdownListState extends State<DropdownList> {
+  String? selectedItem; // The selected item.
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // Dropdown button form field with validation and item selection logic.
+      child: DropdownButtonFormField<String>(
+        hint: Text(widget.hint), // Display hint.
+        value: selectedItem, // Currently selected item.
+        onChanged: (String? newValue) {
+          setState(() {
+            selectedItem = newValue; // Update selected item.
+          });
+
+          widget.onItemSelected(newValue!); // Trigger the callback.
+        },
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please select an item'; // Validation message
+          }
+          return null;
+        }, // Validation function.
+        dropdownColor: Colors.white, // Dropdown menu color.
+        decoration: InputDecoration(
+          focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: red1, // Border color when there's an error.
+              ),
+              borderRadius: BorderRadius.circular(20)),
+          errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.red), // Error border.
+              borderRadius: BorderRadius.circular(20)),
+          focusedBorder: OutlineInputBorder(
+              borderSide:
+                  BorderSide(color: green1), // Border color when focused.
+              borderRadius: BorderRadius.circular(20)),
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: light1), // Normal border color.
+              borderRadius: BorderRadius.circular(20)),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 6,
+          ),
+          fillColor: Colors.white, // Fill color for the dropdown field.
+          filled: true,
+        ),
+        // Dropdown menu items.
+        items: widget.items.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+        menuMaxHeight: 200.0, // Maximum height for the dropdown menu.
+      ),
+    );
+  }
+}
+
+/* Example usage of DropdownList:
+* first don`t forget the imports: import 'package:pnustudenthousing/Design.dart';
+* ----set the value----
+void onRoleSelected(String role) {
+  if (role.isNotEmpty) {
+    setState(() {
+      selectedRole = role; // Set the selected role.
+    });
+  }
+}
+
+*EX of DropdownList widget call:
+DropdownList(
+  hint: "Staff Role",
+  items: [
+    'Students affairs officer',
+    'Resident student supervisor',
+    'Housing security guard',
+    'Housing buildings officer',
+    'Nutrition specialist',
+    'Social Specialist'
+  ],
+  onItemSelected: onRoleSelected,
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'Please select an item'; // Validation message if no item is selected.
+    }
+    return null;
+  },
+),
+*/
+
+/// ------------------ Our List View Widget -------------------  //25
+// A custom ListView widget that displays a list of items with customizable
+// leading and trailing widgets, and allows actions when tapping on the title.
+Widget OurListView({
+  required List<dynamic> data,
+  Widget Function(dynamic item)? leadingWidget,
+  Widget Function(dynamic item)? trailingWidget,
+  Function(dynamic item)? onTap, // Made onTap optional
+  required String title,
+}) {
+  return ListView.builder(
+    itemCount: data.length, // Number of items in the list
+    itemBuilder: (context, index) {
+      final item = data[index]; // Get the current item based on the index
+
+      return Container(
+        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: grey2, // Background color for the list item container
+          borderRadius: BorderRadius.circular(3), // Rounded corners
+        ),
+        child: ListTile(
+          // Leading widget: Optional, can be customized for each item
+          leading: leadingWidget != null ? leadingWidget(item) : null,
+          // Title: Display the item title and make it tappable if onTap is provided
+          title: GestureDetector(
+            onTap: onTap != null
+                ? () => onTap(item)
+                : null, // Trigger onTap if provided
+            child: text(
+              t: item[title] ?? '',
+              align: TextAlign.start,
+              color: dark1,
+            ),
+          ),
+          // Trailing widget: Optional, can be customized for each item
+          trailing: trailingWidget != null ? trailingWidget(item) : null,
+        ),
+      );
+    },
+  );
+}
+
+/* Example usage of OurListView:
+* first don`t forget the imports: import 'package:pnustudenthousing/Design.dart';
+* EX of used with circle Avatar color (view daily attendance page):
+   OurListView(
+            data: studentData,
+            trailingWidget: (item) => CircleAvatar(
+              radius: 15,
+              backgroundColor: item['color'],
+            ),
+            onTap: (item) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => StudentDetailsPage(
+                    pnuid: item['PNUID'],
+                  ),
+                ),
+              );
+            },
+            title: 'name',
+          );
+* EX of used with Button:
+     OurListView(
+            data: studentData,
+            trailingWidget: (item) => Dactionbutton(
+                     text: 'View File',
+                     background: dark1,
+                     fontsize: 0.03,
+                     onPressed: () {},  // you need Define what happens when the button is pressed
+                      ),
+            onTap: (item) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => StudentDetailsPage(
+                    pnuid: item['PNUID'],
+                  ),
+                ),
+              );
+            },
+            title: 'name',
+          );
+* EX of used with Icon such as arrow :
+                  OurListView(
+            data: studentData,
+            trailingWidget: (item) => Icon(Icons.arrow_forward , color: dark1,
+            size: SizeHelper.getSize(context) * 0.09,),
+            onTap: (item) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => StudentDetailsPage(
+                    pnuid: item['PNUID'],
+                  ),
+                ),
+              );
+            },
+            title: 'name',
+          );
+*/
+
+/// ------------------ Our Loading Indicator -------------------  //26
+// A custom loading indicator widget that displays a circular progress indicator.
+class OurLoadingIndicator extends StatelessWidget {
+  const OurLoadingIndicator({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CircularProgressIndicator(
+      color: dark1, // Custom color for the loading indicator
+    );
+  }
+}
+
+/* Example usage of OurListView:
+* first don`t forget the imports: import 'package:pnustudenthousing/Design.dart';
+* just you need call OurLoadingIndicator
+* EX:
+*       OurLoadingIndicator()
 */

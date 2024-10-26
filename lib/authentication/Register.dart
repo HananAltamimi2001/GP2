@@ -1,10 +1,10 @@
+import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
-import 'package:pnustudenthousing/Authentication/SetPassword.dart';
+import 'package:pnustudenthousing/authentication/SetPassword.dart';
 import 'package:flutter/material.dart';
-import 'package:string_extensions/string_extensions.dart';
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
-
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
@@ -208,13 +208,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   background: dark1,
                                   onPressed: () {
                                     if (formKey.currentState!.validate()) {
-                                      Navigator.of(context).pushNamed(
+                                      context.goNamed(
                                         '/setpass',
-                                        arguments: SetPassArguments(
-                                          firstName: firstNameController.text.capitalize,
+                                        extra: SetPassArguments(
+                                          firstName: firstNameController.text,
                                           middleName:
-                                              middleNameController.text.capitalize,
-                                          lastName: lastNameController.text.capitalize,
+                                              middleNameController.text,
+                                          lastName: lastNameController.text,
                                           email: emailController.text,
                                           phone: 
                                               phoneNumberController.text,

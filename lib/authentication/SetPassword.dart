@@ -1,8 +1,10 @@
+import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:pnustudenthousing/Authentication/firbase_auth_services.dart';
+import 'package:pnustudenthousing/authentication/firbase_auth_services.dart';
 
 class SetPass extends StatefulWidget {
   final SetPassArguments args;
@@ -189,10 +191,15 @@ class _SetPassState extends State<SetPass> {
           await _auth.signupWithEmailAndPassword(widget.args.email, password);
 
       if (user != null) {
-        String fullname =
-            '${widget.args.firstName}  ${widget.args.middleName}  ${widget.args.lastName}';
-        print(fullname);
-        fullname =TextCapitalizer.CtextS(fullname);
+        // name Capitalizer
+        String firstName = widget.args.firstName;
+        firstName = TextCapitalizer.CtextS(firstName);
+        String middleName = widget.args.middleName;
+        middleName = TextCapitalizer.CtextS(middleName);
+        String lastName = widget.args.lastName;
+        lastName = TextCapitalizer.CtextS(lastName);
+        String fullname = '$firstName $middleName $lastName';
+        fullname = TextCapitalizer.CtextS(fullname);
         print(fullname);
 
         final String email = '${widget.args.email}';
@@ -208,32 +215,74 @@ class _SetPassState extends State<SetPass> {
             .collection('student')
             .doc(user.uid)
             .set({
-          'firstName': '${widget.args.firstName}',
-          'middleName': '${widget.args.middleName}',
-          'lastName': '${widget.args.lastName}',
-          'fullname':
-              '${widget.args.firstName}  ${widget.args.middleName}  ${widget.args.lastName}',
+          'firstName':firstName,
+          'middleName':middleName,
+          'lastName': lastName,
+          'fullname':fullname, 
           'PNUID': pnuid,
           'email': email,
           'phone': '${widget.args.phone}',
           'NID': '${widget.args.NID}',
           'createdAt': FieldValue.serverTimestamp(),
         });
-
-       InfoDialog("Your registration is complete. Please log in to continue.",
-            context, onPressed: () {
-          Navigator.pushReplacementNamed(context, '/login');
-        });
+         InfoDialog(
+         "Your registration is complete. Please log in to continue.",
+          context,
+          buttons: [
+            {
+              "Ok": () =>  context.go("/login"),
+            },
+          ],
+        );
+        // context.goNamed('/infodialog',
+        //     extra: InfoDialogArguments(
+        //       message:
+        //           "Your registration is complete. Please log in to continue.",
+        //       buttonText: "ok",
+        //       onPressed: () {
+        //         Navigator.pop(context);
+        //       },
+        //     ));
+        // InfoDialog("Your registration is complete. Please log in to continue.",
+        //     context, onPressed: () {
+        //   context.go("/login");
+        // });
 
         // For testing purpose
         // Registration successful
         print('Registration successful');
       } else {
+         ErrorDialog(
+          "An error occurred. Please try again later.",
+          context,
+          buttons: [
+            {
+              "Ok": () => context.pop(),
+            },
+          ],
+        );
+        // ErrorDialog("An error occurred during registration", context,
+        //     onPressed: () {
+        //   Navigator.pop(context);
+        // });
         // Handle error
         print('Registration failed');
       }
     } catch (e) {
+       ErrorDialog(
+          "An error occurred. Please try again later ohoooooooood.",
+          context,
+          buttons: [
+            {
+              "Ok": () => context.pop(),
+            },
+          ],
+        );
       // Handle error
+      // ErrorDialog("An error occurred during registration", context,
+      //     onPressed: () {
+      //   Navigator.pop(context);
+      // });
       print('Registration failed: $e');
     }
   }
