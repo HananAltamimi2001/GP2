@@ -40,6 +40,7 @@ class Design extends StatelessWidget {
 /// 25- Our List View Widget
 /// 26- Our Loading Indicator
 
+
 /// ------------------ color palette -------------------  //1
 Color dark1 = Color(0xff007580); // for Titles
 Color light1 = Color(0xff339199); // for Sub Titles
@@ -47,13 +48,12 @@ Color grey1 = Color(0xff98989A); // for descriptions
 Color grey2 = grey1.withOpacity(0.1);
 Color green1 = Color(0xff4ca585); // for success operation
 Color blue1 = Color(0xff00a6ce); // for information
-Color red1 = Color(
-    0xffC83434); // for error massages , text form field not fill , reject or delete or cancel buttons
+Color red1 = Color(0xffC83434); // for error massages , text form field not fill , reject or delete or cancel buttons
 Color red2 = Color(0xffAf0303);
 Color yellow1 = Color(0xffF6cf7f); // for waiting
 
 /* example for used it :
-* first don`t forget the import: import 'package:pnustudenthousing/Design.dart';;
+* first don`t forget the import: import 'package:pnustudenthousing/Design.dart';
 * then just you need call color name in any color property for any component in your page
 * Ex: color: red1
 * i already used in this file you can see full examples in the following Widgets, functions and classes*/
@@ -626,8 +626,7 @@ class Dactionbutton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width; // Get screen width
-    double screenHeight =
-        MediaQuery.of(context).size.height; // Get screen height
+    double screenHeight = MediaQuery.of(context).size.height; // Get screen height
 
     return SizedBox(
       height: screenHeight * (height ?? 0.033), // Set button height
@@ -664,46 +663,47 @@ Future<dynamic> InfoDialog(String message, BuildContext context,
   showDialog(
       context: context,
       builder: (context) => SimpleDialog(
-            backgroundColor: light1, // Sets the background color of the dialog
-            contentPadding: const EdgeInsets.fromLTRB(
-                20, 30, 20, 30), // Padding around the dialog content
-            children: [
-              Center(
-                child: Dtext(
-                  t: message,
-                  color: Colors.white,
-                  align: TextAlign.center,
-                  size: 0.03,
-                ), // Dialog message text
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: buttons.map((button) {
-                    return ElevatedButton(
-                      onPressed: button.values.first,
-                      child: Dtext(
-                        t: button.keys.first,
-                        color: Colors.white,
-                        align: TextAlign.center,
-                        size: 0.03,
-                      ),
-                      style: TextButton.styleFrom(
-                        backgroundColor: dark1,
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ],
-          ));
+        backgroundColor: light1, // Sets the background color of the dialog
+        contentPadding: const EdgeInsets.fromLTRB(
+            20, 30, 20, 30), // Padding around the dialog content
+        children: [
+          Center(
+            child: Dtext(
+              t: message,
+              color: Colors.white,
+              align: TextAlign.center,
+              size: 0.03,
+            ), // Dialog message text
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: buttons.map((button) {
+                return ElevatedButton(
+                  onPressed: button.values.first,
+                  child: Dtext(
+                    t: button.keys.first,
+                    color: Colors.white,
+                    align: TextAlign.center,
+                    size: 0.03,
+                  ),
+                  style: TextButton.styleFrom(
+                    backgroundColor: dark1,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ));
 }
+
 /* example for used it :
 * first don`t forget the import: import 'package:pnustudenthousing/Design.dart';
-* then just you need call dialog method in your page and get it your massege , context  values and manage onPressed
+* then just you need call info  dialog method in your page and get it your massege , context  values and manage onPressed
 * Ex: infoDialog(
-          
+
                     "Confirm logout",
                     context,
                     buttons: [
@@ -713,7 +713,7 @@ Future<dynamic> InfoDialog(String message, BuildContext context,
                       {
                         "Cancel": () async => context.pop(),
                       }
-                    ],
+                    // ],
                   );
 */
 
@@ -725,40 +725,40 @@ Future<dynamic> ErrorDialog(String message, BuildContext context,
   showDialog(
       context: context,
       builder: (context) => SimpleDialog(
-            backgroundColor: red1, // Sets the background color of the dialog
-            contentPadding: const EdgeInsets.fromLTRB(
-                20, 30, 20, 30), // Padding around the dialog content
-            children: [
-              Center(
-                child: Dtext(
-                  t: message,
-                  color: Colors.white,
-                  align: TextAlign.center,
-                  size: 0.03,
-                ), // Dialog message text
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: buttons.map((button) {
-                    return ElevatedButton(
-                      onPressed: button.values.first,
-                      child: Dtext(
-                        t: button.keys.first,
-                        color: Colors.white,
-                        align: TextAlign.center,
-                        size: 0.03,
-                      ),
-                      style: TextButton.styleFrom(
-                        backgroundColor: red2,
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ],
-          ));
+        backgroundColor: red1, // Sets the background color of the dialog
+        contentPadding: const EdgeInsets.fromLTRB(
+            20, 30, 20, 30), // Padding around the dialog content
+        children: [
+          Center(
+            child: Dtext(
+              t: message,
+              color: Colors.white,
+              align: TextAlign.center,
+              size: 0.03,
+            ), // Dialog message text
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: buttons.map((button) {
+                return ElevatedButton(
+                  onPressed: button.values.first,
+                  child: Dtext(
+                    t: button.keys.first,
+                    color: Colors.white,
+                    align: TextAlign.center,
+                    size: 0.03,
+                  ),
+                  style: TextButton.styleFrom(
+                    backgroundColor: red2,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ));
 }
 
 /* example for used it :
@@ -1050,9 +1050,9 @@ Widget OurFormField({
 
 /* example for used it :
 * first don`t forget the import: import 'package:pnustudenthousing/Design.dart';
-* then just you need call customFormField Widget in your page and get it your field Type , your object based on field type(imageFile or selectedDate or selectedTime) ,
+* then just you need call OurFormField Widget in your page and get it your field Type , your object based on field type(imageFile or selectedDate or selectedTime) ,
 * label text values and your function based on field type(onPickImage or onSelectDate or onSelectTime)
-* Ex for used customFormField for pick image :
+* Ex for used OurFormField for pick image :
 * for image dont forget the import:import 'dart:io';
   OurFormField(
                 fieldType: 'image',
@@ -1067,7 +1067,7 @@ Widget OurFormField({
                 },
                 labelText: "Upload Picture:", // if you don`t need labelText make it  empty : labelText: "",
               ),
- * Ex for used customFormField for select date :
+ * Ex for used OurFormField for select date :
   OurFormField(
                 fieldType: 'date',
                 selectedDate: selectedDate,
@@ -1081,7 +1081,7 @@ Widget OurFormField({
                 },
                 labelText: "Select Date:", // if you don`t need labelText make it  empty : labelText: "",
               ),
- * Ex for used customFormField for select time :
+ * Ex for used OurFormField for select time :
   OurFormField(
                 fieldType: 'time',
                 selectedTime: selectedTime,
@@ -1296,7 +1296,7 @@ RowInfo.buildInfoRow(
 class DropdownList extends StatefulWidget {
   final List<String> items; // The list of dropdown items.
   final ValueChanged<String>
-      onItemSelected; // Callback when an item is selected.
+  onItemSelected; // Callback when an item is selected.
   final String hint; // Placeholder hint text.
 
   // Constructor to initialize the dropdown list.
@@ -1346,7 +1346,7 @@ class _DropdownListState extends State<DropdownList> {
               borderRadius: BorderRadius.circular(20)),
           focusedBorder: OutlineInputBorder(
               borderSide:
-                  BorderSide(color: green1), // Border color when focused.
+              BorderSide(color: green1), // Border color when focused.
               borderRadius: BorderRadius.circular(20)),
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: light1), // Normal border color.
@@ -1394,12 +1394,6 @@ DropdownList(
     'Social Specialist'
   ],
   onItemSelected: onRoleSelected,
-  validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'Please select an item'; // Validation message if no item is selected.
-    }
-    return null;
-  },
 ),
 */
 
@@ -1470,42 +1464,56 @@ Widget OurListView({
           );
 * EX of used with Button:
      OurListView(
-            data: studentData,
+            data: requests,
+            leadingWidget: (item) => text(
+              t: '0${requests.indexOf(item) + 1}',
+              color: dark1,
+              align: TextAlign.start,
+            ),
             trailingWidget: (item) => Dactionbutton(
-                     text: 'View File',
-                     background: dark1,
-                     fontsize: 0.03,
-                     onPressed: () {},  // you need Define what happens when the button is pressed
-                      ),
-            onTap: (item) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => StudentDetailsPage(
-                    pnuid: item['PNUID'],
+              height: 0.044 ,
+              width: 0.19,
+              text: 'View',
+              background: dark1,
+              fontsize: 0.03,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewRequestDetails(item['requestId']),
                   ),
-                ),
-              );
-            },
-            title: 'name',
-          );
+                );
+              },
+            ),
+            title: 'studentName', // Updated to pass the string key directly
+          ),
+        );
 * EX of used with Icon such as arrow :
-                  OurListView(
+          OurListView(
             data: studentData,
-            trailingWidget: (item) => Icon(Icons.arrow_forward , color: dark1,
-            size: SizeHelper.getSize(context) * 0.09,),
-            onTap: (item) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => StudentDetailsPage(
-                    pnuid: item['PNUID'],
+            trailingWidget: (item) => IconButton(
+              icon: Icon(
+                Icons.arrow_forward,
+                color: dark1,
+                size: SizeHelper.getSize(context) * 0.09,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => StudentDetailsPage(
+                      pnuid: item['PNUID'],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
             title: 'name',
           );
+
+* if  you want numpring the list writ your numpring finction in  leadingWidget EX:
+    leadingWidget: (item) => text(t:'0${remainingFurniture.indexOf(item) + 1}',color: dark1 , align: TextAlign.start,),
+
 */
 
 /// ------------------ Our Loading Indicator -------------------  //26
