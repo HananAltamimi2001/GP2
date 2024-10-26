@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pnustudenthousing/helpers/StudentNavBar.dart';
+import 'package:pnustudenthousing/helpers/staffnavbar.dart';
+import 'package:pnustudenthousing/helpers/RouteUsers.dart';
 // Auth
 import 'package:pnustudenthousing/authentication/ForgetPass.dart';
 import 'package:pnustudenthousing/authentication/Login.dart';
 import 'package:pnustudenthousing/authentication/Register.dart';
-import 'package:pnustudenthousing/helpers/RouteUsers.dart';
 import 'package:pnustudenthousing/authentication/SetPassword.dart';
 import 'package:pnustudenthousing/authentication/SplashScreen.dart';
-import 'package:pnustudenthousing/helpers/staffnavbar.dart';
 // Student
 import 'package:pnustudenthousing/student/HousingServices.dart';
 import 'package:pnustudenthousing/student/StudentHomePage.dart';
-import 'package:pnustudenthousing/helpers/StudentNavBar.dart';
 import 'package:pnustudenthousing/student/StudentProfile.dart';
 import 'package:pnustudenthousing/student/announcements_and_events_page.dart';
 // Staff
@@ -41,42 +41,86 @@ import 'package:pnustudenthousing/staff/supervisor/roomKeyManagement.dart';
 // 2.7 Housing security guard
 
 // naming system will be explained with ohood or hanan
-// numbring system is a
+// numbring system is a comment 
 //1
 //1.1
 //1.1.1
 // and will be explained too with ohood and hanan
-//example
-  //     GoRoute(
-  //       path: '/A', // Manager Page
-  //       builder: (context, state) => const ManagerPage(),
-  //       routes: [
-  //         !!! button 1 of home page !!!
-  //         GoRoute(
-  //           path: 'A1', // Manager Section 1
-  //           builder: (context, state) => const ManagerSection1Page(),
-  //           routes: [
-  //             GoRoute(
-  //               !!! button A1a of A1  !!!
-  //               path: 'A1a', // Manager Section 1a
-  //               builder: (context, state) => const ManagerSection1aPage(),
-  //             ),
-  //             GoRoute(
-  //               !!! button A1b of A1  !!!
-  //               path: 'A1b', // Manager Section 1b
-  //               builder: (context, state) => const ManagerSection1bPage(),
-  //             ),
-  //           ],
-  //         ),
-  //          !!! button 2 of home page !!!
-  //         GoRoute(
-  //           path: 'A2', // Manager Section 2
-  //           builder: (context, state) => const ManagerSection2Page(),
-  //         ),
-  //       ],
-  //     ),
-  //   ],
-  // );
+// EXAMPLE 1
+// Route without passing any data
+//     
+//     GoRoute(
+//       name: '/A'
+//       path: '/A', // Manager Page
+//       builder: (context, state) => const ManagerPage(),
+//       routes: [
+//        !!! button A of home page !!!
+//         GoRoute(
+//           name: '/A1'
+//           path: 'A1', // Manager Section 1
+//           builder: (context, state) => const ManagerSection1Page(),
+//           routes: [
+//             GoRoute(
+//               !!! button A1a of A1  !!!
+//               path: 'A1a', // Manager Section 1a
+//               builder: (context, state) => const ManagerSection1aPage(),
+//             ),
+//             GoRoute(
+//               !!! button A1b of A1  !!!
+//               path: 'A1b', // Manager Section 1b
+//               builder: (context, state) => const ManagerSection1bPage(),
+//             ),
+//           ],
+//         ),
+//          !!! button 2 of home page !!!
+//         GoRoute(
+//           name: '/A2'
+//           path: 'A2', // Manager Section 2
+//           builder: (context, state) => const ManagerSection2Page(),
+//         ),
+//       ],
+//     ),
+//   ],
+// );
+// how to route 
+// context.goNamed("/A1");
+
+// EXAMPLE 2
+// this example for passing arg between classes
+// class A wants some info and class B will give him theses info C is the نقال علوم for them 
+// 1-set extra for class A
+//    GoRoute(
+//    name: '/A',
+//    path: 'A',
+//    builder: (context, state) {
+//    define name for C
+//    final args = state.extra as C;
+//    pass C to A
+//    return A(args: args);
+//    }),
+// 2-change class A that requier class c
+//
+// class A extends StatefulWidget {
+//   final C args;
+//   const A({Key? key, required this.args}) : super(key: key);
+// 3-make class C
+// // arguments for the route
+// class c {
+//   final String firstName;
+//   final String middleName;
+//   c({
+//     required this.firstName,
+//     required this.middleName,
+//   });
+// }
+// 4-when routing from class B to A use this 
+//  context.goNamed(
+// '/setpass',
+//  extra: SetPassArguments(
+//  firstName: firstNameController.text,
+//  middleName:middleNameController.text,                                  
+//  );
+
 
 //////////////////// Routes ////////////////////
 final staffrole = RouteUsers.staffRole;

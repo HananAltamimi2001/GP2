@@ -21,7 +21,6 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xff007580)),
       ),
-      
       debugShowCheckedModeBanner: false, 
       routerConfig: router,
     );
