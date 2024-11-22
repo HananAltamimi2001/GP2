@@ -29,10 +29,11 @@ class RouteUsers {
         // Update the value
 
         // Route based on the role
-        navigateBasedOnRole(context,staffRole);
+        navigateBasedOnRole(context, staffRole);
+      }
     }
-  
-}}}
+  }
+}
 
 class LoginChecker {
   static Future<bool> isLoggedIn() async {
@@ -40,15 +41,18 @@ class LoginChecker {
     return prefs.getBool('isLoggedIn') ?? false;
   }
 
+  static final User? user = FirebaseAuth.instance.currentUser;
   static Future<void> checker(BuildContext context) async {
     bool loggedIn = await LoginChecker.isLoggedIn();
     if (loggedIn) {
       // Check if the user is still authenticated with Firebase
-      User? user = FirebaseAuth.instance.currentUser;
-      //  print("ohoooooooooooooooooooooooooooooooooooooooood"+FirebaseAuth.instance.currentUser!.uid);
-       //  await FirebaseAuth.instance.signOut();
+      //  SharedPreferences prefs = await SharedPreferences.getInstance();
+      //  String specificUid = "F97F18RuNlYDjWA7lzw5nlv5ssq2";
+      // print("ohoooooooooooooooooooooooooooooooooooooooood");
+      // await prefs.setBool('isLoggedIn_$specificUid', false);
+      // await FirebaseAuth.instance.signOut();
       if (user != null) {
-        String uid = FirebaseAuth.instance.currentUser!.uid;
+        final String uid = FirebaseAuth.instance.currentUser!.uid;
         // Call your routeUser method here (assuming it's in another class)
         RouteUsers.routes(context, uid);
       } else {
@@ -60,7 +64,6 @@ class LoginChecker {
     }
   }
 }
-
 
 BuildContext navigateBasedOnRole(BuildContext context, String staffRole) {
   switch (staffRole) {
@@ -89,4 +92,39 @@ BuildContext navigateBasedOnRole(BuildContext context, String staffRole) {
       context.goNamed('/login');
   }
   return context;
+}
+
+
+Future<bool> isResident() async {
+  try {
+    // Get the current user ID
+    String userId = FirebaseAuth.instance.currentUser?.uid ?? "";
+
+    // If no user is logged in, return false
+    if (userId.isEmpty) {
+      return false;
+    }
+
+    // Fetch the user's document from Firestore
+    final userDoc = await FirebaseFirestore.instance
+        .collection('student')
+        .doc(userId)
+        .get();
+
+    // Check if the document exists
+    if (!userDoc.exists) {
+      return false;
+    }
+
+    // Extract user data
+    final userData = userDoc.data();
+    final isResident = userData?['status'] == 'resident';
+
+    // Return true if both conditions are met
+    return isResident;
+  } catch (e) {
+    // Handle any errors (e.g., network issues)
+    print("Error checking user role and status: $e");
+    return false;
+  }
 }

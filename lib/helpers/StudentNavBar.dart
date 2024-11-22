@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:pnustudenthousing/helpers/RouteUsers.dart';
 
 class StudentNavBar extends StatefulWidget {
   final Widget child;
@@ -18,7 +19,7 @@ class _StudentNavBarState extends State<StudentNavBar> {
   // Holds navigation state
   @override
   Widget build(BuildContext context) {
-    void _onTap(int index) {
+    Future<void> _onTap(int index) async {
       // Check if the selected index is the current one to avoid unnecessary reloads
       setState(() {
         _currentIndex = index;
@@ -31,8 +32,17 @@ class _StudentNavBarState extends State<StudentNavBar> {
           break; // Add break to prevent fallthrough
         case 1:
           // Switch to the selected tab
-
-          GoRouter.of(context).go('/student_announcements_and_events');
+          bool resident = await isResident();
+          if (resident) {
+            GoRouter.of(context).go('/student_announcements_and_events');
+          } else {
+            ErrorDialog(
+                "Sorry, you don't have access to this page, since you ar not resident student",
+                context,
+                buttons: [
+                  {'Ok': () => context.pop()}
+                ]);
+          }
           break; // Add break to prevent fallthrough
         case 2:
           // Switch to the selected tab

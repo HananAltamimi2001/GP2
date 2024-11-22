@@ -1,1 +1,44 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"pnustudenthousing-5f74c","appId":"1:840373323269:android:ea7d5f8b06a6ad6d40fe6c","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"pnustudenthousing-5f74c","configurations":{"android":"1:840373323269:android:ea7d5f8b06a6ad6d40fe6c","ios":"1:840373323269:ios:88deb94d6eb6721140fe6c","web":"1:840373323269:web:c1c491167afbe2b340fe6c"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "pnustudenthousing-5f74c",
+          "appId": "1:840373323269:android:ea7d5f8b06a6ad6d40fe6c",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "pnustudenthousing-5f74c",
+          "configurations": {
+            "android": "1:840373323269:android:ea7d5f8b06a6ad6d40fe6c",
+            "ios": "1:840373323269:ios:88deb94d6eb6721140fe6c",
+            "web": "1:840373323269:web:c1c491167afbe2b340fe6c"
+          }
+        }
+      }
+    }
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "functions": {
+      "port": 5001
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "database": {
+      "port": 9000
+    },
+    "storage": {
+      "port": 9199
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
+  }
+}

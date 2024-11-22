@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:pnustudenthousing/authentication/SetPassword.dart';
 import 'package:flutter/material.dart';
+import 'package:pnustudenthousing/student/3-StudentHome/3-Apply/2-Information.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -11,12 +12,9 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final formKey = GlobalKey<FormState>();
-  final firstNameController = TextEditingController();
-  final middleNameController = TextEditingController();
-  final lastNameController = TextEditingController();
+  final fullNameController = TextEditingController();
+  final efullNameController = TextEditingController();
   final emailController = TextEditingController();
-  final phoneNumberController = TextEditingController();
-  final NIDController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,143 +35,97 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 children: [
                   // Register screen signup form
-                    Padding(
+                  Padding(
                     padding: EdgeInsets.all(2.0),
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(
                         30.0,
                         0.0,
                         30.0,
-                        8.0 ,
+                        8.0,
                       ),
-                      child: Column(children: [
-                        Form(
-                          key: formKey,
-                          child: Column(
-                            children: [
-                              // Logo
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.25,
-                                child: Image.asset(
-                                  'assets/logo green.png',
+                      child: Column(
+                        children: [
+                          Form(
+                            key: formKey,
+                            child: Column(
+                              children: [
+                                // Logo
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.25,
+                                  child: Image.asset(
+                                    'assets/logo green.png',
+                                  ),
                                 ),
-                              ),
 
-                              // Form title
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  top: 0.02 *
-                                      MediaQuery.of(context).size.height ,
-                                  bottom: 0.01 *
-                                      MediaQuery.of(context).size.height ,
-                             
+                                // Form title
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    top: 0.02 *
+                                        MediaQuery.of(context).size.height,
+                                    bottom: 0.01 *
+                                        MediaQuery.of(context).size.height,
+                                  ),
+                                  child: Titletext(
+                                    t: "Register",
+                                    align: TextAlign.center,
+                                    color: Color(0xff007580),
+                                  ),
                                 ),
-                                child: Titletext(
-                                  t: "Register",
-                                  align: TextAlign.center,
-                                  color: Color(0xff007580),
-                                ),
-                              ),
                                 // Firat Name
-                                textform(
-                                  controller: firstNameController,
-                                  validator: (val) => val == ""
-                                      ? "Please write your first name"
-                                      : val!.contains(RegExp(
-                                              r'[0-9]')) // Check for numbers
-                                          ? "First name cannot contain numbers"
-                                          : val!.contains(RegExp(
-                                                  r'[^\w\s]')) // Check for special characters
-                                              ? "First name cannot contain special characters"
-                                              : null,
-                                  hinttext: "First Name",
-                                  lines: 1,
-                                ),
-
-                                Heightsizedbox(
-                                  h: 0.018,
-                                ),
-
-                                // Middle Name
-                                textform(
-                                  controller: middleNameController,
-                                  hinttext: "Middle Name",
-                                  lines: 1,
-                                  validator: (val) => val == ""
-                                      ? "Please write your middle name"
-                                      : val!.contains(RegExp(
-                                              r'[0-9]')) // Check for numbers
-                                          ? "Middle name cannot contain numbers"
-                                          : val!.contains(RegExp(
-                                                  r'[^\w\s]')) // Check for special characters
-                                              ? "Middle name cannot contain special characters"
-                                              : null,
-                                ),
-
                                 Heightsizedbox(
                                   h: 0.018,
                                 ),
                                 // Last Name
-
                                 textform(
-                                  controller: lastNameController,
-                                  hinttext: "Last Name",
-                                  lines: 1,
-                                  validator: (val) => val == ""
-                                      ? "Please write your last name"
-                                      : val!.contains(RegExp(
-                                              r'[0-9]')) // Check for numbers
-                                          ? "Last name cannot contain numbers"
-                                          : val!.contains(RegExp(
-                                                  r'[^\w\s]')) // Check for special characters
-                                              ? "Last name cannot contain special characters"
-                                              : null,
-                                ),
-
-                                Heightsizedbox(
-                                  h: 0.018,
-                                ),
-
-                                // National ID or Iqama
-                                textform(
-                                  controller: NIDController,
-                                  hinttext: "National ID or Iqama",
+                                  controller: fullNameController,
+                                  hinttext: "Full Name in Arabic",
                                   lines: 1,
                                   validator: (val) {
-                                    if (val == null || val.isEmpty) {
-                                      return "Please write your ID";
-                                    } else if (val.length != 10) {
-                                      return "NID must be 10 digits long";
-                                    } else if (!RegExp(r'^\d{10}$')
-                                        .hasMatch(val)) {
-                                      return "NID must contain only numbers";
+                                    String? validationResult = valArabic(val);
+
+                                    switch (validationResult) {
+                                      case "1":
+                                        return "Please write your full name";
+                                      case "2":
+                                        return "Full name cannot contain numbers";
+                                      case "3":
+                                        return "Full name cannot contain special characters";
+                                      case "4":
+                                        return "Full name must be in Arabic";
+                                      default:
+                                        return null; // No error
                                     }
-                                    return null;
                                   },
                                 ),
 
                                 Heightsizedbox(
                                   h: 0.018,
                                 ),
-
-                                // Phone Number
+                                // First Name
                                 textform(
-                                  controller: phoneNumberController,
-                                  hinttext: "Phone Number",
+                                  controller: efullNameController,
+                                  hinttext: "Full Name in English",
                                   lines: 1,
-                                  validator: (val) => val == ""
-                                      ? "Please write your phone number"
-                                      : val!.length != 10
-                                          ? "Phone number must be 10 digits"
-                                          : !val!.startsWith('05')
-                                              ? "Phone number must start with 05"
-                                              : val!.contains(RegExp(r'[^\d]'))
-                                                  ? "Phone number can only contain numbers"
-                                                  : null,
-                                ),
+                                  validator: (val) {
+                                    String? validationResult = valEnglish(val);
 
+                                    switch (validationResult) {
+                                      case "1":
+                                        return "Please write your full name";
+                                      case "2":
+                                        return "Full name cannot contain numbers";
+                                      case "3":
+                                        return "Full name cannot contain special characters";
+                                      case "4":
+                                        return "Full name must be in English";
+                                      default:
+                                        return null; // No error
+                                    }
+                                  },
+                                ),
                                 Heightsizedbox(
                                   h: 0.018,
                                 ),
@@ -208,17 +160,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   background: dark1,
                                   onPressed: () {
                                     if (formKey.currentState!.validate()) {
-                                      context.goNamed(
+                                      context.pushNamed(
                                         '/setpass',
                                         extra: SetPassArguments(
-                                          firstName: firstNameController.text,
-                                          middleName:
-                                              middleNameController.text,
-                                          lastName: lastNameController.text,
+                                          fullName: fullNameController.text,
+                                          efullName: efullNameController.text,
                                           email: emailController.text,
-                                          phone: 
-                                              phoneNumberController.text,
-                                          NID: int.parse(NIDController.text),
                                         ),
                                       );
                                     }
@@ -238,4 +185,5 @@ class _RegisterScreenState extends State<RegisterScreen> {
         },
       ),
     );
-  }}
+  }
+}

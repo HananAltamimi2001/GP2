@@ -14,10 +14,12 @@ class FirbaseAuthService {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       checkSignInStatus();
-      await _auth.signOut();
+     // await _auth.signOut();
       checkSignInStatus();
       return credential.user;
     } on FirebaseAuthException catch (e) {
+                  print("here$e");
+
       return null;
       /*
       Fluttertoast.showToast(
@@ -47,6 +49,7 @@ class FirbaseAuthService {
   Future<User?> signinWithEmailAndPassword(
       BuildContext context, String email, String password) async {
     try {
+      print("here");
       UserCredential credential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
@@ -54,6 +57,8 @@ class FirbaseAuthService {
         return credential.user;
       }
     } on FirebaseAuthException catch (e) {
+            print("here$e");
+
       return null;
       /* print('Error: $e');
       Fluttertoast.showToast(

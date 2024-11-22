@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pnustudenthousing/helpers/AppRoutes.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pnustudenthousing/helpers/RouteUsers.dart';
@@ -24,7 +23,7 @@ class _StaffNavBarState extends State<StaffNavBar> {
     // Initialize _currentIndex based on staffRole
     if (widget.staffRole == 'Resident student supervisor' ||
         widget.staffRole == 'Housing security guard') {
-      _currentIndex = 2; 
+      _currentIndex = 2;
     } else {
       _currentIndex = 1;
     }
@@ -36,14 +35,28 @@ class _StaffNavBarState extends State<StaffNavBar> {
     });
 
     // Navigate based on role and selected tab
-    if (widget.staffRole == 'Resident student supervisor' ||
-        widget.staffRole == 'Housing security guard') {
+    if (widget.staffRole == 'Resident student supervisor') {
       switch (index) {
         case 0:
           GoRouter.of(context).goNamed('/profile');
           break;
         case 1:
-          GoRouter.of(context).goNamed('/notifications');
+          GoRouter.of(context).goNamed('/notifications1');
+          break;
+        case 2:
+          navigateBasedOnRole(context, widget.staffRole);
+          break;
+        default:
+          navigateBasedOnRole(context, widget.staffRole);
+          break;
+      }
+    } else if (widget.staffRole == 'Housing security guard') {
+      switch (index) {
+        case 0:
+          GoRouter.of(context).goNamed('/profile');
+          break;
+        case 1:
+          GoRouter.of(context).goNamed('/notifications2');
           break;
         case 2:
           navigateBasedOnRole(context, widget.staffRole);
@@ -83,8 +96,8 @@ class _StaffNavBarState extends State<StaffNavBar> {
       items.add(
         BottomNavigationBarItem(
           icon: _currentIndex == 1
-              ? Icon(MdiIcons.bullhorn, size: 30)
-              : Icon(MdiIcons.bullhornOutline, size: 30),
+              ? Icon(Icons.notifications_active, size: 30)
+              : Icon(Icons.notifications_active_outlined, size: 30),
           label: "",
         ),
       );

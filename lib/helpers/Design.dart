@@ -13,33 +13,35 @@ class Design extends StatelessWidget {
   }
 }
 
-/// 1- color palette
-/// 2- Size Helper
-/// 3- OurAppBar
-/// 4- Heightsizedbox --> dynamic
-/// 5- Widthsizedbox --> dynamic
-/// 6- title text --> dynamic
-/// 7- text --> dynamic
-/// 8- Dtext --> dynamic
-/// 9- home button1 --> dynamic
-/// 10- home button2 --> dynamic
-/// 11- Internal Pages Button --> dynamic
-/// 12- action button --> dynamic
-/// 13- Dynamic action button --> dynamic
-/// 14- Information Dialog --> dynamic
-/// 15- Error Dialog --> dynamic
-/// 16- Text Form Field --> dynamic
-/// 17- Password Field --> dynamic
-/// 18- Our Form Field--> dynamic
-/// 19- pickTime Function
-/// 20- pickDate Function
-/// 21- pickImage Function
-/// 22- TextCapitalizer
-/// 23- RowInfo
-/// 24- DropdownList
-/// 25- Our List View Widget
-/// 26- Our Loading Indicator
-
+/// 1 - color palette
+/// 2 - Size Helper
+/// 3 - OurAppBar
+/// 4 - Heightsizedbox --> dynamic
+/// 5 - Widthsizedbox --> dynamic
+/// 6 - title text --> dynamic
+/// 7 - text --> dynamic
+/// 8 - Dtext --> dynamic
+/// 9 - home button1 --> dynamic
+/// 10 - home button2 --> dynamic
+/// 11 - Internal Pages Button --> dynamic
+/// 12 - action button --> dynamic
+/// 13 - Dynamic action button --> dynamic
+/// 14 - Information Dialog --> dynamic
+/// 15 - Error Dialog --> dynamic
+/// 16 - Text Form Field --> dynamic
+/// 17 - Password Field --> dynamic
+/// 18 - Our Form Field--> dynamic
+/// 19 - pickTime Function
+/// 20 - pickDate Function
+/// 21 - pickImage Function
+/// 22 - TextCapitalizer
+/// 23 - RowInfo
+/// 24 - DropdownList
+/// 25 - Our List View Widget
+/// 26 - Our Loading Indicator
+/// 27 - Our Container
+/// 28 - Our Checkbox Pledge
+/// 29 - Our Status
 
 /// ------------------ color palette -------------------  //1
 Color dark1 = Color(0xff007580); // for Titles
@@ -48,15 +50,19 @@ Color grey1 = Color(0xff98989A); // for descriptions
 Color grey2 = grey1.withOpacity(0.1);
 Color green1 = Color(0xff4ca585); // for success operation
 Color blue1 = Color(0xff00a6ce); // for information
-Color red1 = Color(0xffC83434); // for error massages , text form field not fill , reject or delete or cancel buttons
+Color red1 = Color(
+    0xffC83434); // for error massages , text form field not fill , reject or delete or cancel buttons
 Color red2 = Color(0xffAf0303);
+Color pink1 =Color.fromARGB(255, 200, 52, 178);
 Color yellow1 = Color(0xffF6cf7f); // for waiting
+Color yellow2 = Color.fromARGB(255, 253, 195, 78); // for waiting
+
 
 /* example for used it :
 * first don`t forget the import: import 'package:pnustudenthousing/Design.dart';
 * then just you need call color name in any color property for any component in your page
 * Ex: color: red1
-* i already used in this file you can see full examples in the following Widgets, functions and classes*/
+* i already used in this file you can see full examples in the following Widgets, functions and classes */
 
 /// ------------------ Size Helper class -------------------  //2
 /*A helper class to adjust dynamic sized by calculate and return the smaller of the screen's width or height
@@ -225,7 +231,7 @@ class Titletext extends StatelessWidget {
       textAlign: align,
       style: TextStyle(
           fontSize: SizeHelper.getSize(context) *
-              0.067, // Dynamic font size based on SizeHelper class
+              0.057, // Dynamic font size based on SizeHelper class
           fontWeight: FontWeight.w500,
           color: color),
     );
@@ -563,12 +569,14 @@ class actionbutton extends StatelessWidget {
     required this.text,
     required this.background,
     this.fontsize,
+    this.padding,
   });
 
   final VoidCallback? onPressed; // Action triggered when the button is pressed
   final String text; // Button text to display
   final Color background; // Background color of the button
   final double? fontsize; // Font size of the button text
+  final double? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -576,6 +584,12 @@ class actionbutton extends StatelessWidget {
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(
             background), // Custom button background color
+        padding: padding != null
+            ? MaterialStateProperty.all(EdgeInsets.symmetric(
+                vertical: padding!,
+                horizontal: padding!,
+              ))
+            : null,
       ),
       onPressed:
           onPressed, // Assign the passed action to the button's onPressed event
@@ -614,6 +628,7 @@ class Dactionbutton extends StatelessWidget {
     this.fontsize,
     this.height,
     this.width,
+    this.padding,
   });
 
   final VoidCallback? onPressed; // Action triggered when the button is pressed
@@ -622,11 +637,13 @@ class Dactionbutton extends StatelessWidget {
   final double? fontsize; // Font size of the button text
   final double? height; // Height ratio of the button relative to screen height
   final double? width; // Width ratio of the button relative to screen width
+  final double? padding;
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width; // Get screen width
-    double screenHeight = MediaQuery.of(context).size.height; // Get screen height
+    double screenHeight =
+        MediaQuery.of(context).size.height; // Get screen height
 
     return SizedBox(
       height: screenHeight * (height ?? 0.033), // Set button height
@@ -636,6 +653,7 @@ class Dactionbutton extends StatelessWidget {
         background: background, // Set button background color
         onPressed: onPressed, // Define button action
         fontsize: fontsize, // Optional font size
+        padding: padding,
       ),
     );
   }
@@ -649,6 +667,7 @@ class Dactionbutton extends StatelessWidget {
                      text: 'View File',
                      background: dark1,
                      fontsize: 0.03,
+                      padding: 0.0,
                      onPressed: () {},  // you need Define what happens when the button is pressed
                       ),
 
@@ -663,40 +682,40 @@ Future<dynamic> InfoDialog(String message, BuildContext context,
   showDialog(
       context: context,
       builder: (context) => SimpleDialog(
-        backgroundColor: light1, // Sets the background color of the dialog
-        contentPadding: const EdgeInsets.fromLTRB(
-            20, 30, 20, 30), // Padding around the dialog content
-        children: [
-          Center(
-            child: Dtext(
-              t: message,
-              color: Colors.white,
-              align: TextAlign.center,
-              size: 0.03,
-            ), // Dialog message text
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: buttons.map((button) {
-                return ElevatedButton(
-                  onPressed: button.values.first,
-                  child: Dtext(
-                    t: button.keys.first,
-                    color: Colors.white,
-                    align: TextAlign.center,
-                    size: 0.03,
-                  ),
-                  style: TextButton.styleFrom(
-                    backgroundColor: dark1,
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-      ));
+            backgroundColor: light1, // Sets the background color of the dialog
+            contentPadding: const EdgeInsets.fromLTRB(
+                20, 30, 20, 30), // Padding around the dialog content
+            children: [
+              Center(
+                child: Dtext(
+                  t: message,
+                  color: Colors.white,
+                  align: TextAlign.center,
+                  size: 0.03,
+                ), // Dialog message text
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: buttons.map((button) {
+                    return ElevatedButton(
+                      onPressed: button.values.first,
+                      child: Dtext(
+                        t: button.keys.first,
+                        color: Colors.white,
+                        align: TextAlign.center,
+                        size: 0.03,
+                      ),
+                      style: TextButton.styleFrom(
+                        backgroundColor: dark1,
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ));
 }
 
 /* example for used it :
@@ -713,7 +732,7 @@ Future<dynamic> InfoDialog(String message, BuildContext context,
                       {
                         "Cancel": () async => context.pop(),
                       }
-                    // ],
+                      ],
                   );
 */
 
@@ -725,40 +744,40 @@ Future<dynamic> ErrorDialog(String message, BuildContext context,
   showDialog(
       context: context,
       builder: (context) => SimpleDialog(
-        backgroundColor: red1, // Sets the background color of the dialog
-        contentPadding: const EdgeInsets.fromLTRB(
-            20, 30, 20, 30), // Padding around the dialog content
-        children: [
-          Center(
-            child: Dtext(
-              t: message,
-              color: Colors.white,
-              align: TextAlign.center,
-              size: 0.03,
-            ), // Dialog message text
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: buttons.map((button) {
-                return ElevatedButton(
-                  onPressed: button.values.first,
-                  child: Dtext(
-                    t: button.keys.first,
-                    color: Colors.white,
-                    align: TextAlign.center,
-                    size: 0.03,
-                  ),
-                  style: TextButton.styleFrom(
-                    backgroundColor: red2,
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ],
-      ));
+            backgroundColor: red1, // Sets the background color of the dialog
+            contentPadding: const EdgeInsets.fromLTRB(
+                20, 30, 20, 30), // Padding around the dialog content
+            children: [
+              Center(
+                child: Dtext(
+                  t: message,
+                  color: Colors.white,
+                  align: TextAlign.center,
+                  size: 0.03,
+                ), // Dialog message text
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: buttons.map((button) {
+                    return ElevatedButton(
+                      onPressed: button.values.first,
+                      child: Dtext(
+                        t: button.keys.first,
+                        color: Colors.white,
+                        align: TextAlign.center,
+                        size: 0.03,
+                      ),
+                      style: TextButton.styleFrom(
+                        backgroundColor: red2,
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ));
 }
 
 /* example for used it :
@@ -946,14 +965,16 @@ class PasswordField extends StatelessWidget {
   and time selection functionalities.
  * Returns a FormField widget with validation based on the field type. */
 Widget OurFormField({
-  File? imageFile, // For image upload
-  DateTime? selectedDate, // For date picker
-  TimeOfDay? selectedTime, // For time picker
-  Future<void> Function()? onPickImage, // Callback for image picker
-  Future<DateTime?> Function()? onSelectDate, // Callback for date picker
-  Future<TimeOfDay?> Function()? onSelectTime, // Callback for time picker
-  required String labelText, // Label for the form field
-  String fieldType = 'text', // 'image', 'date', 'time'
+  File? imageFile,
+  DateTime? selectedDate,
+  DateTime? selectedDate1, // For the new date picker
+  TimeOfDay? selectedTime,
+  Future<void> Function()? onPickImage,
+  Future<DateTime?> Function()? onSelectDate,
+  Future<DateTime?> Function()? onSelectDate1, // Callback for the new date picker
+  Future<TimeOfDay?> Function()? onSelectTime,
+  required String labelText,
+  String fieldType = 'text',
 }) {
   return FormField<dynamic>(
     validator: (val) {
@@ -966,11 +987,20 @@ Widget OurFormField({
         case 'date':
           if (selectedDate == null) {
             return "Please select a date";
+          } else if (selectedDate!.isBefore(DateTime.now())) {
+            return "Please select a future date";
+          }
+          break;
+        case 'date1':
+          if (selectedDate1 == null) {
+            return "Please select a valid date";
           }
           break;
         case 'time':
           if (selectedTime == null) {
             return "Please select a time";
+          } else if (selectedTime.hour >= 0 && selectedTime.hour < 6) {
+            return "Time cannot be between 12 AM and 6 AM";
           }
           break;
       }
@@ -986,7 +1016,7 @@ Widget OurFormField({
                 t: labelText,
                 color: dark1,
                 align: TextAlign.start,
-                size: 0.04,
+                size: 0.045,
               ),
               Widthsizedbox(w: 0.02),
               if (fieldType == 'image') ...[
@@ -994,41 +1024,57 @@ Widget OurFormField({
                     ? actionbutton(
                         onPressed: () async {
                           if (onPickImage != null) {
-                            await onPickImage(); // Trigger image picker
-                            state
-                                .didChange(imageFile); // Update FormField state
+                            await onPickImage();
+                            state.didChange(imageFile);
                           }
                         },
+                        padding: 5,
                         background: dark1,
                         text: 'Upload',
-                        fontsize: 0.04)
+                        fontsize: 0.035)
                     : Image.file(imageFile!, height: 100),
               ] else if (fieldType == 'date') ...[
                 actionbutton(
                     onPressed: () async {
                       if (onSelectDate != null) {
-                        await onSelectDate(); // Trigger date picker
-                        state.didChange(selectedDate); // Update FormField state
+                        await onSelectDate();
+                        state.didChange(selectedDate);
                       }
                     },
+                    padding: 5,
                     background: dark1,
                     text: selectedDate == null
                         ? 'Date'
                         : '${selectedDate!.day}/${selectedDate.month}/${selectedDate.year}',
-                    fontsize: 0.04)
+                    fontsize: 0.035)
+              ] else if (fieldType == 'date1') ...[
+                actionbutton(
+                    onPressed: () async {
+                      if (onSelectDate1 != null) {
+                        await onSelectDate1();
+                        state.didChange(selectedDate1);
+                      }
+                    },
+                    padding: 5,
+                    background: dark1,
+                    text: selectedDate1 == null
+                        ? 'Date'
+                        : '${selectedDate1!.day}/${selectedDate1.month}/${selectedDate1.year}',
+                    fontsize: 0.035)
               ] else if (fieldType == 'time') ...[
                 actionbutton(
                     onPressed: () async {
                       if (onSelectTime != null) {
-                        await onSelectTime(); // Trigger time picker
-                        state.didChange(selectedTime); // Update FormField state
+                        await onSelectTime();
+                        state.didChange(selectedTime);
                       }
                     },
+                    padding: 5,
                     background: dark1,
                     text: selectedTime == null
                         ? 'Time'
                         : selectedTime!.format(state.context),
-                    fontsize: 0.04)
+                    fontsize: 0.035)
               ]
             ],
           ),
@@ -1097,7 +1143,6 @@ Widget OurFormField({
               ),
 
 */
-
 /// ------------------ pickTime Function -------------------  //19
 Future<TimeOfDay?> pickTime(BuildContext context) async {
   final TimeOfDay? picked = await showTimePicker(
@@ -1106,11 +1151,50 @@ Future<TimeOfDay?> pickTime(BuildContext context) async {
     builder: (BuildContext context, Widget? child) {
       return Theme(
         data: ThemeData(
-          primaryColor: dark1, // Custom primary color
+          // primary color
+          primaryColor: Color(0xff007580),
+
+          // custom theme
           timePickerTheme: TimePickerThemeData(
-            dialHandColor: dark1, // Custom dial hand color
-            entryModeIconColor: dark1, // Custom entry mode icon color
+            // background
+            backgroundColor: Colors.white,
+            // dial handler
+            dialHandColor: Color(0xff339199),
+            // icon color
+            entryModeIconColor: Color(0xff339199),
+            // dial background
+            dialBackgroundColor: grey2,
+            // seprator color
+            timeSelectorSeparatorColor: MaterialStateColor.resolveWith(
+              (states) => states.contains(MaterialState.selected)
+                  ? Color(0xff007580)
+                  : Color.fromARGB(141, 0, 117, 128),
+            ),
+            // H M text color
+            hourMinuteTextColor: MaterialStateColor.resolveWith((states) =>
+                states.contains(MaterialState.selected)
+                    ? Color(0xff339199)
+                    : Color.fromARGB(195, 0, 117, 128)),
+            // H M background color
+            hourMinuteColor: MaterialStateColor.resolveWith(
+              (states) => states.contains(MaterialState.selected)
+                  ? Color.fromARGB(100, 51, 144, 153)
+                  : Color.fromARGB(15, 51, 144, 153),
+            ),
+
+            dayPeriodTextColor: MaterialStateColor.resolveWith((states) =>
+                states.contains(MaterialState.selected)
+                    ? Color(0xff339199)
+                    : Color.fromARGB(195, 0, 117, 128)),
+            // day Period Color
+            dayPeriodColor: MaterialStateColor.resolveWith(
+              (states) => states.contains(MaterialState.selected)
+                  ? Color.fromARGB(100, 51, 144, 153)
+                  : Color.fromARGB(15, 51, 144, 153),
+            ),
+            helpTextStyle: TextStyle(color: dark1, fontWeight: FontWeight.w500),
           ),
+
           textButtonTheme: TextButtonThemeData(
             style: TextButton.styleFrom(
               foregroundColor: dark1, // Button text color
@@ -1124,15 +1208,41 @@ Future<TimeOfDay?> pickTime(BuildContext context) async {
   return picked; // Return the picked time
 }
 
-/* use same the OorFormField for pickTime example*/
+/* use same the OorFormField for pickTime example */
 
 /// ------------------ pickDate Function -------------------  //20
 Future<DateTime?> pickDate(BuildContext context) async {
+  final DateTime now = DateTime.now();
+  final DateTime lastSelectableDate = DateTime(now.year + 20, now.month, now.day);
   final DateTime? picked = await showDatePicker(
     context: context,
-    initialDate: DateTime.now(), // The default date is today's date.
-    firstDate: DateTime(2021), // The earliest selectable date.
-    lastDate: DateTime(2101), // The latest selectable date.
+    initialDate:now, // The default date is today's date.
+    firstDate:now, // The earliest selectable date.
+    lastDate:lastSelectableDate, // The latest selectable date.
+    builder: (BuildContext context, Widget? child) {
+      return Theme(
+        data: ThemeData.light().copyWith(
+          primaryColor: dark1, // Custom primary color for the date picker.
+          colorScheme: ColorScheme.light(primary: dark1),
+        ),
+        child: child!, // Embedding the date picker in the custom theme.
+      );
+    },
+  );
+
+  return picked; // Return the picked date
+}
+// pick date 1
+Future<DateTime?> pickDate1(BuildContext context) async {
+  final DateTime now = DateTime.now();
+  final DateTime firstSelectableDate = DateTime(now.year - 25, now.month, now.day);
+  final DateTime lastSelectableDate = DateTime(now.year - 15, now.month, now.day);
+
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: lastSelectableDate, // Default to the latest possible date (15 years before now).
+    firstDate: firstSelectableDate, // Earliest date (25 years before now).
+    lastDate: lastSelectableDate, // Latest date (15 years before now).
     builder: (BuildContext context, Widget? child) {
       return Theme(
         data: ThemeData.light().copyWith(
@@ -1296,7 +1406,7 @@ RowInfo.buildInfoRow(
 class DropdownList extends StatefulWidget {
   final List<String> items; // The list of dropdown items.
   final ValueChanged<String>
-  onItemSelected; // Callback when an item is selected.
+      onItemSelected; // Callback when an item is selected.
   final String hint; // Placeholder hint text.
 
   // Constructor to initialize the dropdown list.
@@ -1321,6 +1431,7 @@ class _DropdownListState extends State<DropdownList> {
       child: DropdownButtonFormField<String>(
         hint: Text(widget.hint), // Display hint.
         value: selectedItem, // Currently selected item.
+        
         onChanged: (String? newValue) {
           setState(() {
             selectedItem = newValue; // Update selected item.
@@ -1330,7 +1441,7 @@ class _DropdownListState extends State<DropdownList> {
         },
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please select an item'; // Validation message
+            return 'Please select'; // Validation message
           }
           return null;
         }, // Validation function.
@@ -1346,7 +1457,7 @@ class _DropdownListState extends State<DropdownList> {
               borderRadius: BorderRadius.circular(20)),
           focusedBorder: OutlineInputBorder(
               borderSide:
-              BorderSide(color: green1), // Border color when focused.
+                  BorderSide(color: green1), // Border color when focused.
               borderRadius: BorderRadius.circular(20)),
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: light1), // Normal border color.
@@ -1362,7 +1473,10 @@ class _DropdownListState extends State<DropdownList> {
         items: widget.items.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Text(value),
+            child: Text(
+          value,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2, ),
           );
         }).toList(),
         menuMaxHeight: 200.0, // Maximum height for the dropdown menu.
@@ -1405,7 +1519,7 @@ Widget OurListView({
   Widget Function(dynamic item)? leadingWidget,
   Widget Function(dynamic item)? trailingWidget,
   Function(dynamic item)? onTap, // Made onTap optional
-  required String title,
+  required dynamic title, // Can be a string or a function
 }) {
   return ListView.builder(
     itemCount: data.length, // Number of items in the list
@@ -1422,13 +1536,13 @@ Widget OurListView({
         child: ListTile(
           // Leading widget: Optional, can be customized for each item
           leading: leadingWidget != null ? leadingWidget(item) : null,
-          // Title: Display the item title and make it tappable if onTap is provided
+          // Title: Check if title is a function or string
           title: GestureDetector(
             onTap: onTap != null
                 ? () => onTap(item)
                 : null, // Trigger onTap if provided
             child: text(
-              t: item[title] ?? '',
+              t: title is String ? title : title(item), // Handle both cases
               align: TextAlign.start,
               color: dark1,
             ),
@@ -1440,6 +1554,7 @@ Widget OurListView({
     },
   );
 }
+
 
 /* Example usage of OurListView:
 * first don`t forget the imports: import 'package:pnustudenthousing/Design.dart';
@@ -1535,3 +1650,249 @@ class OurLoadingIndicator extends StatelessWidget {
 * EX:
 *       OurLoadingIndicator()
 */
+
+/// ------------------ Our Container -------------------  //27
+// A custom container widget that applies a consistent decoration style.
+class OurContainer extends StatelessWidget {
+  final Widget child;
+  final double borderWidth;
+  final Color backgroundColor;
+  final Color borderColor;
+  final double? wdth;
+  final double? hight;
+  final double pddng;
+  final double? borderRadius;
+  // Constructor with default values
+  const OurContainer({
+    Key? key,
+    required this.child,
+    this.pddng = 15,
+    this.wdth,
+    this.hight,
+    this.borderRadius = 30,
+    this.borderWidth = 1.0, // Default border width
+    this.backgroundColor = Colors.white, // Default background color
+    this.borderColor = const Color(0xFF007580), // Default border color
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: wdth != null ? SizeHelper.getSize(context) * wdth! : null,
+      height: hight != null ? SizeHelper.getSize(context) * hight! : null,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        border: Border.all(color: borderColor, width: borderWidth),
+        borderRadius:
+            BorderRadius.circular(borderRadius ?? 30), // Rounded corners
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(pddng), // Inner padding around the child widget
+        child: child,
+      ),
+    );
+  }
+}
+
+/* Example usage of OurListView:
+* first don`t forget the imports: import 'package:pnustudenthousing/Design.dart';
+* just you need call OurContainer and giv your child
+* EX:
+*       OurContainer(
+          wdth: 300,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: []),),
+*/
+
+/// ------------------ Our Checkbox Pledge -------------------  //28
+// A custom checkbox widget that displays a pledge with a checkbox.
+class OurCheckboxPledge extends StatefulWidget {
+  // Holds the current checked state of the checkbox.
+  final bool value;
+
+  // The text of the pledge that will be displayed next to the checkbox.
+  final String Pledge;
+
+  // Callback function triggered when the checkbox state changes.
+  final ValueChanged<bool> onChanged;
+
+  // Constructor with required parameters and default values.
+  const OurCheckboxPledge({
+    Key? key,
+    required this.value,
+    required this.Pledge,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  State<OurCheckboxPledge> createState() => _OurCheckboxPledgeState();
+}
+
+class _OurCheckboxPledgeState extends State<OurCheckboxPledge> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        // Checkbox widget with custom active color and dynamic state management.
+        Checkbox(
+          activeColor: dark1,
+          value: widget.value,
+          onChanged: (bool? newValue) {
+            // Update the state of the checkbox and trigger the callback.
+            setState(() {
+              widget.onChanged(newValue ?? false);
+            });
+          },
+        ),
+
+        // Expanded widget to display the pledge text beside the checkbox.
+        Expanded(
+          child: Dtext(
+            t: widget.Pledge,
+            color: dark1,
+            align: TextAlign.start,
+            size: 0.035,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/* Example usage of OurListView:
+* first don`t forget the imports: import 'package:pnustudenthousing/Design.dart';
+* just you need call OurCheckboxPledge and giv your value , pledge  and onChanged
+* EX:
+*      OurCheckboxPledge(
+                value: _isChecked,
+                Pledge: 'I pledge to preserve the furniture and bear the responsibility for any damage.',
+                onChanged: (bool value) {
+                  setState(() {
+                    _isChecked = value;
+                  });
+                },
+              ),
+*/
+
+/// ------------------ Our Status -------------------  //29
+// A custom widget that displays a status container for tracking the progress of a request.
+Widget OurStatusContainer({
+  required String requestStatus, // Current status of the request
+  required String title, // Title for the status container
+  required List<String> labels, // List of status labels for each step
+}) {
+  // Function to generate information for each status step.
+  // It returns a list of maps with step number, label, and active status for each step.
+  List<Map<String, dynamic>> getStatusInfo() {
+    // Generate a list of steps with indices for each label
+    final steps = List.generate(
+        labels.length,
+        (stepIndex) => {
+              'step': '${stepIndex + 1}', // Step number as a string
+              'label': labels[stepIndex], // Label corresponding to each step
+            });
+
+    // Determine the current active step based on the position of requestStatus in labels
+    int activeStep = labels.indexOf(requestStatus) + 1;
+    if (activeStep == 0)
+      activeStep = 1; // Default to step 1 if status is not found
+
+    // Return list of steps with active status set based on current activeStep
+    return steps.map((step) {
+      return {
+        'step': step['step'],
+        'label': step['label'],
+        'isActive': int.parse(step['step'] as String) <=
+            activeStep, // Mark step as active or inactive
+      };
+    }).toList();
+  }
+
+  // Function to build the UI for each status step, including a circle indicator and label.
+  Widget buildStatusStep(String number, String label, bool isActive) {
+    return Column(
+      children: [
+        // Circle to show the step number, with color depending on active status
+        CircleAvatar(
+          radius: 16,
+          backgroundColor:
+              isActive ? green1 : grey1, // Green if active, grey otherwise
+          child: text(
+            t: number, // Display step number
+            color: Colors.white, // Step number text color
+            align: TextAlign.center,
+          ),
+        ),
+        Heightsizedbox(h: 0.003), // Small spacer between circle and label
+        Dtext(
+          t: label, // Display step label
+          color: isActive
+              ? Colors.black
+              : grey1, // Text color depends on active status
+          align: TextAlign.center,
+          size: 0.03,
+        ),
+      ],
+    );
+  }
+
+  // Generate the status information for each step
+  final statusInfo = getStatusInfo();
+
+  // Main widget layout, wrapped in a container with rounded corners
+  return OurContainer(
+    borderRadius: 20,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Display the title of the status container
+        text(
+          t: '$title',
+          color: light1,
+          align: TextAlign.start,
+        ),
+        Heightsizedbox(h: 0.01), // Spacer below the title
+
+        // Show rejection message if requestStatus is "Reject"
+        if (requestStatus == 'Reject')
+          Center(
+            child: Dtext(
+              t: "The request is rejected", // Rejection message
+              color: red1, // Red color for rejection
+              align: TextAlign.center,
+              size: 0.045,
+            ),
+          )
+        else
+          // Otherwise, display the step progress as a row of status steps
+          Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: statusInfo.map((info) {
+                return buildStatusStep(
+                  info['step'], // Step number
+                  info['label'], // Step label
+                  info['isActive'], // Whether the step is active
+                );
+              }).toList(),
+            ),
+          ),
+      ],
+    ),
+  );
+}
+
+/* Example usage of OurListView:
+* first don`t forget the imports: import 'package:pnustudenthousing/Design.dart';
+* just you need call OurStatusContainer and giv your Status filed , title and labels
+* EX:
+*       OurStatusContainer(
+              requestStatus: furnitureStatus, // Current status of the request (e.g., "Pending", "Accept", "Reject", "Execute")
+              title: '${index + 1} - $FurnitureType $Service', // Title to display in the container
+              labels: ['Pending', 'Accept', 'Execute'], // List of statuses in order
+            ),
+*/
+
+
+

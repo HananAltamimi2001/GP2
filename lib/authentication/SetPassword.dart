@@ -1,4 +1,3 @@
-import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -181,78 +180,89 @@ class _SetPassState extends State<SetPass> {
       ),
     );
   }
+//signup
+void signUp() async {
+  try {
+    String password = passwordController.text;
 
-  //Signup
-  void signUp() async {
-    try {
-      String password = passwordController.text;
+    User? user =
+        await _auth.signupWithEmailAndPassword(widget.args.email, password);
+    print('user added');
+    if (user != null) {
+      try {
+        // Name Capitalizer
+        String efullname = widget.args.efullName;
+        efullname = TextCapitalizer.CtextS(efullname);
 
-      User? user =
-          await _auth.signupWithEmailAndPassword(widget.args.email, password);
+        List<String> enameParts = efullname.trim().split(" ");
+        String efirstName = '';
+        String emiddleName = '';
+        String elastName = '';
 
-      if (user != null) {
-        // name Capitalizer
-        String firstName = widget.args.firstName;
-        firstName = TextCapitalizer.CtextS(firstName);
-        String middleName = widget.args.middleName;
-        middleName = TextCapitalizer.CtextS(middleName);
-        String lastName = widget.args.lastName;
-        lastName = TextCapitalizer.CtextS(lastName);
-        String fullname = '$firstName $middleName $lastName';
-        fullname = TextCapitalizer.CtextS(fullname);
-        print(fullname);
+        for (int i = 0; i < enameParts.length; i++) {
+          switch (i) {
+            case 0:
+              efirstName = enameParts[i].trim();
+              break;
+            case 1:
+              emiddleName = enameParts[i].trim();
+              break;
+            case 2:
+              elastName = enameParts[i].trim();
+              break;
+            default:
+              elastName += ' ' + enameParts[i].trim();
+              break;
+          }
+        }
 
         final String email = '${widget.args.email}';
         final String pnuid = email.split('@')[0];
 
-        // Validate PNUID for 9 characters
         if (pnuid.length != 9 || !pnuid.contains(RegExp(r'^\d{9}$'))) {
-          // Handle the error, e.g., show a message or log an error
           print('Invalid PNUID: must be 9 digits and contain only numbers');
-          return; // Or handle the error in a different way
+          return;
         }
+
         await FirebaseFirestore.instance
             .collection('student')
             .doc(user.uid)
             .set({
-          'firstName':firstName,
-          'middleName':middleName,
-          'lastName': lastName,
-          'fullname':fullname, 
+          'fullName': widget.args.fullName,
+          'firstName': efirstName,
+          'middleName': emiddleName,
+          'lastName': elastName,
+          'efullName': efullname,
           'PNUID': pnuid,
           'email': email,
-          'phone': '${widget.args.phone}',
-          'NID': '${widget.args.NID}',
+          'resident': false,
           'createdAt': FieldValue.serverTimestamp(),
         });
-         InfoDialog(
-         "Your registration is complete. Please log in to continue.",
+
+        InfoDialog(
+          "Your registration is complete. Please log in to continue.",
           context,
           buttons: [
             {
-              "Ok": () =>  context.go("/login"),
+              "Ok": () => context.go("/login"),
             },
           ],
         );
-        // context.goNamed('/infodialog',
-        //     extra: InfoDialogArguments(
-        //       message:
-        //           "Your registration is complete. Please log in to continue.",
-        //       buttonText: "ok",
-        //       onPressed: () {
-        //         Navigator.pop(context);
-        //       },
-        //     ));
-        // InfoDialog("Your registration is complete. Please log in to continue.",
-        //     context, onPressed: () {
-        //   context.go("/login");
-        // });
 
-        // For testing purpose
-        // Registration successful
         print('Registration successful');
-      } else {
-         ErrorDialog(
+      } catch (e) {
+        // Rollback Firestore document and Auth user in case of any Firestore error
+        print("Error saving data: $e");
+
+        // Check and delete the Firebase Authentication user
+        try {
+          await user.delete();
+          print("User deleted from authentication.");
+        } catch (authDeleteError) {
+          print("Error deleting user from authentication: $authDeleteError");
+        }
+
+        ErrorDialog(
           "An error occurred. Please try again later.",
           context,
           buttons: [
@@ -261,49 +271,75 @@ class _SetPassState extends State<SetPass> {
             },
           ],
         );
-        // ErrorDialog("An error occurred during registration", context,
-        //     onPressed: () {
-        //   Navigator.pop(context);
-        // });
-        // Handle error
-        print('Registration failed');
+        return;
       }
-    } catch (e) {
-       ErrorDialog(
-          "An error occurred. Please try again later ohoooooooood.",
-          context,
-          buttons: [
-            {
-              "Ok": () => context.pop(),
-            },
-          ],
-        );
-      // Handle error
-      // ErrorDialog("An error occurred during registration", context,
-      //     onPressed: () {
-      //   Navigator.pop(context);
-      // });
-      print('Registration failed: $e');
+    } else {
+      ErrorDialog(
+        "An error occurred. Please try again later.",
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
+      print('Registration failed');
     }
+  } catch (e) {
+    // Handle general registration errors
+    print('Registration failed: $e');
+
+    // Try deleting the Firestore document and Auth user if they exist
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      try {
+        DocumentSnapshot studentDoc = await FirebaseFirestore.instance
+            .collection('student')
+            .doc(currentUser.uid)
+            .get();
+
+        // Delete Firestore document if it exists
+        if (studentDoc.exists) {
+          await FirebaseFirestore.instance
+              .collection('student')
+              .doc(currentUser.uid)
+              .delete();
+          print("Firestore document deleted.");
+        }
+      } catch (firestoreDeleteError) {
+        print("Error deleting Firestore document: $firestoreDeleteError");
+      }
+
+      // Delete Firebase Authentication user
+      try {
+        await currentUser.delete();
+        print("User deleted from authentication.");
+      } catch (authDeleteError) {
+        print("Error deleting user from authentication: $authDeleteError");
+      }
+    }
+
+    ErrorDialog(
+      "An error occurred. Please try again later.",
+      context,
+      buttons: [
+        {
+          "Ok": () => context.pop(),
+        },
+      ],
+    );
   }
 }
-
+}
 // arguments for the route
 class SetPassArguments {
-  final String firstName;
-  final String middleName;
-  final String lastName;
-  final int NID;
+  final String fullName;
+  final String efullName;
   final String email;
-  //final String password;
-  final String phone;
 
   SetPassArguments({
-    required this.firstName,
-    required this.middleName,
-    required this.lastName,
-    required this.NID,
+    required this.fullName,
+    required this.efullName,
     required this.email,
-    required this.phone,
   });
 }

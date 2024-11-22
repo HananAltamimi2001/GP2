@@ -72,27 +72,27 @@ class _ForgetpassState extends State<Forgetpass> {
                                     color: Color(0xff007580),
                                   ),
                                 ),
-                                // National ID or Iqama
-                                textform(
-                                  controller: NIDController,
-                                  hinttext: "National ID or Iqama",
-                                  lines: 1,
-                                  validator: (val) {
-                                    if (val == null || val.isEmpty) {
-                                      return "Please write your ID";
-                                    } else if (val.length != 10) {
-                                      return "NID must be 10 digits long";
-                                    } else if (!RegExp(r'^\d{10}$')
-                                        .hasMatch(val)) {
-                                      return "NID must contain only numbers";
-                                    }
-                                    return null;
-                                  },
-                                ),
+                                // // National ID or Iqama
+                                // textform(
+                                //   controller: NIDController,
+                                //   hinttext: "National ID or Iqama",
+                                //   lines: 1,
+                                //   validator: (val) {
+                                //     if (val == null || val.isEmpty) {
+                                //       return "Please write your ID";
+                                //     } else if (val.length != 10) {
+                                //       return "NID must be 10 digits long";
+                                //     } else if (!RegExp(r'^\d{10}$')
+                                //         .hasMatch(val)) {
+                                //       return "NID must contain only numbers";
+                                //     }
+                                //     return null;
+                                //   },
+                                // ),
 
-                                Heightsizedbox(
-                                  h: 0.018,
-                                ),
+                                // Heightsizedbox(
+                                //   h: 0.018,
+                                // ),
 
                                 // Email
                                 textform(
@@ -159,13 +159,11 @@ class _ForgetpassState extends State<Forgetpass> {
         userQuery = await FirebaseFirestore.instance
             .collection('student')
             .where('email', isEqualTo: emailController.text)
-            .where('NID', isEqualTo: NIDController.text)
             .get();
       } else {
         userQuery = await FirebaseFirestore.instance
             .collection('staff')
             .where('email', isEqualTo: emailController.text)
-            .where('NID', isEqualTo: NIDController.text)
             .get();
       }
       print(userQuery);
