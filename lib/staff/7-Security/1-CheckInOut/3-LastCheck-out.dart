@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pnustudenthousing/helpers/DataManger.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:pnustudenthousing/staff/7-Security/1-CheckInOut/4-QrScanner.dart';
 

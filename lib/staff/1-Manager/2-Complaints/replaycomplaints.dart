@@ -127,6 +127,7 @@ class replaycomplaintsState extends State<replaycomplaints> {
             .doc(widget.args.complaintId)
             .update({
           'Reply': replyController.text,
+          'status':'Replied'
           // Add any other necessary fields here, like timestamps or user IDs if needed
         });
 
@@ -139,7 +140,7 @@ class replaycomplaintsState extends State<replaycomplaints> {
           context,
           buttons: [
             {
-              "OK": () async => context.pop(),
+              "OK": () async => {context.pop(),context.pop(),}
             },
           ],
         );

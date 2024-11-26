@@ -27,9 +27,11 @@ class Managerhomepage extends StatelessWidget {
             children: [
               // Home button with icon in left side from our design library for Search For Student
               HomeButton1(
-                icon: Icons.search, // Icon for the button
-                name: "Search For Student", //Button text
-              ),
+                  icon: Icons.search, // Icon for the button
+                  name: "Search For Student", //Button text
+                  onPressed: () {
+                    context.pushNamed('/search1');
+                  }),
               Heightsizedbox(
                   h: 0.02), // Spacer with height from our design library for separation
 
@@ -46,6 +48,9 @@ class Managerhomepage extends StatelessWidget {
               HomeButton1(
                 icon: Icons.calendar_month, // Icon for the button
                 name: "Appointments", //Button text
+                onPressed: () {
+                  context.goNamed('/Appointment');
+                },
               ),
 
               Heightsizedbox(

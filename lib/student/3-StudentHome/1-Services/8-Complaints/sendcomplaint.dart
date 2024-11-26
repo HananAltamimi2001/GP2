@@ -110,6 +110,7 @@ class _sendcomplaintState extends State<sendcomplaint> {
           'complaintIssues': complaintIssues.text,
           'studentInfo': studentDocRef, // Save the student reference
           'uploadDate': DateTime.now(),
+          'status':'Pending',
         });
 
         // Step 2: Save the furnitureRequest document reference in the student document

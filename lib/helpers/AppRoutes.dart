@@ -11,6 +11,7 @@ import 'package:pnustudenthousing/authentication/Login.dart';
 import 'package:pnustudenthousing/authentication/Register.dart';
 import 'package:pnustudenthousing/authentication/SetPassword.dart';
 import 'package:pnustudenthousing/authentication/SplashScreen.dart';
+
 // Student
 import 'package:pnustudenthousing/student/3-StudentHome/1-Services/0-HousingServices.dart';
 import 'package:pnustudenthousing/student/3-StudentHome/1-Services/3-Permission/overnight_request.dart';
@@ -51,6 +52,22 @@ import 'package:pnustudenthousing/student/2-Announcements&Events/ViewAnnouncemen
 import 'package:pnustudenthousing/student/2-Announcements&Events/ViewEvents.dart';
 import 'package:pnustudenthousing/student/2-Announcements&Events/announcements_and_events_page.dart';
 // Staff
+
+import 'package:pnustudenthousing/staff/1-Manager/1-SearchForStudent/1-Search.dart';
+import 'package:pnustudenthousing/staff/1-Manager/1-SearchForStudent/2-View.dart';
+import 'package:pnustudenthousing/staff/3-Supervisor/4-SearchForStudent/1-Search.dart';
+import 'package:pnustudenthousing/staff/3-Supervisor/4-SearchForStudent/2-View.dart';
+import 'package:pnustudenthousing/staff/1-Manager/3-Appointment/Appointment.dart';
+import 'package:pnustudenthousing/staff/1-Manager/3-Appointment/AppointmentDetails.dart';
+import 'package:pnustudenthousing/staff/3-Supervisor/3-Attendance/DayAttendance.dart';
+import 'package:pnustudenthousing/staff/3-Supervisor/3-Attendance/StudentDetailsPage.dart';
+import 'package:pnustudenthousing/staff/3-Supervisor/3-Attendance/WeekAttendance.dart';
+import 'package:pnustudenthousing/staff/3-Supervisor/SupervisorNotifications.dart';
+import 'package:pnustudenthousing/staff/6-SocialSpecialist/Appointmentsp.dart';
+import 'package:pnustudenthousing/staff/7-Security/2-SearchForStudent/2-View.dart';
+import 'package:pnustudenthousing/staff/7-Security/2-SearchForStudent/1-Search.dart';
+import 'package:pnustudenthousing/staff/7-Security/EmergencyRequestDetailsPage.dart';
+import 'package:pnustudenthousing/staff/7-Security/SecurityNotification.dart';
 import 'package:pnustudenthousing/staff/5-NutritionSpecialist.dart/SetMenus.dart';
 import 'package:pnustudenthousing/staff/0-StaffProfile.dart';
 import 'package:pnustudenthousing/staff/1-Manager/0-ManagerHomePage.dart';
@@ -88,6 +105,15 @@ import 'package:pnustudenthousing/staff/2-StudentAffairs/4-SetAnnouncement&Event
 import 'package:pnustudenthousing/staff/2-StudentAffairs/4-SetAnnouncement&Event/SetAnnouncementsAndEvents.dart';
 import 'package:pnustudenthousing/staff/2-StudentAffairs/4-SetAnnouncement&Event/SetEvents.dart';
 import 'package:pnustudenthousing/staff/5-NutritionSpecialist.dart/setLunchOrDinner.dart';
+import 'package:pnustudenthousing/staff/4-BuildingsOfficer/1-MnagaeFurintureStock/1-ManageFurnitureStock.dart';
+import 'package:pnustudenthousing/staff/4-BuildingsOfficer/1-MnagaeFurintureStock/2-QRCodeDisplay.dart';
+import 'package:pnustudenthousing/staff/4-BuildingsOfficer/2-ViewFurnitureStock/2-RemainingFurniturePage.dart';
+import 'package:pnustudenthousing/staff/4-BuildingsOfficer/2-ViewFurnitureStock/3-OccupiedFurniture.dart';
+import 'package:pnustudenthousing/staff/4-BuildingsOfficer/3-Viewfurnitureservicerequests/1-ViewFurnitureServiceRequests.dart';
+import 'package:pnustudenthousing/staff/4-BuildingsOfficer/0-buildingsOfficerHome.dart';
+import 'package:pnustudenthousing/staff/4-BuildingsOfficer/3-Viewfurnitureservicerequests/2-viewRequestDetails.dart';
+import 'package:pnustudenthousing/staff/4-BuildingsOfficer/2-ViewFurnitureStock/1-viewfurniturestouck.dart';
+import 'package:pnustudenthousing/staff/4-BuildingsOfficer/3-Viewfurnitureservicerequests/3-QrCodeScanner.dart';
 
 //////////////////// Routes Order ////////////////////
 // 0 auth
@@ -539,28 +565,28 @@ final GoRouter router = GoRouter(
         // Oh you are hanan ok gurl do your move
         // change the class
         // // 2
-        // GoRoute(
-        //   name: '/notifications1',
-        //   path: '/notifications1',
-        //   builder: (context, state) => SupervisorNotifications(),
-        // ),
+        GoRoute(
+          name: '/notifications1',
+          path: '/notifications1',
+          builder: (context, state) => SupervisorNotifications(),
+        ),
 
-        // // 3
-        // GoRoute(
-        //   name: '/notifications2',
-        //   path: '/notifications2',
-        //   builder: (context, state) => SecurityNotifications(),
-        //   routes: [
-        //     //button 1 Emergency Request Details
-        //      //  3.1
-        //     GoRoute(
-        //     name: '/EmergencyRequestDetails',
-        //     path: 'EmergencyRequestDetails',
-        //     builder: (context, state) {
-        //       final args = state.extra as EmregencyInfo;
-        //       return EmergencyRequestDetails(args: args);
-        //        },),],
-        // ),
+        // 3
+        GoRoute(
+          name: '/notifications2',
+          path: '/notifications2',
+          builder: (context, state) => SecurityNotifications(),
+          routes: [
+            //button 1 Emergency Request Details
+             //  3.1
+            GoRoute(
+            name: '/EmergencyRequestDetails',
+            path: 'EmergencyRequestDetails',
+            builder: (context, state) {
+              final args = state.extra as EmregencyInfo;
+              return EmergencyRequestDetails(args: args);
+               },),],
+        ),
 
         // 2 Staff routes
         // 2.1 Housing manager
@@ -574,6 +600,38 @@ final GoRouter router = GoRouter(
                 path: 'addstaff',
                 builder: (context, state) => addStaff(),
               ),
+              // search button
+              GoRoute(
+                  name: '/search1',
+                  path: 'search1',
+                  builder: (context, state) => SearchForStudentM(),
+                  routes: [
+                    GoRoute(
+                      name: '/StudentView1',
+                      path: 'StudentView1',
+                      builder: (context, state) {
+                        final args = state.extra as DocumentReference;
+                        return StudentViewM(sturef: args);
+                      },
+                    ),
+                  ]),
+              // Appointment
+              GoRoute(
+                name: '/Appointment',
+                path: 'Appointment',
+                builder: (context, state) => AppointmentsM(),
+                routes: [
+                  GoRoute(
+                    name: '/AppointmentDetails',
+                    path: 'AppointmentDetails',
+                    builder: (context, state) {
+                      final args = state.extra as AppointmentInfoM;
+                      return AppointmentDetailsScreenM(args: args);
+                    },
+                  ),
+                ],
+              ),
+              // Complaints
               GoRoute(
                 name: '/viewstudentcomplaints',
                 path: 'viewstudentcomplaints',
@@ -723,179 +781,221 @@ final GoRouter router = GoRouter(
           path: '/supervisor',
           builder: (context, state) => SupervisorHome(),
           routes: <RouteBase>[
+            // search button
+            GoRoute(
+                name: '/search2',
+                path: 'search2',
+                builder: (context, state) => SearchForStudentU(),
+                routes: [
+                  GoRoute(
+                    name: '/StudentView2',
+                    path: 'StudentView2',
+                    builder: (context, state) {
+                      final args = state.extra as DocumentReference;
+                      return StudentViewU(sturef: args);
+                    },
+                  ),
+                ]),
             //     //button View Daily Attendance
 
-            // GoRoute(
-            //   name: '/viewdailyattendance',
-            //   path: 'viewdailyattendance',
-            //   builder: (context, state) =>  WeekAttendance(),
-            //   routes: [
-            //     //button Day Attendance
-            //     GoRoute(
-            //       name: '/dayattendance',
-            //       path: 'dayattendance',
-            //       builder: (context, state) {
-            //         final args = state.extra as day;
-            //         return DayAttendance(args: args);
-            //       },
-            //       routes: [
-            //         //button Student Details
-            //         GoRoute(
-            //           name: '/studentdetails',
-            //           path: 'studentdetails',
-            //           builder: (context, state) {
-            //             final args = state.extra as studentid;
-            //             return StudentDetails(args: args);
-            //           },
-            //         ),
-            //       ],
-            //     ),
-            //   ]
-            // ),
-
-            // Permission Requests
+            //button 2 View Daily Attendance
+            // 2.3.2
             GoRoute(
-                name: '/superpermrequests',
-                path: 'superpermrequests',
-                builder: (context, state) => const SuperPermissionRequests(),
+                name: '/viewdailyattendance',
+                path: 'viewdailyattendance',
+                builder: (context, state) => WeekAttendance(),
                 routes: [
-                  // Overnight
+                  //button 1 Day Attendance
+                  //  2.3.2.1
                   GoRoute(
-                    name: '/superovernightlist',
-                    path: 'superovernightlist',
-                    builder: (context, state) => const SuperOvernightReqList(),
+                    name: '/dayattendance',
+                    path: 'dayattendance',
+                    builder: (context, state) {
+                      final args = state.extra as String;
+                      return DayAttendance(day: args);
+                    },
                     routes: [
+                      //button 1 Student Details
+                      //  2.3.2.1.1
                       GoRoute(
-                          name: '/superovernightview',
-                          path: 'superovernightview',
-                          builder: (context, state) {
-                            final args = state.extra as overnightInfo;
-                            return SuperPermReqViewOvernight(args: args);
-                          })
-                    ],
-                  ),
-                  // Visitor
-                  GoRoute(
-                    name: '/supervisitorlist',
-                    path: 'supervisitorlist',
-                    builder: (context, state) => const SuperVisitorReqList(),
-                    routes: [
-                      GoRoute(
-                          name: '/supervisitorview',
-                          path: 'supervisitorview',
-                          builder: (context, state) {
-                            final args = state.extra as visitorInfo;
-                            return SuperPermReqViewVisit(args: args);
-                          })
+                        name: '/studentdetails',
+                        path: 'studentdetails',
+                        builder: (context, state) {
+                          final args = state.extra as String;
+                          return StudentDetails(pnuid: args);
+                        },
+                      ),
                     ],
                   ),
                 ]),
-            // Room Key
+          ],
+        ),
+
+        // Permission Requests
+        GoRoute(
+            name: '/superpermrequests',
+            path: 'superpermrequests',
+            builder: (context, state) => const SuperPermissionRequests(),
+            routes: [
+              // Overnight
+              GoRoute(
+                name: '/superovernightlist',
+                path: 'superovernightlist',
+                builder: (context, state) => const SuperOvernightReqList(),
+                routes: [
+                  GoRoute(
+                      name: '/superovernightview',
+                      path: 'superovernightview',
+                      builder: (context, state) {
+                        final args = state.extra as overnightInfo;
+                        return SuperPermReqViewOvernight(args: args);
+                      })
+                ],
+              ),
+              // Visitor
+              GoRoute(
+                name: '/supervisitorlist',
+                path: 'supervisitorlist',
+                builder: (context, state) => const SuperVisitorReqList(),
+                routes: [
+                  GoRoute(
+                      name: '/supervisitorview',
+                      path: 'supervisitorview',
+                      builder: (context, state) {
+                        final args = state.extra as visitorInfo;
+                        return SuperPermReqViewVisit(args: args);
+                      })
+                ],
+              ),
+            ]),
+        // Room Key
+        GoRoute(
+          name: '/roomKey',
+          path: 'roomKey',
+          builder: (context, state) => RoomKeyManagement(),
+          routes: [
             GoRoute(
-              name: '/roomKey',
-              path: 'roomKey',
-              builder: (context, state) => RoomKeyManagement(),
+              name: '/departingroomKeyList',
+              path: 'departingroomKeyList',
+              builder: (context, state) => VacateStudentsList(),
               routes: [
                 GoRoute(
-                  name: '/departingroomKeyList',
-                  path: 'departingroomKeyList',
-                  builder: (context, state) => VacateStudentsList(),
-                  routes: [
-                    GoRoute(
-                      name: '/VacateStudentView',
-                      path: 'VacateStudentView',
-                      builder: (context, state) {
-                        final args = state.extra as DocumentReference;
-                        return VacateStudentView(sturef: args);
-                      },
-                    ),
-                  ],
+                  name: '/VacateStudentView',
+                  path: 'VacateStudentView',
+                  builder: (context, state) {
+                    final args = state.extra as DocumentReference;
+                    return VacateStudentView(sturef: args);
+                  },
                 ),
+              ],
+            ),
+            GoRoute(
+              name: '/newroomKeyList',
+              path: 'newroomKeyList',
+              builder: (context, state) => NewStudentsList(),
+              routes: [
                 GoRoute(
-                  name: '/newroomKeyList',
-                  path: 'newroomKeyList',
-                  builder: (context, state) => NewStudentsList(),
-                  routes: [
-                    GoRoute(
-                        name: '/NewStudentView',
-                        path: 'NewStudentView',
-                        builder: (context, state) {
-                          final args = state.extra as DocumentReference;
-                          return NewStudentView(sturef: args);
-                        },
-                        routes: [
-                          GoRoute(
-                              name: '/pdf4',
-                              path: 'pdf4',
-                              builder: (context, state) {
-                                final args = state.extra as Pdf;
-                                return PdfViewerPage(
-                                  Url: args.Url,
-                                  title: args.title,
-                                );
-                              }),
-                        ]),
-                  ],
-                ),
+                    name: '/NewStudentView',
+                    path: 'NewStudentView',
+                    builder: (context, state) {
+                      final args = state.extra as DocumentReference;
+                      return NewStudentView(sturef: args);
+                    },
+                    routes: [
+                      GoRoute(
+                          name: '/pdf4',
+                          path: 'pdf4',
+                          builder: (context, state) {
+                            final args = state.extra as Pdf;
+                            return PdfViewerPage(
+                              Url: args.Url,
+                              title: args.title,
+                            );
+                          }),
+                    ]),
               ],
             ),
           ],
         ),
-//         // 2.4 Housing buildings officer
-//         GoRoute(
-//           name: '/buildingsOfficer',
-//           path: '/buildingsOfficer',
-//           builder: (context, state) => buildingsOfficerHome(),
-//           routes: <RouteBase>[
-//           // button 1 View Furniture Stock
-//             // 2.4.1
-//             GoRoute(
-//                 name: '/viewfurniturestock',
-//                 path: 'viewfurniturestock',
-//                 builder: (context, state) =>  ViewFurnitureStock(),
-//                 routes: [
-//                   // button 1 Remaining Furniture
-//                   // 2.4.1.1
-//                   GoRoute(
-//                       name: '/remainingfurniture',
-//                       path: 'remainingfurniture',
-//                       builder: (context, state) =>  RemainingFurniture(),),
-// // button 2 Occupied Furniture
-//                   //2.4.1.2
-//                   // GoRoute(
-//                   //   name: '/occupiedfurniture',
-//                   //   path: 'occupiedfurniture',
-//                   //   builder: (context, state) =>  OccupiedFurniture(),),
-//  // button 2 View furniture service requests
-//             // 2.4.2
-//             GoRoute(
-//               name: '/viewfurnitureservicerequests',
-//               path: 'viewfurnitureservicerequests',
-//               builder: (context, state) =>  Viewfurnitureservicerequests(),
-//               routes: [
-//                 // button 1 View Request Details
-//                 // 2.4.2.1
-//                 GoRoute(
-//                   name: '/viewrequestdetails',
-//                   path: 'viewrequestdetails',
-//                   builder: (context, state)  {
-//                     final args = state.extra as furniturerequestsid1;
-//                     return ViewRequestDetails(args: args);},
-//                 ),
-//                 // button 2 QR scanner
-//                 // 2.4.2.2
-//                 GoRoute(
-//                   name: '/qrscanner',
-//                   path: 'qrscanner',
-//                   builder: (context, state) => QRScanner(),
-//                   // {
-//                   //   final args = state.extra as furniturerequestsid2;
-//                   //   return QRScanner(args: args);},
-//                 ),
-//               ]),
 
-//           ],
-//         ),
+        // 2.4 Housing buildings officer
+        GoRoute(
+            name: '/buildingsOfficer',
+            path: '/buildingsOfficer',
+            builder: (context, state) => buildingsOfficerHome(),
+            routes: <RouteBase>[
+              // button 1 Manage Furniture Stock
+              // 2.4.1
+              GoRoute(
+                  name: '/ManageFurnitureStock',
+                  path: 'ManageFurnitureStock',
+                  builder: (context, state) => ManageFurnitureStock(),
+                  routes: [
+                    // button 1 QR Code Display
+                    //2.4.1.1.
+                    GoRoute(
+                      name: '/QRCodeDisplay',
+                      path: 'QRCodeDisplay',
+                      builder: (context, state) {
+                        final args = state.extra as List<Map<String, dynamic>>;
+                        return QRCodeDisplay(qrDataList: args);
+                      },
+                    ),
+                  ]),
+
+              // button 2 view furniture stock
+              // 2.4.2
+              GoRoute(
+                  name: '/viewfurniturestock',
+                  path: 'viewfurniturestock',
+                  builder: (context, state) => ViewFurnitureStock(),
+                  routes: [
+                    // button 1 Remaining Furniture
+                    // 2.4.2.1
+                    GoRoute(
+                      name: '/remainingfurniture',
+                      path: 'remainingfurniture',
+                      builder: (context, state) => RemainingFurniture(),
+                    ),
+
+                    // button 2 Occupied Furniture
+                    // 2.4.1.2.2
+                    GoRoute(
+                      name: '/occupiedfurniture',
+                      path: 'occupiedfurniture',
+                      builder: (context, state) => OccupiedFurniture(),
+                    ),
+                  ]),
+
+              // button 3 View furniture service requests
+              // 2.4.3
+              GoRoute(
+                  name: '/viewfurnitureservicerequests',
+                  path: 'viewfurnitureservicerequests',
+                  builder: (context, state) => Viewfurnitureservicerequests(),
+                  routes: [
+                    // button 1 View Request Details
+                    // 2.4.2.1
+                    GoRoute(
+                      name: '/viewrequestdetails',
+                      path: 'viewrequestdetails',
+                      builder: (context, state) {
+                        final args = state.extra as furniturerequestsid1;
+                        return ViewRequestDetails(args: args);
+                      },
+                    ),
+                    // button 2 QR scanner
+                    // 2.4.2.2
+                    GoRoute(
+                      name: '/qrscanner3',
+                      path: 'qrscanner3',
+                      builder: (context, state) {
+                        final args = state.extra as DocumentReference;
+                        return QrCodeScanner(reqref: args);
+                      },
+                    ),
+                  ]),
+            ]),
         // 2.5 Nutrition specialist
         GoRoute(
           name: '/nutritionSpecialist',
@@ -920,11 +1020,21 @@ final GoRouter router = GoRouter(
           routes: <RouteBase>[
             //!!!!!!! add another page if required !!!!!!!\\
 
-            // GoRoute(
-            //   name: '/example',
-            //   path: '',
-            //   builder: (context, state) => const classname(),
-            // ),
+            GoRoute(
+              name: '/AppointmentsSp',
+              path: 'AppointmentsSp',
+              builder: (context, state) => AppointmentsSp(),
+              routes: [
+                GoRoute(
+                  name: '/AppointmentDetailsSp',
+                  path: 'AppointmentDetailsSp',
+                  builder: (context, state) {
+                    final args = state.extra as AppointmentInfoM;
+                    return AppointmentDetailsScreenM(args: args);
+                  },
+                ),
+              ],
+            ),
           ],
         ),
         // 2.7 Housing security guard
@@ -933,6 +1043,21 @@ final GoRouter router = GoRouter(
           path: '/security',
           builder: (context, state) => SecurityHome(),
           routes: <RouteBase>[
+            // search button
+            GoRoute(
+                name: '/search3',
+                path: 'search3',
+                builder: (context, state) => SearchForStudentS(),
+                routes: [
+                  GoRoute(
+                    name: '/StudentView3',
+                    path: 'StudentView3',
+                    builder: (context, state) {
+                      final args = state.extra as DocumentReference;
+                      return StudentViewS(sturef: args);
+                    },
+                  ),
+                ]),
             GoRoute(
               name: '/checkinout',
               path: 'checkinout',

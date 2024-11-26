@@ -25,19 +25,22 @@ class SecurityHome extends StatelessWidget {
             children: [
               // Home button with icon in left side from our design library for Search For Student
               HomeButton1(
-                icon: Icons.search,
-                name: "Search For Student",
-              ),
+                  icon: Icons.search,
+                  name: "Search For Student",
+                  onPressed: () {
+                    context.pushNamed('/search3');
+                  }),
 
               Heightsizedbox(
                   h: 0.02), // Spacer with height from our design library for separation
 
               // Home button with icon in right side from our design library for Check in/out Scanner
               HomeButton2(
-                icon: Icons.qr_code_scanner,
-                name: "Check in/out Scanner",
-                onPressed: (){context.goNamed('/checkinout');}
-              ),
+                  icon: Icons.qr_code_scanner,
+                  name: "Check in/out Scanner",
+                  onPressed: () {
+                    context.goNamed('/checkinout');
+                  }),
             ],
           ),
         ),

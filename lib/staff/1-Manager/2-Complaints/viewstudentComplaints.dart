@@ -77,7 +77,7 @@ class _viewstudentComplaintsState extends State<viewstudentComplaints> {
   Future<List<Map<String, dynamic>>> fetchcomplaints() async {
     try {
       QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('complaints').get();
+          await FirebaseFirestore.instance.collection('complaints').where('status',isEqualTo: 'Pending').get();
       List<Map<String, dynamic>> complaints = [];
 
       for (var doc in snapshot.docs) {
@@ -90,7 +90,7 @@ class _viewstudentComplaintsState extends State<viewstudentComplaints> {
             'complaintId': doc.id,
             'complaintsData': doc.data() as Map<String, dynamic>,
             'studentData': studentData,
-            'studentName': studentData['fullName'],
+            'studentName': studentData['efullName'],
           });
         }
       }

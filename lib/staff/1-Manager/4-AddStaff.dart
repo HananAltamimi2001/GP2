@@ -1,9 +1,11 @@
 import 'dart:math';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pnustudenthousing/student/3-StudentHome/3-Apply/2-Information.dart';
 
 class addStaff extends StatefulWidget {
   const addStaff({super.key});
@@ -17,6 +19,9 @@ class _addStaffState extends State<addStaff> {
   final firstNameController = TextEditingController();
   final middleNameController = TextEditingController();
   final lastNameController = TextEditingController();
+  final efirstNameController = TextEditingController();
+  final emiddleNameController = TextEditingController();
+  final elastNameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneNumberController = TextEditingController();
   final NIDController = TextEditingController();
@@ -59,60 +64,155 @@ class _addStaffState extends State<addStaff> {
                                   padding:
                                       EdgeInsets.only(top: 20.0, bottom: 10.0),
                                 ),
-                                // Firat Name
+                                // First Name
                                 textform(
                                   controller: firstNameController,
-                                  validator: (val) => val == ""
-                                      ? "Please write staff first name"
-                                      : val!.contains(RegExp(
-                                              r'[0-9]')) // Check for numbers
-                                          ? "First name cannot contain numbers"
-                                          : val!.contains(RegExp(
-                                                  r'[^\w\s]')) // Check for special characters
-                                              ? "First name cannot contain special characters"
-                                              : null,
-                                  hinttext: "First Name",
+                                  hinttext: "First Name in Arabic",
                                   lines: 1,
-                                ),
+                                  validator: (val) {
+                                    String? validationResult = valArabic(val);
 
+                                    switch (validationResult) {
+                                      case "1":
+                                        return "Please write staff first name";
+                                      case "2":
+                                        return "First name cannot contain numbers";
+                                      case "3":
+                                        return "First name cannot contain special characters";
+                                      case "4":
+                                        return "First name must be in Arabic";
+                                      default:
+                                        return null; // No error
+                                    }
+                                  },
+                                ),
                                 Heightsizedbox(
                                   h: 0.018,
                                 ),
-
                                 // Middle Name
                                 textform(
                                   controller: middleNameController,
-                                  hinttext: "Middle Name",
+                                  hinttext: "Middle Name in Arabic",
                                   lines: 1,
-                                  validator: (val) => val == ""
-                                      ? "Please write staff middle name"
-                                      : val!.contains(RegExp(
-                                              r'[0-9]')) // Check for numbers
-                                          ? "Middle name cannot contain numbers"
-                                          : val!.contains(RegExp(
-                                                  r'[^\w\s]')) // Check for special characters
-                                              ? "Middle name cannot contain special characters"
-                                              : null,
+                                  validator: (val) {
+                                    String? validationResult = valArabic(val);
+
+                                    switch (validationResult) {
+                                      case "1":
+                                        return "Please write staff Middle name";
+                                      case "2":
+                                        return "Middle name cannot contain numbers";
+                                      case "3":
+                                        return "Middle name cannot contain special characters";
+                                      case "4":
+                                        return "Middle name must be in Arabic";
+                                      default:
+                                        return null; // No error
+                                    }
+                                  },
                                 ),
 
                                 Heightsizedbox(
                                   h: 0.018,
                                 ),
                                 // Last Name
-
                                 textform(
                                   controller: lastNameController,
-                                  hinttext: "Last Name",
+                                  hinttext: "Last Name in Arabic",
                                   lines: 1,
-                                  validator: (val) => val == ""
-                                      ? "Please write staff last name"
-                                      : val!.contains(RegExp(
-                                              r'[0-9]')) // Check for numbers
-                                          ? "Last name cannot contain numbers"
-                                          : val!.contains(RegExp(
-                                                  r'[^\w\s]')) // Check for special characters
-                                              ? "Last name cannot contain special characters"
-                                              : null,
+                                  validator: (val) {
+                                    String? validationResult = valArabic(val);
+
+                                    switch (validationResult) {
+                                      case "1":
+                                        return "Please write staff Last name";
+                                      case "2":
+                                        return "Last name cannot contain numbers";
+                                      case "3":
+                                        return "Last name cannot contain special characters";
+                                      case "4":
+                                        return "Last name must be in Arabic";
+                                      default:
+                                        return null; // No error
+                                    }
+                                  },
+                                ),
+                                Heightsizedbox(
+                                  h: 0.018,
+                                ),
+
+                                // First Name
+                                textform(
+                                  controller: efirstNameController,
+                                  hinttext: "First Name in English",
+                                  lines: 1,
+                                  validator: (val) {
+                                    String? validationResult = valEnglish(val);
+
+                                    switch (validationResult) {
+                                      case "1":
+                                        return "Please write your first name";
+                                      case "2":
+                                        return "First name cannot contain numbers";
+                                      case "3":
+                                        return "First name cannot contain special characters";
+                                      case "4":
+                                        return "First name must be in English";
+                                      default:
+                                        return null; // No error
+                                    }
+                                  },
+                                ),
+                                Heightsizedbox(
+                                  h: 0.018,
+                                ),
+                                // Middle Name
+                                textform(
+                                  controller: emiddleNameController,
+                                  hinttext: "Middle Name in English",
+                                  lines: 1,
+                                  validator: (val) {
+                                    String? validationResult = valEnglish(val);
+
+                                    switch (validationResult) {
+                                      case "1":
+                                        return "Please write your middle name";
+                                      case "2":
+                                        return "Middle name cannot contain numbers";
+                                      case "3":
+                                        return "Middle name cannot contain special characters";
+                                      case "4":
+                                        return "Middle name must be in English";
+                                      default:
+                                        return null; // No error
+                                    }
+                                  },
+                                ),
+
+                                Heightsizedbox(
+                                  h: 0.018,
+                                ),
+                                // Last Name
+                                textform(
+                                  controller: elastNameController,
+                                  hinttext: "Last Name in English",
+                                  lines: 1,
+                                  validator: (val) {
+                                    String? validationResult = valEnglish(val);
+
+                                    switch (validationResult) {
+                                      case "1":
+                                        return "Please write your last name";
+                                      case "2":
+                                        return "Last name cannot contain numbers";
+                                      case "3":
+                                        return "Last name cannot contain special characters";
+                                      case "4":
+                                        return "Last name must be in English";
+                                      default:
+                                        return null; // No error
+                                    }
+                                  },
                                 ),
 
                                 Heightsizedbox(
@@ -256,7 +356,7 @@ class _addStaffState extends State<addStaff> {
   }
 
   Future<void> addUser() async {
-    formKey.currentState!.save();
+    // arabic name
     String fullname = firstNameController.text +
         " " +
         middleNameController.text +
@@ -265,17 +365,25 @@ class _addStaffState extends State<addStaff> {
     print(fullname);
     fullname = TextCapitalizer.CtextS(fullname);
     print(fullname);
+    // Name Capitalizer
+    String efullname = efirstNameController.text +
+        " " +
+        emiddleNameController.text +
+        " " +
+        elastNameController.text;
+    print(Easing.legacyAccelerate);
+    efullname = TextCapitalizer.CtextS(efullname);
+
     try {
+      final secondaryAuth = FirebaseAuth.instanceFor(app: Firebase.app());
+
       // Create the user in Firebase pnustudenthousing
       UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
+          await secondaryAuth.createUserWithEmailAndPassword(
         email: emailController.text,
         password: password,
         // Set a temporary password
       );
-
-      // Send email for setting the password
-      await userCredential.user!.sendEmailVerification();
 
       // Store additional user details in Firestore
       await FirebaseFirestore.instance
@@ -285,7 +393,11 @@ class _addStaffState extends State<addStaff> {
         'firstName': firstNameController.text,
         'middleName': middleNameController.text,
         'lastName': lastNameController.text,
-        'fullname': fullname,
+        'fullName': fullname,
+        'efirstName': efirstNameController.text,
+        'emiddleName': emiddleNameController.text,
+        'elastName': elastNameController.text,
+        'efullName': efullname,
         'email': emailController.text,
         'phone': phoneNumberController.text,
         'office': OfficeController.text,
@@ -293,23 +405,71 @@ class _addStaffState extends State<addStaff> {
         'role': selectedRole,
         'createdAt': FieldValue.serverTimestamp(),
       });
-        print(password);
-         await _auth.signOut();
+      print(password);
+      // Create an instance of your Firestore mail collection
+      await FirebaseFirestore.instance.collection('mail').add({
+        'to': emailController.text,
+        'message': {
+          'subject': "Welcome to PNU Student Housing: Instructions",
+          'html': """
+      <html>
+      <body>
+      <!-- Greeting -->
+      <p style="color: #339199; font-size: 20px;">Hello ${fullname},</p>
+      <!-- Welcome Message -->
+      <p>We are excited to welcome you to the PNU Student Housing. Your account has been successfully created.</p>
+      <p style="text-align: right;"> يسعدنا أن نرحب بك في السكن الطلابي بجامعة الأميرة نورة بنت عبدالرحمن. لقد تم إنشاء حسابك في التطبيق بنجاح.</p>
+      <!-- Step 1: Download the App -->
+      <h4>Step 1: Download PNU Student Housing App App</h4>
+      <p>Please download the app to manage your tasks efficiently.</p>
+      <h4 style="text-align: right;">الخطوة 1: تنزيل تطبيق PNU Student Housing App</h4>
+      <p style="text-align: right;">يرجى تنزيل التطبيق لإدارة مهامك بكفاءة في السكن.</p>
+      <!-- Step 2: Reset Password -->
+      <h4>Step 2: Reset Your Password</h4>
+      <p>Please reset your password to ensure your account's security:</p>
+      <p>Resetting your password will give you full access to your account and allow you to manage your tasks effectively.</p>
+      <h4 style="text-align: right;">الخطوة 2: إعادة تعيين كلمة المرور</h4>
+      <p style="text-align: right;">يرجى إعادة تعيين كلمة المرور لضمان أمان حسابك:</p>
+      <p style="text-align: right;">ستتيح لك إعادة تعيين كلمة المرور الوصول الكامل إلى حسابك وتسمح لك بإدارة مهامك بفعالية.</p>
+      <p>Thank you,</p>
+      <p>PNU Housing team</p>
+      <p style="text-align: right;">،شكراً لك</p>
+      <p style="text-align: right;">فريق سكن نورة</p>
+
+      </body>
+      </html>
+    """,
+        },
+      });
+
+      print('sended email');
+      secondaryAuth.signOut();
       InfoDialog(
         "Staff added successfully!",
         context,
         buttons: [
           {
-            "Ok": () => context.pop(),
+            "Ok": () => {
+                  context.pop(),
+                  firstNameController.clear(),
+                  middleNameController.clear(),
+                  lastNameController.clear(),
+                  efirstNameController.clear(),
+                  emiddleNameController.clear(),
+                  elastNameController.clear(),
+                  emailController.clear(),
+                  phoneNumberController.clear(),
+                  NIDController.clear(),
+                  OfficeController.clear(),
+
+                  // Reset the dropdown
+                  setState(() {
+                    selectedRole = null;
+                  }),
+                }
           }
         ],
       );
-      // InfoDialog("Staff added successfully!", context, onPressed: () {
-      //   Navigator.pop(context);
-      //   ;
-      // });
-
-    
     } catch (e) {
       ErrorDialog(
         "Failed to add user",
@@ -320,9 +480,6 @@ class _addStaffState extends State<addStaff> {
           },
         ],
       );
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text('Failed to add user: $e')),
-      // );
     }
   }
 }

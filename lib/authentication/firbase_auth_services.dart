@@ -13,37 +13,26 @@ class FirbaseAuthService {
     try {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      checkSignInStatus();
-     // await _auth.signOut();
-      checkSignInStatus();
       return credential.user;
     } on FirebaseAuthException catch (e) {
-                  print("here$e");
+      print("here$e");
 
       return null;
-      /*
-      Fluttertoast.showToast(
-        msg: "An error occurred during registration $e",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );*/
+    
     }
   }
 
-  // For test purpose check sign in status
-  void checkSignInStatus() {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      // User is signed in
-      print('User is signed in: ${user.email}');
-    } else {
-      // User is not signed in
-      print('User is not signed in');
-    }
-  }
+  // // For test purpose check sign in status
+  // void checkSignInStatus() {
+  //   User? user = FirebaseAuth.instance.currentUser;
+  //   if (user != null) {
+  //     // User is signed in
+  //     print('User is signed in: ${user.email}');
+  //   } else {
+  //     // User is not signed in
+  //     print('User is not signed in');
+  //   }
+  // }
 
   // Signin
   Future<User?> signinWithEmailAndPassword(
@@ -57,24 +46,15 @@ class FirbaseAuthService {
         return credential.user;
       }
     } on FirebaseAuthException catch (e) {
-            print("here$e");
+      print("here$e");
 
       return null;
-      /* print('Error: $e');
-      Fluttertoast.showToast(
-        msg: 'Login Failed. Incorrect email or password',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );*/
+     
     }
     return null;
   }
 
   Future<void> signout(context) async {
-    
     await FirebaseAuth.instance.signOut();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', false);
@@ -82,51 +62,16 @@ class FirbaseAuthService {
   }
 
   // Reset password
-  Future<void> resetPassword(String email, var context) async {
+  Future<bool> resetPassword(String email, var context) async {
     {
       try {
         await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-        InfoDialog(
-          "Reset password email was sent please check your email inbox",
-          context,
-          buttons: [
-            {
-              "Ok": () => context.pop(),
-            },
-          ],
-        );
-
-        // InfoDialog(
-        //     "Reset password email was sent please check your email inbox",
-        //     "Ok",
-        //     context, onPressed: () {
-        //   context.pop();
-        // });
+        return true;
+       
       } catch (e) {
-        ErrorDialog(
-          "Error sending password reset email, Please try again later.",
-          context,
-          buttons: [
-            {
-              "Ok": () => context.pop(),
-            },
-          ],
-        );
-        // ErrorDialog(
-        //     "Error sending password reset email, Please try again later.",
-        //     "Ok",
-        //     context, onPressed: () {
-        //   context.pop();
-        // });
-        //  Fluttertoast.showToast(
-        // msg: 'Error sending password reset email',
-        // toastLength: Toast.LENGTH_SHORT,
-        // gravity: ToastGravity.CENTER,
-        // backgroundColor: Colors.red,
-        // textColor: Colors.white,
-        // fontSize: 16.0,
-
-        // );
+        return false;
+       
+       
       }
     }
   }

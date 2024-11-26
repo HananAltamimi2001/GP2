@@ -28,13 +28,14 @@ class _SupervisorHomeState extends State<SupervisorHome> {
             HomeButton1(
                   icon: Icons.search,// Icon for the button
                   name: "Search for Student", //Button text
+                  onPressed:() {context.pushNamed('/search2');}
                 ),
             Heightsizedbox(h: 0.02), // Spacer with height from our design library for separation
             // Home button with icon in right side from our design library for View Daily Attendance
             HomeButton2(
                   icon: Icons.assignment_turned_in_rounded, // Icon for the button
                   name: "View Daily Attendance", //Button text
-                  onPressed:() { }// Function to navigate to the View Daily Attendance page when pressed
+                  onPressed:() { context.pushNamed('/viewdailyattendance');}// Function to navigate to the View Daily Attendance page when pressed
                     
                 ),
             Heightsizedbox(h: 0.02), // Spacer with height from our design library for separation

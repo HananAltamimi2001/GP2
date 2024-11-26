@@ -1,28 +1,42 @@
-import 'package:flutter/material.dart'; // Importing Flutter material design package for UI components
-import 'package:firebase_auth/firebase_auth.dart'; // Importing Firebase Authentication package to handle user sign-in
-import 'package:geolocator/geolocator.dart'; // Importing Geolocator package for location services to get the user's current position
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:permission_handler/permission_handler.dart'; // Importing Permission Handler package to manage location permissions
-import 'package:cloud_firestore/cloud_firestore.dart'; // Importing Firebase Firestore package to interact with Firestore database
-import 'package:pnustudenthousing/helpers/Design.dart'; // Importing our design library
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:pnustudenthousing/helpers/Design.dart';
 
-// Stateful widget for the Attendance functionality
+// Main class for attendance functionality
 class DailyAttendance extends StatefulWidget {
   @override
   _DailyAttendanceState createState() => _DailyAttendanceState();
 }
 
 class _DailyAttendanceState extends State<DailyAttendance> {
-  // PNU Housing rectangular area coordinates
+  // Coordinates of the housing area
   final double topLatitude = 24.8553464;
   final double bottomLatitude = 24.8548155;
   final double leftLongitude = 46.7145656;
   final double rightLongitude = 46.7153880;
 
+  // Notification plugin initialization
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  @override
+  void initState() {
+    super.initState();
+    resetDailyAttendance();
+    initializeNotifications();
+    checkUnconfirmedAttendance();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
-    // Get today's date in 'day/month/year' format
     DateTime todayDate = DateTime.now();
     String dayDate = '${todayDate.day}/${todayDate.month}/${todayDate.year}';
 
@@ -32,29 +46,20 @@ class _DailyAttendanceState extends State<DailyAttendance> {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-
-            Heightsizedbox(h: 0.10), // Add vertical spacing using a custom spacer from the design library
-
-            // Text displaying instructions for confirming attendance
+            Heightsizedbox(h: 0.10),
             text(
               t: "To confirm your Attendance for today \n $dayDate \n click the following button:",
               align: TextAlign.center,
               color: Colors.black,
             ),
-
-            Heightsizedbox(h: 0.08), // Add vertical spacing
-
-            // Custom Button to confirm attendance
+            Heightsizedbox(h: 0.08),
             actionbutton(
-              onPressed: takeAttendance,
+              onPressed: _takeAttendance,
               text: 'Confirm',
               background: dark1,
               fontsize: 0.06,
             ),
-
-            Heightsizedbox(h: 0.07), // Add vertical spacing
-
-            // Display a note with important information for the user
+            Heightsizedbox(h: 0.07),
             text(
               t: "The button works only if you are inside the Housing Area",
               color: red1,
@@ -66,86 +71,154 @@ class _DailyAttendanceState extends State<DailyAttendance> {
     );
   }
 
-  // Function to request location permissions from the user
-  Future<void> requestPermission() async {
+  Future<void> _requestPermission() async {
     PermissionStatus status = await Permission.location.request();
-    // Handle the outcome of the permission request
     if (status.isGranted) {
       print('Location permission granted.');
     } else if (status.isDenied) {
       print('Location permission denied.');
     } else if (status.isPermanentlyDenied) {
-      print(
-          'Location permission permanently denied. Ask user to go to settings.');
-      // Open app settings if permission is permanently denied
       await openAppSettings();
     }
   }
 
-  bool isWithinBounds(double userLatitude, double userLongitude) {
-    // Check if the user's location is within the rectangular bounds
+  bool _isWithinBounds(double userLatitude, double userLongitude) {
     return userLatitude >= bottomLatitude &&
         userLatitude <= topLatitude &&
         userLongitude >= leftLongitude &&
         userLongitude <= rightLongitude;
   }
 
-  Future<void>takeAttendance() async {
-    try {
-      // Request location permission
-      await requestPermission();
+  Future<void> _takeAttendance() async {
+    await _requestPermission();
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    double userLatitude = position.latitude;
+    double userLongitude = position.longitude;
 
-      // Get the current location using Google Maps Geolocation API
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-      double userLatitude = position.latitude;
-      double userLongitude = position.longitude;
-
-        // Check if the user is within the rectangular bounds
-        if (isWithinBounds(userLatitude, userLongitude)) {
-          await saveAttendance();
-        } else {
-          ErrorDialog("You are not in the PNU housing area", context, buttons: [
-            {"OK": () async => context.pop()},
-          ]);
-        }
-    } catch (e) {
-      print('Error getting location: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to get your location. Please try again.')),
-      );
-    }
-  }
-
-  // Function to save attendance information to Firestore
-  Future<void> saveAttendance() async {
-    try {
-      String docid = FirebaseAuth.instance.currentUser!.uid;
-
-      // Fetch the student document from Firestore using the current user's ID
-      DocumentSnapshot documentSnapshot =
-      await FirebaseFirestore.instance.collection('student').doc(docid).get();
-
-      if (documentSnapshot.exists) {
-        // Update attendance status to 'Present'
-        await documentSnapshot.reference.update({'attendance': 'Present'});
-
-        // Show a custom dialog to inform the user of successful attendance recording
-        InfoDialog("Attendance recorded successfully!", context, buttons: [
-          {
-            "OK": () async => context.pop(),
-          }
-        ]);
-      }
-    } catch (e) {
-      // Handle errors related to saving attendance
-      print('Error saving attendance: $e');
-      // Show a custom dialog to inform the user of failure
-      ErrorDialog("Failed to record attendance!", context, buttons: [
-        {
-          "OK": () async => context.pop(),
-        }
+    if (_isWithinBounds(userLatitude, userLongitude)) {
+      saveAttendance();
+    } else {
+      ErrorDialog("You are not in the PNU housing area", context, buttons: [
+        {"OK": () async => context.pop()},
       ]);
     }
   }
 
+  Future<void> saveAttendance() async {
+    try {
+      String docId = FirebaseAuth.instance.currentUser!.uid;
+      String todayDate = '${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}';
+
+      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+          .collection('student')
+          .doc(docId)
+          .get();
+
+      if (documentSnapshot.exists) {
+        // Update attendance map and lastAttendanceDate field
+        await documentSnapshot.reference.update({
+          'attendance.$todayDate': 'Present',    // Update the attendance map
+          'lastAttendanceDate': todayDate,       // Keep track of the last confirmed attendance date
+        });
+
+        InfoDialog("Attendance recorded successfully!", context, buttons: [
+          {"OK": () async => context.pop()},
+        ]);
+      }
+    } catch (e) {
+      ErrorDialog("Failed to record attendance!", context, buttons: [
+        {"OK": () async => context.pop()},
+      ]);
+    }
+  }
+
+  Future<void> resetDailyAttendance() async {
+    String docId = FirebaseAuth.instance.currentUser!.uid;
+    String todayDate = '${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}';
+
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+        .collection('student')
+        .doc(docId)
+        .get();
+
+    if (documentSnapshot.exists) {
+      String? lastAttendanceDate = documentSnapshot['lastAttendanceDate'];
+      Map<String, dynamic> attendanceMap = documentSnapshot['attendance'] ?? {};
+
+      // Reset attendance only if it's a new day and today's attendance hasn't been set
+      if (lastAttendanceDate != todayDate && !attendanceMap.containsKey(todayDate)) {
+        await documentSnapshot.reference.update({
+          'attendance.$todayDate': 'Absence',
+          'lastAttendanceDate': todayDate,
+        });
+      }
+    }
+  }
+
+
+
+  void initializeNotifications() async {
+    tz.initializeTimeZones();
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+    const InitializationSettings initializationSettings =
+    InitializationSettings(android: initializationSettingsAndroid);
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  void checkUnconfirmedAttendance() async {
+    String docId = FirebaseAuth.instance.currentUser!.uid;
+    DocumentSnapshot studentSnapshot = await FirebaseFirestore.instance
+        .collection('student')
+        .doc(docId)
+        .get();
+
+    if (studentSnapshot.exists) {
+      Map<String, dynamic> studentData = studentSnapshot.data() as Map<String, dynamic>;
+
+      String? lastAttendanceDate = studentData['lastAttendanceDate'];
+      bool hasOvernightRequest = studentData['overnightRequestRef'] != null;
+
+      String dayDate = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+
+      if (lastAttendanceDate != dayDate && !hasOvernightRequest) {
+        scheduleMiddayNotification(); // Only send notification if no overnight request
+      }
+    }
+  }
+
+
+
+  void scheduleMiddayNotification() async {
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0,
+      'Attendance Reminder',
+      'Please confirm your attendance for today.',
+      nextInstanceOfMidday(),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'attendance_channel',
+          'Daily Attendance Reminder',
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,  // Add this
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+  }
+
+  tz.TZDateTime nextInstanceOfMidday() {
+    final now = tz.TZDateTime.now(tz.local);
+    var scheduledDate =
+    tz.TZDateTime(tz.local, now.year, now.month, now.day, 12);
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    return scheduledDate;
+  }
+
 }
+

@@ -142,22 +142,26 @@ class _QrScannerState extends State<QrScanner> {
             await docRef.update({
               'checkStatus': 'Checked-in',
               'resident': true,
+              'checkTime': FieldValue.serverTimestamp()
             });
           } else if (widget.checkStatus == 'Last Check-out') {
             // Update the desired field
             await docRef.update({
               'checkStatus': 'Checked-out',
               'resident': false,
+              'checkTime': FieldValue.serverTimestamp()
             });
           } else if (widget.checkStatus == 'Check-in') {
             // Update the desired field
             await docRef.update({
               'checkStatus': 'Checked-in',
+              'checkTime': FieldValue.serverTimestamp()
             });
           } else if (widget.checkStatus == 'Check-out') {
             // Update the desired field
             await docRef.update({
               'checkStatus': 'Checked-out',
+              'checkTime': FieldValue.serverTimestamp()
             });
           }
           // Show a confirmation dialog

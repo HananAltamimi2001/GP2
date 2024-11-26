@@ -114,6 +114,7 @@ class setLunchOrDinnerState extends State<setLunchOrDinner> {
                         selectedDate = pickedDate;
                       });
                     }
+                    return null;
                   },
                   labelText: "Select Menu Date:",
                 ),

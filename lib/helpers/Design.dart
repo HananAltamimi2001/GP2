@@ -503,6 +503,7 @@ class PagesButton extends StatelessWidget {
     required this.name,
     this.onPressed,
     this.background,
+    
   });
   final String name; // Button text to display
   final VoidCallback? onPressed; // Action triggered when the button is pressed

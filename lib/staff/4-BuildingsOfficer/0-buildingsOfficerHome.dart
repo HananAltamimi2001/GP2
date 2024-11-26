@@ -29,14 +29,14 @@ class buildingsOfficerHome extends StatelessWidget {
               HomeButton1(
                 icon: MdiIcons.archiveCogOutline, // Icon for the button
                 name: "Manage Furniture Stock", //Button text
-                onPressed: (){context.pushNamed('/viewfurniturestock');},
+                onPressed: (){context.pushNamed('/ManageFurnitureStock');},
               ),
               Heightsizedbox(h: 0.02), // Spacer with height from our design library for separation
 
               HomeButton2(
                 icon:  MdiIcons.archiveEyeOutline, // Icon for the button
                 name: "View Furniture Stock", // Button text
-                onPressed: (){context.pushNamed('/ManageFurnitureStock');},
+                onPressed: (){context.pushNamed('/viewfurniturestock');},
               ),
 
               Heightsizedbox(h: 0.02), // Spacer with height from our design library for separation

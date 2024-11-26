@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/DataManger.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
-import 'package:pnustudenthousing/staff/2-StudentAffairs/2-Application/4-AssignRoom.dart';
-import 'package:pnustudenthousing/helpers/DataManger.dart';
-import 'package:intl/intl.dart';
+
 
 class NewStudentView extends StatefulWidget {
   final DocumentReference sturef;

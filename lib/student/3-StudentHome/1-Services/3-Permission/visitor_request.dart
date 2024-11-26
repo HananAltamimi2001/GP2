@@ -1,12 +1,8 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
-
 
 class VisitorRequest extends StatefulWidget {
   const VisitorRequest({super.key});
@@ -25,9 +21,6 @@ class _VisitorRequestState extends State<VisitorRequest> {
   TextEditingController _visitorNationalIDController = TextEditingController();
   TextEditingController _relativeRelationController = TextEditingController();
 
-  TextEditingController buildingController = TextEditingController();
-  TextEditingController floorController = TextEditingController();
-  TextEditingController residentUnitNoController = TextEditingController();
   TextEditingController durationController = TextEditingController();
 
   bool _canSubmitRequest = true;
@@ -42,12 +35,15 @@ class _VisitorRequestState extends State<VisitorRequest> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Heightsizedbox(h: 0.025),
             text(
               t: "Fill the required information",
               color: green1,
               align: TextAlign.center,
             ),
-
+            Heightsizedbox(
+              h: 0.030,
+            ),
             // ***************USER INFO***************
 
             Form(
@@ -131,63 +127,6 @@ class _VisitorRequestState extends State<VisitorRequest> {
                   Heightsizedbox(
                     h: 0.018,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.27,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: textform(
-                            controller: buildingController,
-                            hinttext: "Building",
-                            lines: 1,
-                            validator: (val) => val == ""
-                                ? "Please write the Building Number"
-                                : val!.contains(RegExp(r'[^\d]'))
-                                    ? "Can only contain numbers"
-                                    : null,
-                          ),
-                        ),
-                      ),
-                      Heightsizedbox(
-                        h: 0.018,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.27,
-                        child: Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: textform(
-                              lines: 1,
-                              hinttext: "Floor",
-                              controller: floorController,
-                              validator: (val) => val == ""
-                                  ? "Please write the Floor Number"
-                                  : val!.contains(RegExp(r'[^\d]'))
-                                      ? "Can only contain numbers"
-                                      : null,
-                            )),
-                      ),
-                      Heightsizedbox(
-                        h: 0.018,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.27,
-                        child: Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: textform(
-                              hinttext: "Unit",
-                              lines: 1,
-                              controller: residentUnitNoController,
-                              validator: (val) => val == ""
-                                  ? "Please write the Unit Number"
-                                  : val!.contains(RegExp(r'[^\d]'))
-                                      ? "Can only contain numbers"
-                                      : null,
-                            )),
-                      ),
-                    ],
-                  )
                 ],
               ),
             ),
@@ -237,7 +176,7 @@ class _VisitorRequestState extends State<VisitorRequest> {
                   ]),
 
                   Heightsizedbox(
-                    h: 0.018,
+                    h: 0.02,
                   ),
                   // ******************SUBMITREQUEST*************
                   Padding(
@@ -272,9 +211,9 @@ class _VisitorRequestState extends State<VisitorRequest> {
 
                                   if (studentData != null) {
                                     final String fullName =
-                                        studentData['efirstName'] +
+                                        studentData['firstName'] +
                                             ' ' +
-                                            studentData['elastName'];
+                                            studentData['lastName'];
                                     final Visitorname =
                                         _visitorFullNameController.text;
                                     final NationalId =
@@ -282,10 +221,8 @@ class _VisitorRequestState extends State<VisitorRequest> {
                                     final Relation =
                                         _relativeRelationController.text;
                                     final VisitDur = durationController.text;
-                                    final BuildNum = buildingController.text;
-                                    final FloorNum = floorController.text;
-                                    final ResUnit =
-                                        residentUnitNoController.text;
+                                    final roomInfo = studentData['roomref'];
+
                                     final Studphone =
                                         studentData['phoneNumber'];
                                     final visitordata = {
@@ -295,15 +232,13 @@ class _VisitorRequestState extends State<VisitorRequest> {
                                       'nationalId': NationalId,
                                       'relativeRelation': Relation,
                                       'time': selectedTime!.format(context),
-                                      'date': DateFormat('yyyy-MM-dd')
-                                          .format(selectedDate!)
-                                          .toString(),
+                                      'date': selectedDate!
+                                          .toString()
+                                          .split(' ')[0],
                                       'status': 'pending',
                                       'phoneNumber': Studphone,
                                       'visitingDuration': VisitDur,
-                                      'buildingNumber': BuildNum,
-                                      'floorNumber': FloorNum,
-                                      'residentialUnitNumber': ResUnit,
+                                      'roomInfo': roomInfo,
                                       'studentInfo': studentDocRef,
                                     };
 

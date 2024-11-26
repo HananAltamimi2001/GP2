@@ -205,15 +205,23 @@ class _LoginScreenState extends State<LoginScreen> {
           "An error occurred. Please try again later.",
           context,
           buttons: [
-            {"Ok": () => context.pop(),},
+            {
+              "Ok": () => context.pop(),
+            },
           ],
         );
       }
     } catch (e) {
-      // ErrorDialog('Login Failed. Incorrect email or password', context,
-      //     onPressed: () {
-      //   Navigator.pop(context);
-      // });
+      ErrorDialog(
+        'Login Failed. Incorrect email or password',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
+
       print('Error: $e');
     }
   }

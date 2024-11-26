@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:pnustudenthousing/authentication/firbase_auth_services.dart';
 import 'package:flutter/material.dart';
@@ -72,27 +73,6 @@ class _ForgetpassState extends State<Forgetpass> {
                                     color: Color(0xff007580),
                                   ),
                                 ),
-                                // // National ID or Iqama
-                                // textform(
-                                //   controller: NIDController,
-                                //   hinttext: "National ID or Iqama",
-                                //   lines: 1,
-                                //   validator: (val) {
-                                //     if (val == null || val.isEmpty) {
-                                //       return "Please write your ID";
-                                //     } else if (val.length != 10) {
-                                //       return "NID must be 10 digits long";
-                                //     } else if (!RegExp(r'^\d{10}$')
-                                //         .hasMatch(val)) {
-                                //       return "NID must contain only numbers";
-                                //     }
-                                //     return null;
-                                //   },
-                                // ),
-
-                                // Heightsizedbox(
-                                //   h: 0.018,
-                                // ),
 
                                 // Email
                                 textform(
@@ -126,10 +106,15 @@ class _ForgetpassState extends State<Forgetpass> {
                                   onPressed: () async {
                                     if (formKey.currentState!.validate()) {
                                       await verifyUser();
-              
                                     }
                                   },
                                 ),
+
+                                Heightsizedbox(
+                                  h: 0.018,
+                                ),
+
+                          
                               ],
                             ),
                           ),
@@ -167,12 +152,33 @@ class _ForgetpassState extends State<Forgetpass> {
             .get();
       }
       print(userQuery);
+      bool reseted = false;
       if (userQuery.docs.isNotEmpty) {
-        await _auth.resetPassword(
+        reseted = await _auth.resetPassword(
             emailController.text, context); // User verified
+        if (reseted) {
+          InfoDialog(
+            "Reset password email was sent please check your email inbox",
+            context,
+            buttons: [
+              {
+                "Ok": () => context.pop(),
+              },
+            ],
+          );
+        } else {
+          ErrorDialog(
+            "Error sending password reset email, Please try again later.",
+            context,
+            buttons: [
+              {
+                "Ok": () => context.pop(),
+              },
+            ],
+          );
+        }
       }
     } catch (e) {
-      
       print('Error fetching user data: $e');
     }
   }

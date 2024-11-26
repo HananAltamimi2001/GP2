@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pnustudenthousing/helpers/DataManger.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
-import 'package:pnustudenthousing/staff/2-StudentAffairs/3-Vacateing/1-List.dart';
 
 class VacateRequestView extends StatefulWidget {
   final requestid args;
@@ -53,6 +51,7 @@ class _VacateRequestViewState extends State<VacateRequestView> {
       // Fetch student data
       DocumentSnapshot studentSnapshot = await studentInfoRef.get();
       String fullName = studentSnapshot['fullName'] ?? 'N/A';
+      String efullName = studentSnapshot['efullName'] ?? 'N/A';
       String PNUID = studentSnapshot['PNUID'] ?? 'N/A';
       String email = studentSnapshot['email'] ?? 'N/A';
 
@@ -68,6 +67,7 @@ class _VacateRequestViewState extends State<VacateRequestView> {
         'roomId': roomId,
         'request': data,
         'fullName': fullName,
+        'efullName': efullName,
         'PNUID': PNUID,
         'email': email,
         'studentref': studentInfoRef,
@@ -236,6 +236,7 @@ class _VacateRequestViewState extends State<VacateRequestView> {
                                               pickedTime; // Update the selected time
                                         });
                                       }
+                                      return null;
                                     },
                                     labelText: "Select Time:",
                                   ),
@@ -251,6 +252,7 @@ class _VacateRequestViewState extends State<VacateRequestView> {
                                               pickedDate; // Update the selected date
                                         });
                                       }
+                                      return null;
                                     },
                                     labelText: "Select Date:",
                                   ),
@@ -284,27 +286,29 @@ class _VacateRequestViewState extends State<VacateRequestView> {
                                             .toString(),
                                         'status': 'Sent'
                                       });
-                                       // Create an instance of your Firestore mail collection
+                                      // Create an instance of your Firestore mail collection
                                       await FirebaseFirestore.instance
                                           .collection('mail')
                                           .add({
                                         'to': data['email'],
                                         'message': {
-                                          'subject': 'Vacate Request',
+                                          'subject': 'Vacate Request|طلب إخلاء',
                                           'html': """
                                           <html>
-                                            <body>
-                                              <p>Dear ${data['fullName']},</p>
-                                              <p>We have received your request to vacate your accommodation. Please make sure to clear the room of all personal belongings.</p>
-                                              <p>If you have any questions or need further assistance, feel free to contact us.</p>
-                                              <p>Best regards,</p>
-                                              <p><strong>${data['email']}</strong><br/>${data['email']}<br/>${data['email']}</p>
-                                            </body>
+                                          <body>
+                                          <p style="color: #339199; font-size: 20px;>Dear ${data['efullName']},</p>
+                                          <p style="color: #339199; font-size: 20px;text-align: right;">عزيزتي الطالبة ${data['fullName']},</p>
+                                          <p>We have received your request to vacate your Room. Please make sure to clear the room of all personal belongings.</p>
+                                          <p style="text-align: right;">لقد تلقينا طلبك بإخلاء غرفتك. يرجى التأكد من إخلاء الغرفة من جميع المتعلقات الشخصية.</p>
+                                          <p>Best regards,</p>
+                                          <p>Resident Students affairs,</p>
+                                          <p style="text-align: right;">،أطيب التحيات</p>
+                                          <p style="text-align: right;">شوؤن طالبات السكن</p>
+                                          </body>
                                           </html>
-                                        """,
+                                           """,
                                         },
                                       });
-
                                       print('sended email');
 
                                       try {

@@ -81,7 +81,7 @@ class StaffprofileState extends State<Staffprofile> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Dtext(
-                      t: ' ${staffData['fullname'] ?? 'N/A'}',
+                      t: ' ${staffData['efullName'] ?? 'N/A'}',
                       align: TextAlign.center,
                       color: dark1,
                       size: 0.06,

@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/DataManger.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
-import 'package:pnustudenthousing/staff/2-StudentAffairs/2-Application/4-AssignRoom.dart';
-import 'package:pnustudenthousing/helpers/DataManger.dart';
 import 'package:intl/intl.dart';
 
 class ApplicationRequestView extends StatefulWidget {
@@ -19,6 +17,8 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   late final String fullname;
+  late final String efullname;
+  late String roomId;
   late final String email;
   final formKey = GlobalKey<FormState>();
   Future<Map<String, dynamic>>? getRequest;
@@ -81,21 +81,35 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
         await FirebaseFirestore.instance.collection('mail').add({
           'to': email,
           'message': {
-            'subject': 'Vacate Request',
+            'subject': 'Application Request|طلب سكن',
             'html': """
-                                          <html>
-                                            <body>
-                                              <p style="color: #339199; font-size: 20px;>Dear $fullname,</p>
-                                              <p>We have received your request to vacate your accommodation. Please make sure to clear the room of all personal belongings.</p>
-                                              <p>If you have any questions or need further assistance, feel free to contact us.</p>
-                                              <p>Best regards,</p>
-                                              <p>Resident Students affairs,</p>
-                                              <p style="text-align: right;">،أطيب التحيات</p>
-                                              <p style="text-align: right;">شوؤن طالبات السكن</p>
-                                            </body>
-                                            </html>
-                                       
-                                                                                """,
+        <html>
+        <body>
+        <p style="color: #339199; font-size: 20px;>Dear $efullname,</p>
+        <p style="color: #339199; font-size: 20px;text-align: right;">عزيزتي الطالبة $fullname,</p>
+        <p style="color: #339199; font-size: 20px;">Dear [Student Name],</p>
+
+        <p style="font-size: 16px;">We are pleased to inform you that your housing application has been initially accepted. Congratulations! Your application is under review, and we would like to schedule a meeting through teams</p>
+        <p style="font-size: 16px;text-align: right;">نحن سعداء بإبلاغك بأنه تم قبول طلب السكن بشكل مبدئي. تهانينا! طلبك قيد المراجعة، ونرغب في تحديد موعد للاجتماع معك خلاص تطبيق تيمز .</p>
+
+        <p style="font-size: 16px;">Please be informed that the meeting is scheduled for:</p>
+        <p style="font-size: 16px;">Date: $selectedDate</p>
+        <p style="font-size: 16px;">Time: $selectedTime</p>
+
+        <p style="font-size: 16px;text-align: right;">يرجى العلم أن الاجتماع مقرر في:</p>
+        <p style="font-size: 16px;text-align: right;">التاريخ: $selectedDate</p>
+        <p style="font-size: 16px;text-align: right;">الوقت: $selectedTime</p>
+
+        <p style="font-size: 16px;">We look forward to meeting with you!</p>
+        <p style="font-size: 16px;">Resident Student Affairs</p>
+        <p>Best regards,</p>
+        <p>Resident Students affairs,</p>
+        <p style="font-size: 16px;text-align: right;">نتطلع إلى لقائك!</p>
+        <p style="color: #339199; font-size: 20px;text-align: right;">مع أطيب التحيات،</p>
+        <p style="text-align: right;">شوؤن طالبات السكن</p>
+        </body>
+        </html>
+        """,
           },
         });
         updated = true;
@@ -129,6 +143,33 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
         updated = true;
         print("updattttttttteee");
         moveDataAndUpdate(requestId);
+        // Create an instance of your Firestore mail collection
+        await FirebaseFirestore.instance.collection('mail').add({
+          'to': email,
+          'message': {
+            'subject': 'Application Request|طلب سكن',
+            'html': """
+        <html>
+        <body>
+        <p style="color: #339199; font-size: 20px;>Dear $efullname,</p>
+        <p style="color: #339199; font-size: 20px;text-align: right;">عزيزتي الطالبة $fullname,</p>
+        <p dir="rtl" style="font-size: 16px;">يسعدنا أن نعلمكم بأنه قد تم **قبول طلب السكن** الخاص بك نهائيًا.</p>
+        <p style="font-size: 16px;">We are pleased to inform you that your housing application has been **finally accepted**.</p>
+        <p dir="rtl" style="font-size: 16px;">هذا هو رقم غرفتك $roomId</p>
+
+        <p style="font-size: 16px;">Here is your Room number $roomId</p>
+        <p style="font-size: 16px;">نتمنى لك الأفضل في رحلتك نحو المستقبل والراحة في منزلك الثاني</p>
+
+        <p style="font-size: 16px;">Wishing you the best on your journey as you settle into your second home.</p>
+        <p>Best regards,</p>
+        <p>Resident Students affairs,</p>
+        <p style="color: #339199; font-size: 20px;text-align: right;">مع أطيب التحيات،</p>
+        <p style="text-align: right;">شوؤن طالبات السكن</p>
+          </body>
+        </html>
+        """,
+          },
+        });
         updated = true;
       } else if (status == 'Reject' && rooreff is DocumentReference) {
         await requestId.update({
@@ -338,7 +379,7 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
 
                 final data = snapshot.data!;
                 final requestData = data['request'];
-                String roomId = "Rooms";
+                roomId = "Rooms";
                 var roomref;
                 if (requestData['roomref'] != null) {
                   roomref = requestData['roomref'];
@@ -350,7 +391,7 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
                 final sturef = data['studentref'];
                 final reqref = data['requestref'];
                 fullname = requestData['fullName'] ?? 'N/A';
-                final String efullname = requestData['efullName'] ?? 'N/A';
+                efullname = requestData['efullName'] ?? 'N/A';
                 final String BloodType = requestData['bloodType'] ?? 'N/A';
                 final String DoB = requestData['DoB'] ?? 'N/A';
                 final String NID = requestData['NID'] ?? 'N/A';

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
@@ -12,10 +11,6 @@ class OvernightRequest extends StatefulWidget {
   State<OvernightRequest> createState() => _OvernightRequestState();
 }
 
-final TextEditingController buildingController = TextEditingController();
-final TextEditingController floorController = TextEditingController();
-final TextEditingController residentUnitNoController = TextEditingController();
-
 class _OvernightRequestState extends State<OvernightRequest> {
   DateTime? ArrselectedDate;
   DateTime? DepselectedDate;
@@ -24,8 +19,6 @@ class _OvernightRequestState extends State<OvernightRequest> {
 
   bool? studentChecked = false;
   bool? absenceChecked = false;
-
-  final formKey = GlobalKey<FormState>();
 
   bool validateCheckboxes() {
     return studentChecked == true && absenceChecked == true;
@@ -44,10 +37,15 @@ class _OvernightRequestState extends State<OvernightRequest> {
         child: Container(
           child: Column(
             children: [
+              Heightsizedbox(h: 0.025),
+
               text(
                 t: "Fill the required information",
                 color: green1,
                 align: TextAlign.center,
+              ),
+              Heightsizedbox(
+                h: 0.030,
               ),
               Padding(
                 padding: const EdgeInsets.all(18),
@@ -56,7 +54,7 @@ class _OvernightRequestState extends State<OvernightRequest> {
                   children: [
                     Container(
                       child: Dtext(
-                        t: "Departure Date:",
+                        t: "Arrival Date:",
                         align: TextAlign.center,
                         color: dark1,
                         size: 0.04,
@@ -65,7 +63,7 @@ class _OvernightRequestState extends State<OvernightRequest> {
                     const Spacer(),
                     Container(
                       child: Dtext(
-                        t: "Arrival Date:",
+                        t: "Departure Date:",
                         align: TextAlign.center,
                         color: dark1,
                         size: 0.04,
@@ -124,14 +122,14 @@ class _OvernightRequestState extends State<OvernightRequest> {
                 child: Row(
                   children: [
                     Dtext(
-                      t: "Departure Time:",
+                      t: "Arrival Time:",
                       color: Color(0xff007580),
                       size: 0.04,
                       align: TextAlign.start,
                     ),
                     Spacer(),
                     Dtext(
-                      t: "Arrival Time:",
+                      t: "Departure Time:",
                       align: TextAlign.start,
                       size: 0.04,
                       color: Color(0xff007580),
@@ -143,23 +141,6 @@ class _OvernightRequestState extends State<OvernightRequest> {
                 padding: const EdgeInsets.fromLTRB(25, 5, 25, 5),
                 child: Row(
                   children: [
-                    OurFormField(
-                      fieldType: 'time',
-                      selectedTime: DepselectedTime,
-                      onSelectTime: () async {
-                        final TimeOfDay? pickedTime = await pickTime(
-                            context); // the pickTime(context) it`s the function in the bellow (18 in this Design file)
-                        if (pickedTime != null) {
-                          setState(() {
-                            DepselectedTime =
-                                pickedTime; // Update the selected time
-                          });
-                        }
-                      },
-                      labelText:
-                          "", // if you don`t need labelText make it  empty : labelText: "",
-                    ),
-                    const Spacer(),
                     OurFormField(
                       fieldType: 'time',
                       selectedTime: ArrselectedTime,
@@ -176,68 +157,29 @@ class _OvernightRequestState extends State<OvernightRequest> {
                       labelText:
                           "", // if you don`t need labelText make it  empty : labelText: "",
                     ),
+                    const Spacer(),
+                    OurFormField(
+                      fieldType: 'time',
+                      selectedTime: DepselectedTime,
+                      onSelectTime: () async {
+                        final TimeOfDay? pickedTime = await pickTime(
+                            context); // the pickTime(context) it`s the function in the bellow (18 in this Design file)
+                        if (pickedTime != null) {
+                          setState(() {
+                            DepselectedTime =
+                                pickedTime; // Update the selected time
+                          });
+                        }
+                      },
+                      labelText:
+                          "", // if you don`t need labelText make it  empty : labelText: "",
+                    ),
                   ],
                 ),
               ),
-              Heightsizedbox(
-                h: 0.020,
-              ),
+
               //building number
-              Form(
-                key: formKey,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.27,
-                      child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: textform(
-                            controller: buildingController,
-                            hinttext: "Building",
-                            lines: 1,
-                            validator: (val) => val == ""
-                                ? "Please write the Building Number"
-                                : val!.contains(RegExp(r'[^\d]'))
-                                    ? "Can only contain numbers"
-                                    : null,
-                          )),
-                    ),
-                    // floor number
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.27,
-                      child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: textform(
-                            lines: 1,
-                            hinttext: "Floor",
-                            controller: floorController,
-                            validator: (val) => val == ""
-                                ? "Please write the Floor Number"
-                                : val!.contains(RegExp(r'[^\d]'))
-                                    ? "Can only contain numbers"
-                                    : null,
-                          )),
-                    ),
-                    // for resident unit
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.27,
-                      child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: textform(
-                            hinttext: "Unit",
-                            lines: 1,
-                            controller: residentUnitNoController,
-                            validator: (val) => val == ""
-                                ? "Please write the Unit Number"
-                                : val!.contains(RegExp(r'[^\d]'))
-                                    ? "Can only contain numbers"
-                                    : null,
-                          )),
-                    ),
-                  ],
-                ),
-              ),
+
               const Heightsizedbox(
                 h: 0.045,
               ),
@@ -279,6 +221,7 @@ class _OvernightRequestState extends State<OvernightRequest> {
                   ),
                 ],
               ),
+              Heightsizedbox(h: 0.02),
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Align(
@@ -288,8 +231,7 @@ class _OvernightRequestState extends State<OvernightRequest> {
                     background: dark1,
                     onPressed: _canSubmitRequest
                         ? () async {
-                            if (validateCheckboxes() &&
-                                formKey.currentState!.validate()) {
+                            if (validateCheckboxes()) {
                               final firestore = FirebaseFirestore.instance;
                               final String currentUserId =
                                   await FirebaseAuth.instance.currentUser!.uid;
@@ -312,32 +254,26 @@ class _OvernightRequestState extends State<OvernightRequest> {
 
                               if (studentData != null) {
                                 final String fullName =
-                                    studentData['efirstName'] +
+                                    studentData['firstName'] +
                                         ' ' +
-                                        studentData['elastName'];
+                                        studentData['lastName'];
 
-                                final BuildNum = buildingController.text;
-                                final FloorNum = floorController.text;
-                                final ResUnit = residentUnitNoController.text;
+                                final roomInfo = studentData['roomref'];
                                 final Studphone = studentData['phoneNumber'];
 
                                 final overnightdata = {
                                   'studentId': studentData['PNUID'],
-                                  'departureDate': DateFormat('yyyy-MM-dd')
-                                      .format(DepselectedDate!)
-                                      .toString(),
-                                  'arrivalDate': DateFormat('yyyy-MM-dd')
-                                      .format(ArrselectedDate!)
-                                      .toString(),
+                                  'departureDate':
+                                      DepselectedDate!.toString().split(' ')[0],
+                                  'arrivalDate':
+                                      ArrselectedDate!.toString().split(' ')[0],
                                   'departureTime':
                                       DepselectedTime!.format(context),
                                   'arrivalTime':
                                       ArrselectedTime!.format(context),
                                   'status': 'pending',
                                   'fullName': fullName,
-                                  'buildingNumber': BuildNum,
-                                  'floorNumber': FloorNum,
-                                  'residentialUnitNumber': ResUnit,
+                                  'roomInfo': roomInfo,
                                   'phoneNumber': Studphone,
                                   'studentInfo': studentDocRef,
                                 };
@@ -381,7 +317,7 @@ class _OvernightRequestState extends State<OvernightRequest> {
                                   print('Error adding data: $e');
                                 }
                               } else {
-                                print('Student Data not found');
+                                print('لم يتم العثور على بيانات الطالب');
                               }
                             }
                           }

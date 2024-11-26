@@ -124,6 +124,17 @@ class _EmergencyState extends State<Emergency> {
 
   Future<void> sendHelpRequest(double latitude, double longitude) async {
     try {
+      final studentDocSnapshot = await studentDocRef.get();  // Fetch student data
+      if (!studentDocSnapshot.exists) {
+        throw Exception("Student document not found");
+      }
+
+      // Extract the building number from the room reference
+      final roomRef = studentDocSnapshot['roomref'];
+      final roomId = roomRef is DocumentReference ? roomRef.id : roomRef;
+      final buildingNumber = roomId.split('.')[0]; // Extract building number
+
+      // Create the help request document
       final helpRequestDocRef = await FirebaseFirestore.instance.collection('helpRequests').add({
         'location': GeoPoint(latitude, longitude),
         'timestamp': FieldValue.serverTimestamp(),
@@ -131,16 +142,21 @@ class _EmergencyState extends State<Emergency> {
         'studentInfo': studentDocRef,
       });
 
+      // Update student document with the new help request reference
       await studentDocRef.update({
         'helpRequests': FieldValue.arrayUnion([helpRequestDocRef])
       });
 
-      await FirebaseMessaging.instance.subscribeToTopic('security');
+      // Subscribe to relevant topics
+      await FirebaseMessaging.instance.subscribeToTopic('HousingSecurityGuard'); // General security topic
+      await FirebaseMessaging.instance.subscribeToTopic('Supervisor_Building_$buildingNumber'); // Building-specific topic for supervisor
 
+      // Show success dialog
       InfoDialog("Help request sent successfully", context, buttons: [
         {"OK": () async => context.pop()},
       ]);
     } catch (e) {
+      // Show error dialog
       ErrorDialog("An error occurred while sending the request", context, buttons: [
         {"OK": () async => context.pop()},
       ]);
