@@ -39,7 +39,7 @@ class _SearchForStudentUState extends State<SearchForStudentU> {
 
       List<Map<String, dynamic>> results = snapshot.docs.map((doc) {
         return {
-          'fullname': doc['efullName'],
+          'fullname': '${doc['efirstName']} ${doc['elastName']}',
           'sturef': doc.reference,
         };
       }).toList();
@@ -49,7 +49,9 @@ class _SearchForStudentUState extends State<SearchForStudentU> {
         _isLoading = false;
       });
     } catch (e) {
-      print("Error during search: $e");
+      ErrorDialog("Error during search", context, buttons: [
+        {"OK": () async => context.pop()},
+      ]);
       setState(() {
         _isLoading = false;
       });
@@ -60,50 +62,57 @@ class _SearchForStudentUState extends State<SearchForStudentU> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: OurAppBar(title: 'Search for Student'),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                labelText: 'Search By PNUID',
-                labelStyle: TextStyle(color: Color(0xFF339199)),
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: _performSearch,
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    labelText: 'Search By PNUID',
+                    labelStyle: TextStyle(color: Color(0xFF339199)),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: _performSearch,
+                    ),
+                  ),
                 ),
               ),
-            ),
+              Expanded(
+                child: _isLoading
+                    ? Center(child: OurLoadingIndicator())
+                    : _searchResults.isEmpty
+                        ? Center(
+                            child: text(
+                              t: "No students found.",
+                              align: TextAlign.center,
+                              color: grey1,
+                            ),
+                            
+                          )
+                        : OurListView(
+                            data: _searchResults,
+                            trailingWidget: (item) => Dactionbutton(
+                              height: 0.044,
+                              width: 0.19,
+                              text: 'View',
+                              padding: 0,
+                              background: dark1,
+                              fontsize: 0.03,
+                              onPressed: () {
+                                context.goNamed('/StudentView2',
+                                    extra: item['sturef']);
+                              },
+                            ),
+                            title: (item) => item['fullname'] ?? 'No Name',
+                          ),
+              ),
+            ],
           ),
-          Expanded(
-            child: _isLoading
-                ? Center(child: OurLoadingIndicator())
-                : _searchResults.isEmpty
-                    ? Center(
-                        child: text(
-                          t: "No students found.",
-                          align: TextAlign.center,
-                          color: grey1,
-                        ),
-                      )
-                    : OurListView(
-                        data: _searchResults,
-                        trailingWidget: (item) => Dactionbutton(
-                          height: 0.044,
-                          width: 0.19,
-                          text: 'View',
-                          background: dark1,
-                          fontsize: 0.03,
-                          onPressed: () {
-                            context.goNamed('/StudentView2',
-                                extra: item['sturef']);
-                          },
-                        ),
-                        title: (item) => item['fullname'] ?? 'No Name',
-                      ),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -27,7 +27,7 @@ class _EmergencyState extends State<Emergency> {
     super.initState();
     studentId = FirebaseAuth.instance.currentUser!.uid;
     studentDocRef = FirebaseFirestore.instance.collection('student').doc(studentId);
-    requestPermission();
+    handleLocationPermission();
   }
 
   @override
@@ -70,14 +70,30 @@ class _EmergencyState extends State<Emergency> {
     );
   }
 
-  Future<void> requestPermission() async {
-    PermissionStatus status = await Permission.location.request();
-    if (status.isGranted) {
-      print('Location permission granted.');
-    } else if (status.isDenied || status.isPermanentlyDenied) {
-      print('Location permission denied. Asking user to go to settings.');
-      await openAppSettings();
+  Future<void> handleLocationPermission() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!serviceEnabled) {
+      print('Location services are disabled.');
+      return;
     }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.deniedForever) {
+      print('Location permissions are permanently denied.');
+      openAppSettings();  // Ask user to go to settings
+      return;
+    }
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+        print('Location permission denied.');
+        return;
+      }
+    }
+
+    print('Permission granted');
   }
 
   bool isWithinBounds(double userLatitude, double userLongitude) {

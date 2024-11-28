@@ -16,24 +16,22 @@ class PermissionRequest extends StatelessWidget {
         title: "Permission Requests",
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 190, 0, 0),
+        padding: const EdgeInsets.fromLTRB(20.0, 120.0, 20.0, 20.0),
         child: Center(
             child: Column(
           children: [
-            HomeButton1(
+            PagesButton(
               name: "      Visitor Request",
               onPressed: () {
                 context.pushNamed('/visitorrequest');
               },
-              icon: Icons.door_back_door,
             ),
             Heightsizedbox(
               h: 0.02,
             ),
             Padding(
               padding: const EdgeInsets.all(10),
-              child: HomeButton2(
-                icon: Icons.nights_stay,
+              child: PagesButton(
                 name: "Overnight Request",
                 onPressed: () {
                   context.pushNamed('/overnightrequest');
@@ -45,8 +43,7 @@ class PermissionRequest extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(10),
-              child: HomeButton1(
-                icon: Icons.inbox,
+              child: PagesButton(
                 name: "      View Requests",
                 onPressed: () {
                   context.pushNamed('/viewrequests');

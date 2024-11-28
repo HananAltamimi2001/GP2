@@ -135,15 +135,17 @@ class _HousingVacateState extends State<HousingVacate> {
                       print('Other reason not specified');
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Please specify the reason for vacating.'),
+                          content:
+                              Text('Please specify the reason for vacating.'),
                         ),
                       );
                       return;
                     }
 
-                    final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+                    final currentUserId =
+                        FirebaseAuth.instance.currentUser!.uid;
                     print('Current user ID: $currentUserId');
-                    
+
                     final DocumentReference studentDocRef = FirebaseFirestore
                         .instance
                         .collection('student')
@@ -160,22 +162,28 @@ class _HousingVacateState extends State<HousingVacate> {
                     };
 
                     print('Vacate data: $vacateData');
-                    
+
                     try {
                       await housingDocRef.set(vacateData);
                       print('Vacate request added to VacateHousing collection');
-                      
-                      await studentDocRef.update({'VacateHousing': housingDocRef});
-                      print('Vacate request reference added to student document');
-                      
+
+                      await studentDocRef
+                          .update({'VacateHousing': housingDocRef});
+                      print(
+                          'Vacate request reference added to student document');
+
                       InfoDialog(
                           "Your vacate request has been\nsubmitted successfully",
                           context,
                           buttons: [
-                            {"OK": () async => context.pop()}
+                            {
+                              "OK": () async => {context.pop(), context.pop()}
+                            }
                           ]);
                     } catch (e) {
-                      print('Error adding data: $e');
+                      ErrorDialog("Error adding data: $e", context, buttons: [
+                        {"OK": () async => context.pop()},
+                      ]);
                     }
                   },
                 ),

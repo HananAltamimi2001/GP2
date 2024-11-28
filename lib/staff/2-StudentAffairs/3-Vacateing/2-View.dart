@@ -133,7 +133,7 @@ class _VacateRequestViewState extends State<VacateRequestView> {
                       ),
                       OurContainer(
                         child: Dtext(
-                          t: data['fullName'],
+                          t: data['efullName'],
                           align: TextAlign.center,
                           color: Colors.black,
                           fontWeight: FontWeight.w400,

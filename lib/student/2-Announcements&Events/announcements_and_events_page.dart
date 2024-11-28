@@ -57,8 +57,9 @@ class _AnnouncementsAndEventsState extends State<AnnouncementsAndEvents> {
         }
       }
     } catch (e) {
-      print(
-          'Error deleting old announcements: $e'); // Log any errors that occur
+      ErrorDialog("Error deleting old announcements: $e", context, buttons: [
+        {"OK": () async => context.pop()},
+      ]);
     }
   }
 
@@ -66,14 +67,16 @@ class _AnnouncementsAndEventsState extends State<AnnouncementsAndEvents> {
   Future<void> _fetchAnnouncements() async {
     try {
       final querySnapshot = await FirebaseFirestore.instance
-          .collection('Annoucements')
+          .collection('Announcements')
           .orderBy("uploadDate", descending: true)
           .get(); // Fetch announcements ordered by upload date
       announcements = querySnapshot.docs.map((doc) => doc.data()).toList();
 
       setState(() {}); // Update UI with fetched data
     } catch (e) {
-      print('Error fetching announcements: $e'); // Log any errors that occur
+      ErrorDialog("Error fetching announcements: $e", context, buttons: [
+        {"OK": () async => context.pop()},
+      ]);
     }
   }
 
@@ -102,7 +105,9 @@ class _AnnouncementsAndEventsState extends State<AnnouncementsAndEvents> {
         }
       }
     } catch (e) {
-      print('Error deleting expired events: $e'); // Log any errors that occur
+      ErrorDialog("Error deleting expired events: $e", context, buttons: [
+        {"OK": () async => context.pop()},
+      ]);
     }
   }
 
@@ -116,7 +121,9 @@ class _AnnouncementsAndEventsState extends State<AnnouncementsAndEvents> {
       events = querySnapshot.docs.map((doc) => doc.data()).toList();
       setState(() {}); // Update UI with fetched data
     } catch (e) {
-      print('Error fetching events: $e'); // Log any errors that occur
+      ErrorDialog("Error fetching events: $e", context, buttons: [
+        {"OK": () async => context.pop()},
+      ]);
     }
   }
 
@@ -278,14 +285,15 @@ class _AnnouncementsAndEventsState extends State<AnnouncementsAndEvents> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Display announcement image; uses fallback icon if image fails to load
-              Image.network(
-                announcement['imageUrl'] ?? '',
-                height: screenHeight * 0.2,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Icon(
-                  Icons.image,
-                  size: screenHeight * 0.2,
+              if(announcement['imageUrl'] != null && announcement['imageUrl'].isNotEmpty)
+                 Image.network(
+                   announcement['imageUrl'] ?? '',
+                   height: screenHeight * 0.2,
+                   width: double.infinity,
+                   fit: BoxFit.cover,
+                   errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.image,
+                    size: screenHeight * 0.2,
                 ),
               ),
               Heightsizedbox(

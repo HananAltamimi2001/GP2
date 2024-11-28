@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart'; // Importing Firestore to interact with Firebase Cloud Firestore
 import 'package:flutter/material.dart'; // Importing Flutter's material package for UI components
+import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart'; // Importing our design library
 
 // Stateful widget to represent the housing staff page
@@ -13,7 +14,6 @@ class Housingstaff extends StatefulWidget {
 class _HousingstaffState extends State<Housingstaff> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance; // Firestore instance to fetch data from Firebase
   List<Map<String, dynamic>> announcements = []; // Placeholder list to hold announcements if needed in the future
-  String message = ""; // Variable to hold status or error messages
   bool _isLoading = true; // Loading indicator to show when data is being fetched
   String email = " "; // Variable to hold the email fetched from Firestore
   String phone = " "; // Variable to hold the phone number fetched from Firestore
@@ -36,7 +36,7 @@ class _HousingstaffState extends State<Housingstaff> {
       ),
       body: SafeArea(// Ensuring the content is within the safe area (not overlapping with notches)
         child: _isLoading
-            ?  OurLoadingIndicator() // Show a loading spinner if data is still being fetched
+            ? Center(child:OurLoadingIndicator() ,)// Show a loading spinner if data is still being fetched
             : SingleChildScrollView(
           // Scrollable view to hold staff members' cards
           child: Padding(
@@ -158,19 +158,22 @@ Future<void> _fetchdata() async {
         phone = document["phone"]; // Assign the phone field to the local variable
         Telephone = document["Telephone"]; // Assign the telephone field to the local variable
         OfficeNumper = document["Office Numper"]; // Assign the office number field to the local variable
-        message = ""; // Clear any message since data is successfully fetched
         _isLoading = false; // Data fetching complete, turn off loading
       });
     } else {
+      ErrorDialog("Document not found!", context, buttons: [
+        {"OK": () async => context.pop()},
+      ]);
       setState(() {
-        message = "Document not found!"; // Show an error if the document doesn't exist
         _isLoading = false; // Stop loading as data fetching is done
       });
     }
   } catch (e) {
     // Handle any errors that occur during fetching
+    ErrorDialog("Error: $e", context, buttons: [
+      {"OK": () async => context.pop()},
+    ]);
     setState(() {
-      message = "Error: $e"; // Display error message
       _isLoading = false; // Stop loading due to error
      });
    }

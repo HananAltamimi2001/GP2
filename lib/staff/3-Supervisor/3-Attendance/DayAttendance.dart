@@ -58,93 +58,127 @@ class DayAttendanceState extends State<DayAttendance> {
       }
 
       // Reference to supervisor document
-      final supervisorDocRef = FirebaseFirestore.instance.collection('staff').doc(user.uid);
+      final supervisorDocRef =
+          FirebaseFirestore.instance.collection('staff').doc(user.uid);
       final supervisorDocSnapshot = await supervisorDocRef.get();
 
       if (!supervisorDocSnapshot.exists) {
         print('Supervisor data not found.');
         return studentData;
       }
+      final buildingNumber =
+          supervisorDocSnapshot['building']; // Supervisor's building number
 
-      final buildingNumber = supervisorDocSnapshot['building']; // Supervisor's building number
-
-      // Fetch all resident students and filter by building
+// Fetch all resident students and filter by building
       QuerySnapshot studentSnapshot = await FirebaseFirestore.instance
           .collection('student')
           .where('resident', isEqualTo: true)
           .get();
-
+      var student;
       for (var studentDoc in studentSnapshot.docs) {
-        final student = studentDoc.data() as Map<String, dynamic>;
-        final roomRef = student['roomref'];
-        final roomId = roomRef is DocumentReference ? roomRef.id : roomRef;
-        final studentBuildingNumber = roomId.split('.')[0]; // Extract building number
+        student = studentDoc.data() as Map<String, dynamic>;
 
-        if (studentBuildingNumber != buildingNumber) continue;
+        // Check if roomref exists and is a DocumentReference
+        if (student['roomref'] == null ||
+            student['roomref'] is! DocumentReference) {
+          print("Invalid or missing roomref for student: ${studentDoc.id}");
+          continue;
+        }
 
-        // Retrieve attendance map and status for the selected day
-        Map<String, dynamic>? attendanceMap = student['attendance'];
-        DateTime now = DateTime.now();
-        int currentWeekday = now.weekday % 7; // Make Sunday = 0
-        final List<String> days = [
-          'Sunday',
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-          'Saturday'
-        ];
-        int selectedDayIndex = days.indexOf(day); // Find index of "Sunday", "Monday", etc.
-        DateTime selectedDate = now.subtract(
-            Duration(days: currentWeekday - selectedDayIndex));
+        final roomRef = student['roomref'] as DocumentReference;
 
-        // Format the selected date to match the attendance map keys
-        String formattedDay = DateFormat('yyyy-MM-dd').format(selectedDate);
-        print('f: $formattedDay');
-        // Extract the attendance status for the selected day
-        String attendanceStatus = attendanceMap?[formattedDay] ?? 'Absence';
+        // Safely access the roomId
+        final roomId = roomRef.id;
+        if (roomId == null || !roomId.contains('.')) {
+          print("Invalid roomId format: $roomId for student: ${studentDoc.id}");
+          continue;
+        }
 
-        String? pnuid = student['PNUID'];
-        String checkStatus = student['checkStatus'] ?? '';
+        // Extract building number
+        final studentBuildingNumber =
+            roomId.split('.')[0]; // Extract building number
 
-        if (pnuid != null) {
-          // Fetch overnight requests for this student
-          QuerySnapshot overnightSnapshot = await FirebaseFirestore.instance
-              .collection('OvernightRequest')
-              .where('studentId', isEqualTo: pnuid)
-              .where('status', isEqualTo: 'Accepte')
-              .get();
+        if (studentBuildingNumber != buildingNumber) {
+          // Retrieve attendance map and status for the selected day
+          Map<String, dynamic>? attendanceMap = student['attendance'];
+          DateTime now = DateTime.now();
+          int currentWeekday = now.weekday % 7; // Make Sunday = 0
+          final List<String> days = [
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday'
+          ];
+          int selectedDayIndex =
+              days.indexOf(day); // Find index of "Sunday", "Monday", etc.
+          DateTime selectedDate =
+              now.subtract(Duration(days: currentWeekday - selectedDayIndex));
 
-          bool hasOvernightPermission = overnightSnapshot.docs.any((overnightDoc) {
-            final overnightData = overnightDoc.data() as Map<String, dynamic>;
+          // Format the selected date to match the attendance map keys
+          String formattedDay = DateFormat('yyyy-MM-dd').format(selectedDate);
+          print('f: $formattedDay');
+          // Extract the attendance status for the selected day
+          String attendanceStatus = attendanceMap?[formattedDay] ?? 'Absence';
 
-            DateTime arrivalDateTime = parseDateTime(overnightData['arrivalDate'], overnightData['arrivalTime']);
-            DateTime departureDateTime = parseDateTime(overnightData['departureDate'], overnightData['departureTime']);
-            DateTime? checkInTime = convertTimestamp(student['checkTime']);
+          String? pnuid = student['PNUID'];
+          String checkStatus = student['checkStatus'] ?? '';
 
-            if (checkStatus == 'Checked-In' && checkInTime != null) {
-              return checkInTime.isBefore(arrivalDateTime) || checkInTime.isBefore(departureDateTime);
-            }
-            return true;
-          });
+          if (pnuid != null) {
+            // Fetch overnight requests for this student
+            QuerySnapshot overnightSnapshot = await FirebaseFirestore.instance
+                .collection('OvernightRequest')
+                .where('studentId', isEqualTo: pnuid)
+                .where('status', isEqualTo: 'Accepte')
+                .get();
 
-          // Assign color based on attendance and overnight status
-          Color statusColor = determineStatusColor(attendanceStatus, hasOvernightPermission);
+            bool hasOvernightPermission =
+                overnightSnapshot.docs.any((overnightDoc) {
+              final overnightData = overnightDoc.data() as Map<String, dynamic>;
 
-          studentData.add({
-            'name': '${student['efirstName'] ?? ''} ${student['elastName'] ?? ''}'.trim(),
-            'color': statusColor,
-            'PNUID': pnuid,
-            'email': student['email'] ?? 'Unknown',
-            'phone': student['phone'] ?? 'Unknown',
-          });
+              DateTime arrivalDateTime = parseDateTime(
+                  overnightData['arrivalDate'], overnightData['arrivalTime']);
+              DateTime departureDateTime = parseDateTime(
+                  overnightData['departureDate'],
+                  overnightData['departureTime']);
+              DateTime? checkInTime = convertTimestamp(student['checkTime']);
+
+              if (checkStatus == 'Checked-In' && checkInTime != null) {
+                return checkInTime.isBefore(arrivalDateTime) ||
+                    checkInTime.isBefore(departureDateTime);
+              }
+              return true;
+            });
+
+            // Assign color based on attendance and overnight status
+            Color statusColor =
+                determineStatusColor(attendanceStatus, hasOvernightPermission);
+
+            studentData.add({
+              'name':
+                  '${student['efirstName'] ?? ''} ${student['elastName'] ?? ''}'
+                      .trim(),
+              'color': statusColor,
+              'PNUID': pnuid,
+              'email': student['email'] ?? 'Unknown',
+              'phone': student['phone'] ?? 'Unknown',
+            });
+          }
         }
       }
-
       return studentData;
     } catch (e) {
-      print('Error loading attendance data: $e');
+      ErrorDialog(
+        'rror loading attendance data: $e',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       return []; // Return an empty list on error
     }
   }
@@ -154,7 +188,8 @@ class DayAttendanceState extends State<DayAttendance> {
 Color determineStatusColor(
     String attendanceStatus, bool hasOvernightPermission) {
   if (attendanceStatus == 'Present') return green1;
-  if (attendanceStatus == 'Absence') return hasOvernightPermission ? red1 : yellow1;
+  if (attendanceStatus == 'Absence')
+    return hasOvernightPermission ? red1 : yellow1;
   return hasOvernightPermission ? red1 : grey1;
 }
 

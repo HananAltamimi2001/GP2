@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/DataManger.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 
-
 class StudentViewU extends StatefulWidget {
   final DocumentReference sturef;
   const StudentViewU({super.key, required this.sturef});
@@ -36,6 +35,15 @@ class _StudentViewUState extends State<StudentViewU> {
         throw Exception("Document does not exist");
       }
     } catch (e) {
+      ErrorDialog(
+        'Error fetching document',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       // Handle any errors that occur
       print("Error fetching document: $e");
       rethrow; // Re-throw the exception to handle it outside the function if needed
@@ -50,6 +58,15 @@ class _StudentViewUState extends State<StudentViewU> {
         getRequest = getDocumentData(widget.sturef);
       });
     } catch (e) {
+      ErrorDialog(
+        'Error updating field',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       print("Error updating field: $e");
     }
   }
@@ -161,7 +178,7 @@ class _StudentViewUState extends State<StudentViewU> {
                         Heightsizedbox(h: 0.018),
 
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             // BloodType
                             Column(
@@ -188,7 +205,6 @@ class _StudentViewUState extends State<StudentViewU> {
                                 ),
                               ],
                             ),
-                            Widthsizedbox(w: 0.09),
                             // Dob
                             Column(
                               children: [

@@ -26,7 +26,9 @@ class _addStaffState extends State<addStaff> {
   final phoneNumberController = TextEditingController();
   final NIDController = TextEditingController();
   final OfficeController = TextEditingController();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool isLoading = false;
+
+  //final FirebaseAuth _auth = FirebaseAuth.instance;
   final password = PasswordGenerator.generatePassword(
     length: 16,
     includeUppercase: true,
@@ -35,6 +37,7 @@ class _addStaffState extends State<addStaff> {
     includeSymbols: true,
   );
   String? selectedRole;
+  String selectedbuliding = '';
 
   @override
   Widget build(BuildContext context) {
@@ -316,20 +319,67 @@ class _addStaffState extends State<addStaff> {
                                   ],
                                   onItemSelected: onRoleSelected,
                                 ),
-
+                                Heightsizedbox(
+                                  h: 0.018,
+                                ),
+                                if (selectedRole ==
+                                    'Resident student supervisor')
+                                  Column(
+                                    children: [
+                                      Heightsizedbox(
+                                        h: 0.018,
+                                      ),
+                                      DropdownList(
+                                        hint: "Supervisor Building",
+                                        items: ['1', '2', '3', '4', '5', '6'],
+                                        onItemSelected: onBuildingSelected,
+                                      ),
+                                    ],
+                                  ),
                                 Heightsizedbox(
                                   h: 0.018,
                                 ),
 
                                 // Button
-                                actionbutton(
-                                  text: "Add Staff",
-                                  background: dark1,
-                                  onPressed: () async {
-                                    if (formKey.currentState!.validate()) {
-                                      await addUser();
-                                    }
-                                  },
+                                ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all(dark1),
+                                  ), // Custom button background color
+
+                                  onPressed: isLoading
+                                      ? null // Disable button when loading
+                                      : () async {
+                                          if (formKey.currentState!
+                                              .validate()) {
+                                            await addUser();
+                                          }
+                                        },
+                                  child: isLoading
+                                      ? SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.03,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.06,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : Text(
+                                          'Add Staff', // Display the button text
+                                          style: TextStyle(
+                                            color: Colors
+                                                .white, // Button text color set to white
+                                            fontSize: SizeHelper.getSize(
+                                                    context) *
+                                                0.04, // Set the font size for the text dynamically
+                                          ),
+                                        ),
                                 ),
                               ],
                             ),
@@ -355,7 +405,18 @@ class _addStaffState extends State<addStaff> {
     }
   }
 
+  void onBuildingSelected(String building) {
+    if (building.isNotEmpty) {
+      setState(() {
+        selectedbuliding = building;
+      });
+    }
+  }
+
   Future<void> addUser() async {
+    setState(() {
+      isLoading = true; // Start loading
+    });
     // arabic name
     String fullname = firstNameController.text +
         " " +
@@ -403,6 +464,7 @@ class _addStaffState extends State<addStaff> {
         'office': OfficeController.text,
         'NID': int.tryParse(NIDController.text),
         'role': selectedRole,
+        'building': selectedbuliding,
         'createdAt': FieldValue.serverTimestamp(),
       });
       print(password);
@@ -422,7 +484,7 @@ class _addStaffState extends State<addStaff> {
       <!-- Step 1: Download the App -->
       <h4>Step 1: Download PNU Student Housing App App</h4>
       <p>Please download the app to manage your tasks efficiently.</p>
-      <h4 style="text-align: right;">الخطوة 1: تنزيل تطبيق PNU Student Housing App</h4>
+      <h4 style="text-align: right;">PNU Student Housing App الخطوة 1: تنزيل تطبيق</h4>
       <p style="text-align: right;">يرجى تنزيل التطبيق لإدارة مهامك بكفاءة في السكن.</p>
       <!-- Step 2: Reset Password -->
       <h4>Step 2: Reset Your Password</h4>
@@ -450,6 +512,9 @@ class _addStaffState extends State<addStaff> {
         buttons: [
           {
             "Ok": () => {
+                  setState(() {
+                    isLoading = false; // Start loading
+                  }),
                   context.pop(),
                   firstNameController.clear(),
                   middleNameController.clear(),
@@ -476,7 +541,12 @@ class _addStaffState extends State<addStaff> {
         context,
         buttons: [
           {
-            "Ok": () => context.pop(),
+            "Ok": () => {
+                  setState(() {
+                    isLoading = false; // Start loading
+                  }),
+                  context.pop(),
+                }
           },
         ],
       );

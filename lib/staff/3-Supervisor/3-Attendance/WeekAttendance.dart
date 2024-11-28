@@ -29,15 +29,11 @@ class WeekAttendance extends StatelessWidget {
                     onPressed: isFuture
                         ? null // Disable future days
                         : () {
-                      // Adjust for previous days
-                      // Calculate the date for the day you're checking
-                      DateTime selectedDay = now.subtract(Duration(days: todayIndex - index));
-                      String formattedDay = DateFormat('yyyy-MM-dd').format(selectedDay); // Format date
 
                       // Pass the formatted date to the next page
-                      context.pushNamed('/dayattendance', extra: formattedDay);
+                      context.pushNamed('/dayattendance', extra: days[index]);
                     },
-                 //   isDisabled: isFuture, // Custom button property for grey-out
+                   isDisabled: isFuture, // Custom button property for grey-out
                   ),
                   Heightsizedbox(h: 0.01),
                 ],

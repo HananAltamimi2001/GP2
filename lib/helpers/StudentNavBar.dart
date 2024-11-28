@@ -40,7 +40,7 @@ class _StudentNavBarState extends State<StudentNavBar> {
                 "Sorry, you don't have access to this page, since you ar not resident student",
                 context,
                 buttons: [
-                  {'Ok': () => context.pop()}
+                  {'Ok': () =>{context.pop(),}}
                 ]);
           }
           break; // Add break to prevent fallthrough

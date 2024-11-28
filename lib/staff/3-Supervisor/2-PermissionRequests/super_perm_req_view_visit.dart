@@ -62,7 +62,7 @@ class _SuperPermReqViewVisitState extends State<SuperPermReqViewVisit> {
 
                 final data = snapshot.data!;
                 studentName = data['studentName']; // Assign studentName
-
+                final room = data['room'];
                 final requestData = data['request'];
                 return Column(
                   children: [
@@ -102,6 +102,11 @@ class _SuperPermReqViewVisitState extends State<SuperPermReqViewVisit> {
                               value: requestData['phoneNumber'] ?? 'N/A',
                             ),
                             RowInfo.buildInfoRow(
+                              defaultLabel: 'Room Number',
+                              value: room ?? 'N/A',
+                            ),
+                            Heightsizedbox(h: 0.010),
+                            RowInfo.buildInfoRow(
                               defaultLabel: 'Visitor Full Name',
                               value: requestData['visitorName'] ?? 'N/A',
                             ),
@@ -126,36 +131,30 @@ class _SuperPermReqViewVisitState extends State<SuperPermReqViewVisit> {
                               defaultLabel: 'Visiting Duration',
                               value: requestData['visitingDuration'] ?? 'N/A',
                             ),
-                            Heightsizedbox(h: 0.010),
-                            RowInfo.buildInfoRow(
-                              defaultLabel: 'Building Number',
-                              value: requestData['buildingNumber'] ?? 'N/A',
-                            ),
-                            RowInfo.buildInfoRow(
-                              defaultLabel: 'Floor Number',
-                              value: requestData['floorNumber'] ?? 'N/A',
-                            ),
-                            RowInfo.buildInfoRow(
-                              defaultLabel: 'Residential unit number',
-                              value: requestData['residentialUnitNumber'] ?? 'N/A',
-                            ),
                             Heightsizedbox(h: 0.032),
                             Container(
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   actionbutton(
                                     background: red1,
                                     fontsize: 0.04,
                                     text: 'Reject',
                                     onPressed: () async {
-                                      await rejectVisitor(widget.args.requestId);
+                                      await rejectVisitor(
+                                          widget.args.requestId);
 
                                       InfoDialog(
                                           "Visitor request rejected successfully.",
                                           context,
                                           buttons: [
-                                            {"OK": () async => context.pop()}
+                                            {
+                                              "OK": () async => {
+                                                    context.pop(),
+                                                    context.pop(),
+                                                  }
+                                            }
                                           ]);
                                     },
                                   ),
@@ -164,12 +163,18 @@ class _SuperPermReqViewVisitState extends State<SuperPermReqViewVisit> {
                                     background: green1,
                                     fontsize: 0.04,
                                     onPressed: () async {
-                                      await acceptVisitor(widget.args.requestId);
+                                      await acceptVisitor(
+                                          widget.args.requestId);
                                       InfoDialog(
                                           "Visitor request accepted successfully.",
                                           context,
                                           buttons: [
-                                            {"OK": () async => context.pop()}
+                                            {
+                                              "OK": () async => {
+                                                    context.pop(),
+                                                    context.pop(),
+                                                  }
+                                            }
                                           ]);
                                     },
                                   ),
@@ -206,12 +211,10 @@ class _SuperPermReqViewVisitState extends State<SuperPermReqViewVisit> {
 
     // Fetch the student name
     DocumentSnapshot studentSnapshot = await studentInfoRef.get();
+    String roomid = studentSnapshot['roomref'].id;
     String studentName = studentSnapshot['efullName'] ?? 'N/A';
 
     // Return both the request details and student name
-    return {
-      'request': data,
-      'studentName': studentName,
-    };
+    return {'request': data, 'studentName': studentName, 'room': roomid};
   }
 }

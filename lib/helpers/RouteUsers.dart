@@ -41,16 +41,13 @@ class LoginChecker {
     return prefs.getBool('isLoggedIn') ?? false;
   }
 
-  static final User? user = FirebaseAuth.instance.currentUser;
+  static User? user = FirebaseAuth.instance.currentUser;
   static Future<void> checker(BuildContext context) async {
     bool loggedIn = await LoginChecker.isLoggedIn();
     if (loggedIn) {
       // Check if the user is still authenticated with Firebase
       //  SharedPreferences prefs = await SharedPreferences.getInstance();
-      //  String specificUid = "F97F18RuNlYDjWA7lzw5nlv5ssq2";
-      // print("ohoooooooooooooooooooooooooooooooooooooooood");
-      // await prefs.setBool('isLoggedIn_$specificUid', false);
-      // await FirebaseAuth.instance.signOut();
+       //await FirebaseAuth.instance.signOut();
       if (user != null) {
         final String uid = FirebaseAuth.instance.currentUser!.uid;
         // Call your routeUser method here (assuming it's in another class)
@@ -99,7 +96,7 @@ Future<bool> isResident() async {
   try {
     // Get the current user ID
     String userId = FirebaseAuth.instance.currentUser?.uid ?? "";
-
+     
     // If no user is logged in, return false
     if (userId.isEmpty) {
       return false;
@@ -118,7 +115,7 @@ Future<bool> isResident() async {
 
     // Extract user data
     final userData = userDoc.data();
-    final isResident = userData?['status'] == 'resident';
+    final isResident = userData?['resident'] == true;
 
     // Return true if both conditions are met
     return isResident;

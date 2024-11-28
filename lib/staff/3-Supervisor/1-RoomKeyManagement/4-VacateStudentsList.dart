@@ -37,16 +37,17 @@ class _VacateStudentsListState extends State<VacateStudentsList> {
 
       return requests;
     } catch (e) {
-      print("Error fetching requests: $e");
+      ErrorDialog(
+        'Error fetching requests: $e',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       return [];
     }
-  }
-
-  TextEditingController _searchController = TextEditingController();
-  void _performSearch() {
-    String searchTerm = _searchController.text;
-
-    print("Searching for: $searchTerm");
   }
 
   @override
@@ -59,40 +60,25 @@ class _VacateStudentsListState extends State<VacateStudentsList> {
         }
         if (snapshot.hasError) {
           return Scaffold(
-            appBar: OurAppBar(title: 'Application Requests'),
+            appBar: OurAppBar(title: "Departing Students"),
             body: Center(
-                child: Text("An error occurred while fetching requests")),
+                child: Text("An error occurred while fetching data")),
           );
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Scaffold(
-            appBar: OurAppBar(title: 'Application Requests'),
-            body: Center(child: Text("No requests found")),
+            appBar: OurAppBar(title: "Departing Students"),
+            body: Center(child: Text("No Data found")),
           );
         }
 
         List<Map<String, dynamic>> requests = snapshot.data!;
 
         return Scaffold(
-          appBar: OurAppBar(title: 'Application Requests'),
+          appBar: OurAppBar(title: "Departing Students"),
           body: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    labelText: 'Search',
-                    labelStyle: TextStyle(color: Color(0xFF339199)),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () {
-                        _performSearch();
-                      },
-                    ),
-                  ),
-                ),
-              ),
+              
               // Use Expanded on OurListView to allow it to take available space
               Expanded(
                 child: OurListView(

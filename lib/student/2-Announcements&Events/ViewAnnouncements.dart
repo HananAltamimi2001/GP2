@@ -56,16 +56,17 @@ class ViewAnnouncements extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start, // Aligning child widgets to the start (left) of the column
                   children: [
                     // Display the announcement image; uses fallback icon if image fails
-                    Image.network(
-                      announcement['imageUrl'] ?? '',
-                      height: screenHeight * 0.2,
-                      width: double.infinity,
-                      fit: BoxFit.cover, // Ensures the image covers its bounding box
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.image,
-                        size: screenHeight * 0.2, // Fallback icon size
-                      ),
-                    ),
+                    if(announcement['imageUrl'] != null && announcement['imageUrl'].isNotEmpty)
+                          Image.network(
+                          announcement['imageUrl'] ?? '',
+                          height: screenHeight * 0.2,
+                          width: double.infinity,
+                          fit: BoxFit.cover, // Ensures the image covers its bounding box
+                          errorBuilder: (context, error, stackTrace) => Icon(
+                            Icons.image,
+                            size: screenHeight * 0.2, // Fallback icon size
+                          ),
+                        ),
                     // Add vertical spacing using a custom spacer from the design library
                     Heightsizedbox(h: 0.01),
 

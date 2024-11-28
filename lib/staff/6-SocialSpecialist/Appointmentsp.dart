@@ -36,7 +36,15 @@ class AppointmentsSpState extends State<AppointmentsSp> {
           getcomplaint();
         }
       } catch (e) {
-        print("Error fetching user data: $e");
+        ErrorDialog(
+          'Error fetching user data: $e',
+          context,
+          buttons: [
+            {
+              "Ok": () => context.pop(),
+            },
+          ],
+        );
       }
     }
   }

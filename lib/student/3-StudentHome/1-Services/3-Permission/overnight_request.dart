@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
+import 'package:intl/intl.dart';
 
 class OvernightRequest extends StatefulWidget {
   const OvernightRequest({super.key});
@@ -232,6 +233,7 @@ class _OvernightRequestState extends State<OvernightRequest> {
                     onPressed: _canSubmitRequest
                         ? () async {
                             if (validateCheckboxes()) {
+                              if(ArrselectedDate!.isBefore(DepselectedDate!)){
                               final firestore = FirebaseFirestore.instance;
                               final String currentUserId =
                                   await FirebaseAuth.instance.currentUser!.uid;
@@ -288,7 +290,7 @@ class _OvernightRequestState extends State<OvernightRequest> {
                                   if (snapshot.docs.isNotEmpty &&
                                       snapshot.docs[0]['status'] == 'pending') {
                                     // There's a pending request, prevent submission
-                                    InfoDialog(
+                                    ErrorDialog(
                                         "You have a pending overnight request. Please wait for it to be processed before submitting another.",
                                         context,
                                         buttons: [
@@ -306,7 +308,7 @@ class _OvernightRequestState extends State<OvernightRequest> {
                                         "Your request has been\nsubmitted successfully",
                                         context,
                                         buttons: [
-                                          {"OK": () async => context.pop()}
+                                          {"OK": () async => {context.pop(),context.pop()}}
                                         ]);
 
                                     setState(() {
@@ -314,12 +316,37 @@ class _OvernightRequestState extends State<OvernightRequest> {
                                     });
                                   }
                                 } catch (e) {
+                                  ErrorDialog(
+                                    'Error adding data',
+                                    context,
+                                    buttons: [
+                                      {
+                                        "Ok": () => context.pop(),
+                                      },
+                                    ],
+                                  );
                                   print('Error adding data: $e');
                                 }
                               } else {
-                                print('لم يتم العثور على بيانات الطالب');
+                                ErrorDialog(
+                                  'Student Data not found',
+                                  context,
+                                  buttons: [
+                                    {
+                                      "Ok": () => context.pop(),
+                                    },
+                                  ],
+                                );
                               }
-                            }
+                            }else{
+                               ErrorDialog(
+                                  'Arrival Date can not be after Departure Date',
+                                  context,
+                                  buttons: [
+                                    {
+                                      "Ok": () => context.pop(),
+                                    },]);
+                            }}
                           }
                         : null,
                   ),
@@ -330,5 +357,21 @@ class _OvernightRequestState extends State<OvernightRequest> {
         ),
       ),
     );
+  }
+}
+
+
+
+void compareDates(String date1, String date2) {
+  DateFormat format = DateFormat("dd/MM/yyyy");
+  DateTime parsedDate1 = format.parse(date1);
+  DateTime parsedDate2 = format.parse(date2);
+
+  if (parsedDate1.isBefore(parsedDate2)) {
+    print("$date1 is before $date2");
+  } else if (parsedDate1.isAfter(parsedDate2)) {
+    print("$date1 is after $date2");
+  } else {
+    print("$date1 is the same as $date2");
   }
 }

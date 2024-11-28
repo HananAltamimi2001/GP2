@@ -147,11 +147,11 @@ class _HousingFilesState extends State<HousingFiles> {
                         // forward button
                         actionbutton(
                             onPressed: () {
-                              // if (nationalIdFile.path.isEmpty == false &&
-                              //     medicalReportFile.path.isEmpty == false &&
-                              //     proofOfDistanceFile.path.isEmpty == false &&
-                              //     socialSecurityCertificateFile.path.isEmpty ==
-                              //         false) {
+                              if (nationalIdFile.path.isEmpty == false &&
+                                  medicalReportFile.path.isEmpty == false &&
+                                  proofOfDistanceFile.path.isEmpty == false &&
+                                  socialSecurityCertificateFile.path.isEmpty ==
+                                      false) {
                                 DataManager.savefiles(
                                   allFliesArgs(
                                     nationalIdFile: nationalIdFile,
@@ -162,15 +162,15 @@ class _HousingFilesState extends State<HousingFiles> {
                                   ),
                                 );
                                 context.goNamed('/pledge');
-                              // } else {
-                              //   ErrorDialog(
-                              //       "Please load all needed files", context,
-                              //       buttons: [
-                              //         {
-                              //           'Ok': () => context.pop(),
-                              //         }
-                              //       ]);
-                              // }
+                              } else {
+                                ErrorDialog(
+                                    "Please load all needed files", context,
+                                    buttons: [
+                                      {
+                                        'Ok': () => context.pop(),
+                                      }
+                                    ]);
+                              }
                             },
                             text: 'Next Step',
                             background: dark1),
@@ -226,7 +226,7 @@ class _HousingFilesState extends State<HousingFiles> {
       children: [
         Expanded(
           child: Dtext(
-t: file.path.isEmpty ? "No file chosen" : p.basename(file.path),
+            t: file.path.isEmpty ? "No file chosen" : p.basename(file.path),
             color: Colors.grey,
             align: TextAlign.justify,
             size: 0.045,

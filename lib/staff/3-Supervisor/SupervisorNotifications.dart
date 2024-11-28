@@ -83,8 +83,21 @@ class SupervisorNotificationsState extends State<SupervisorNotifications> {
           for (var helpRequest in snapshot.docs) {
             final studentRef = helpRequest['studentInfo'] as DocumentReference;
             final studentSnapshot = await studentRef.get();
-            final roomRef = studentSnapshot['roomref'];
-            final roomId = roomRef is DocumentReference ? roomRef.id : roomRef;
+            // Check if roomref exists and is a DocumentReference
+            if (studentSnapshot['roomref'] == null ||
+                studentSnapshot['roomref'] is! DocumentReference) {
+              print("Invalid or missing roomref for student: ${studentSnapshot.id}");
+              continue;
+            }
+
+            final roomRef = studentSnapshot['roomref'] as DocumentReference;
+
+            // Safely access the roomId
+            final roomId = roomRef.id;
+            if (roomId == null || !roomId.contains('.')) {
+              print("Invalid roomId format: $roomId for student: ${studentSnapshot.id}");
+              continue;
+            }
             final studentBuildingNumber = roomId.split('.')[0];
             if (studentSnapshot.exists && studentBuildingNumber == building) {
               filteredHelpRequests.add(helpRequest);
@@ -97,6 +110,7 @@ class SupervisorNotificationsState extends State<SupervisorNotifications> {
       // Stream for attendance alerts from attendance map
       FirebaseFirestore.instance
           .collection('student')
+          .where('resident' , isEqualTo: true)
           .snapshots()
           .asyncMap((snapshot) async {
         final List<DocumentSnapshot> filteredStudents = [];
@@ -106,8 +120,21 @@ class SupervisorNotificationsState extends State<SupervisorNotifications> {
           final buildingNumber = supervisorDocSnapshot['building'];
 
           for (var studentDoc in snapshot.docs) {
-            final roomRef = studentDoc['roomref'];
-            final roomId = roomRef is DocumentReference ? roomRef.id : roomRef;
+            // Check if roomref exists and is a DocumentReference
+            if (studentDoc['roomref'] == null ||
+                studentDoc['roomref'] is! DocumentReference) {
+              print("Invalid or missing roomref for student: ${studentDoc.id}");
+              continue;
+            }
+
+            final roomRef = studentDoc['roomref'] as DocumentReference;
+
+            // Safely access the roomId
+            final roomId = roomRef.id;
+            if (roomId == null || !roomId.contains('.')) {
+              print("Invalid roomId format: $roomId for student: ${studentDoc.id}");
+              continue;
+            }
             final studentBuildingNumber = roomId.split('.')[0];
 
             if (studentBuildingNumber == buildingNumber) {
@@ -116,7 +143,7 @@ class SupervisorNotificationsState extends State<SupervisorNotifications> {
               final lastDateKey = attendanceMap.keys.last; // Get latest date
               final attendanceStatus = attendanceMap[lastDateKey];
 
-              if (attendanceStatus == 'Absent') {
+              if (attendanceStatus == 'Absence') {
                 filteredStudents.add(studentDoc);
               }
             }

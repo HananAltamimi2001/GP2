@@ -162,7 +162,7 @@ Future<bool> checkAppReqAndStatus() async {
           final refData = refSnapshot.data() as Map<String, dynamic>;
 
           // Check the status field
-          return refData['status'] == 'Reject';
+          return refData['status'] != 'Reject';
         }
       }
     }

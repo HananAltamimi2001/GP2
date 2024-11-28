@@ -1,8 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
@@ -50,18 +48,18 @@ class _QrScannerState extends State<QrScanner> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  if (result != null)
-                    Text(
-                        'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
-                  else
-                    const Text('Scan a code'),
+                  // if (result != null)
+                  //   Text(
+                  //       'Barcode Type: ${describeEnum(result!.format)}   Data: ${result!.code}')
+                  // else
+                  //   const Text('Scan a code'),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Container(
                           margin: const EdgeInsets.all(8),
-                          child: actionbutton(
+                          child: Dactionbutton(
                             text: 'pause',
                             background: dark1,
                             onPressed: () async {
@@ -70,7 +68,7 @@ class _QrScannerState extends State<QrScanner> {
                           )),
                       Container(
                         margin: const EdgeInsets.all(8),
-                        child: actionbutton(
+                        child: Dactionbutton(
                           text: 'resume',
                           background: dark1,
                           onPressed: () async {
@@ -133,49 +131,95 @@ class _QrScannerState extends State<QrScanner> {
             .collection('student')
             .where('PNUID', isEqualTo: uniqueValue)
             .get();
-
+        String currentStatus = '';
+        String Status = '';
+        bool isresident = false;
         if (querySnapshot.docs.isNotEmpty) {
           // Assuming there's only one document with the unique field value
           DocumentReference docRef = querySnapshot.docs.first.reference;
-          if (widget.checkStatus == 'First Check-in') {
-            // Update the desired field
-            await docRef.update({
-              'checkStatus': 'Checked-in',
-              'resident': true,
-              'checkTime': FieldValue.serverTimestamp()
-            });
-          } else if (widget.checkStatus == 'Last Check-out') {
-            // Update the desired field
-            await docRef.update({
-              'checkStatus': 'Checked-out',
-              'resident': false,
-              'checkTime': FieldValue.serverTimestamp()
-            });
-          } else if (widget.checkStatus == 'Check-in') {
-            // Update the desired field
-            await docRef.update({
-              'checkStatus': 'Checked-in',
-              'checkTime': FieldValue.serverTimestamp()
-            });
-          } else if (widget.checkStatus == 'Check-out') {
-            // Update the desired field
-            await docRef.update({
-              'checkStatus': 'Checked-out',
-              'checkTime': FieldValue.serverTimestamp()
-            });
-          }
-          // Show a confirmation dialog
-          InfoDialog("Scanned and Updated", context, buttons: [
-            {
-              "Ok": () {
-                context.pop();
-                context.pushNamed('/checkinout');
+          DocumentSnapshot docSnapshot = await docRef.get();
+          currentStatus = docSnapshot['checkStatus'];
+          isresident = docSnapshot['resident'];
+          bool updated = false;
+          if (isresident) {
+            if (widget.checkStatus == 'First Check-in') {
+              await docRef.update({
+                'checkStatus': 'Checked-in',
+                'resident': true,
+                'checkTime': FieldValue.serverTimestamp()
+              });
+              //
+              Status = 'Checked-in for the first time';
+              updated = true;
+            } else if (widget.checkStatus == 'Last Check-out') {
+              await docRef.update({
+                'checkStatus': 'Checked-out',
+                'resident': false,
+                'checkTime': FieldValue.serverTimestamp()
+              });
+              //
+              Status = 'Checked-out and not resident any more';
+              updated = true;
+            } else if (widget.checkStatus == 'Checked-in') {
+              if (currentStatus == widget.checkStatus) {
+                ErrorDialog("Student is already $currentStatus", context, buttons: [
+                  {
+                    "Ok": () {
+                      context.pop();
+                    }
+                  }
+                ]);
+              } else {
+                await docRef.update({
+                  'checkStatus': 'Checked-in',
+                  'checkTime': FieldValue.serverTimestamp()
+                });
+                //
+                Status = 'Checked-in';
+                updated = true;
+              }
+            } else if (widget.checkStatus == 'Checked-out') {
+              if (currentStatus == widget.checkStatus) {
+                ErrorDialog("Student is already $currentStatus", context, buttons: [
+                  {
+                    "Ok": () {
+                      context.pop();
+                    }
+                  }
+                ]);
+              } else {
+                await docRef.update({
+                  'checkStatus': 'Checked-out',
+                  'checkTime': FieldValue.serverTimestamp()
+                });
+                //
+                Status = 'Checked-out';
+                updated = true;
               }
             }
-          ]);
+          } else {
+            ErrorDialog("Student is not resident", context, buttons: [
+              {
+                "Ok": () {
+                  context.pop();
+                }
+              }
+            ]);
+          }
+          if (updated) {
+            // Show a confirmation dialog
+            InfoDialog("The Student $uniqueValue now is $Status ", context,
+                buttons: [
+                  {
+                    "Ok": () {
+                      context.pop();
+                      context.goNamed('/checkinout');
+                    }
+                  }
+                ]);
+          }
         } else {
-          // Handle the case where no matching document is found
-          ErrorDialog("No Matching Document Found", context, buttons: [
+          ErrorDialog("No student found for this Barcode ", context, buttons: [
             {
               "Ok": () {
                 context.pop();
@@ -185,7 +229,7 @@ class _QrScannerState extends State<QrScanner> {
         }
       } catch (e) {
         // Handle errors
-        ErrorDialog("Error: $e", context, buttons: [
+        ErrorDialog("Error in updating student status", context, buttons: [
           {
             "Ok": () {
               context.pop();

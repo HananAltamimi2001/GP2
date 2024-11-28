@@ -51,7 +51,15 @@ class _RoomsState extends State<Rooms> {
       print("Final requests list: $requests");
       return requests;
     } catch (e) {
-      print("Error fetching requests: $e");
+      ErrorDialog(
+        'Error fetching requests',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       return [];
     }
   }
@@ -88,6 +96,7 @@ class _RoomsState extends State<Rooms> {
               height: 0.044,
               width: 0.19,
               text: 'View',
+              padding: 0,
               background: item['color'],
               fontsize: 0.03,
               onPressed: () {

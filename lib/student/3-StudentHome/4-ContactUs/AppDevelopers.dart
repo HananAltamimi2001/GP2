@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart'; // Importing Firestore package to interact with Firebase Cloud Firestore for data storage and retrieval.
 import 'package:flutter/material.dart'; // Importing Flutter material design package
+import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';// Importing our design library
 
 
@@ -27,7 +28,6 @@ class develobers extends StatefulWidget {
 
 class _develobersState extends State<develobers> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance; // Firestore instance to interact with the database
-  String _message = ""; // Variable to hold any error or status message
   bool _isLoading = true; // Loading state to show progress indicator while fetching data
 
   // Variables to store developer names and emails fetched from Firestore
@@ -73,15 +73,19 @@ class _develobersState extends State<develobers> {
           _isLoading = false; // Set loading state to false when data is fetched
         });
       } else {
+        ErrorDialog("Document not found!", context, buttons: [
+          {"OK": () async => context.pop()},
+        ]);
         setState(() {
-          _message = "Document not found!"; // Error message if the document doesn't exist
           _isLoading = false; // Stop loading
         });
       }
     } catch (e) {
       // Handle any errors that occur during data fetching
+      ErrorDialog("Error: $e", context, buttons: [
+        {"OK": () async => context.pop()},
+      ]);
       setState(() {
-        _message = "Error: $e";
         _isLoading = false;
       });
     }

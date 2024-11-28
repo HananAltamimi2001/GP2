@@ -16,15 +16,12 @@ class _ForgetpassState extends State<Forgetpass> {
   var emailController = TextEditingController();
   var NIDController = TextEditingController();
   final FirbaseAuthService _auth = FirbaseAuthService();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: OurAppBar(
-        icon: Icons.language_rounded,
-        onIconPressed: () {}, // For language
-      ),
+      appBar: OurAppBar(),
       body: LayoutBuilder(
         builder: (context, cons) {
           return ConstrainedBox(
@@ -100,21 +97,56 @@ class _ForgetpassState extends State<Forgetpass> {
                                 ),
 
                                 // Button Reset Password
-                                actionbutton(
-                                  text: "Reset Password",
-                                  background: dark1,
-                                  onPressed: () async {
-                                    if (formKey.currentState!.validate()) {
-                                      await verifyUser();
-                                    }
-                                  },
-                                ),
+                                ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all(dark1),
+                                  ), // Custom button background color
 
+                                  onPressed: isLoading
+                                      ? null // Disable button when loading
+                                      : () async {
+                                          if (formKey.currentState!
+                                              .validate()) {
+                                            setState(() {
+                                              isLoading = true; // Start loading
+                                            });
+                                            await verifyUser();
+                                            setState(() {
+                                              isLoading =
+                                                  false; // Start loading
+                                            });
+                                          }
+                                        },
+                                  child: isLoading
+                                      ? SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.03,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.06,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : Text(
+                                          'Reset Password', // Display the button text
+                                          style: TextStyle(
+                                            color: Colors
+                                                .white, // Button text color set to white
+                                            fontSize: SizeHelper.getSize(
+                                                    context) *
+                                                0.04, // Set the font size for the text dynamically
+                                          ),
+                                        ),
+                                ),
                                 Heightsizedbox(
                                   h: 0.018,
                                 ),
-
-                          
                               ],
                             ),
                           ),

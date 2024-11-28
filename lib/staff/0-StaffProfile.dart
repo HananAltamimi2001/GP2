@@ -114,6 +114,11 @@ class StaffprofileState extends State<Staffprofile> {
                           defaultLabel: 'Office NO.',
                           value: staffData['office']?.toString(),
                         ),
+                        if(staffData['role']?.toString()=='Resident student supervisor')
+                         RowInfo.buildInfoRow(
+                          defaultLabel: 'Building',
+                          value: staffData['building']?.toString(),
+                        ),
                       ],
                     ),
                   ),

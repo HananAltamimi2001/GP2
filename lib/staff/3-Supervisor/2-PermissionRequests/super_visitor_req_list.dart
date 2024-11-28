@@ -62,7 +62,15 @@ class _SuperVisitorReqListState extends State<SuperVisitorReqList> {
 
       return requests;
     } catch (e) {
-      print("Error fetching requests: $e");
+      ErrorDialog(
+        'Error fetching requests: $e',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       return [];
     }
   }
@@ -94,22 +102,7 @@ class _SuperVisitorReqListState extends State<SuperVisitorReqList> {
           appBar: OurAppBar(title: 'Visitor Requests'),
           body: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    labelText: 'Search',
-                    labelStyle: TextStyle(color: Color(0xFF339199)),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () {
-                        _performSearch();
-                      },
-                    ),
-                  ),
-                ),
-              ),
+             
               Expanded(
                 child: OurListView(
                   data: requests, // changed from 'combinedData'
@@ -122,6 +115,7 @@ class _SuperVisitorReqListState extends State<SuperVisitorReqList> {
                     height: 0.044,
                     width: 0.19,
                     text: 'View',
+                    padding: 0,
                     background: dark1,
                     fontsize: 0.03,
                     onPressed: () {

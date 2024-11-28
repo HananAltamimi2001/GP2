@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/DataManger.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:intl/intl.dart';
+import 'package:pnustudenthousing/staff/2-StudentAffairs/2-Application/1-List.dart';
 
 class ApplicationRequestView extends StatefulWidget {
   final requestid args;
@@ -16,10 +17,10 @@ class ApplicationRequestView extends StatefulWidget {
 class _ApplicationRequestViewState extends State<ApplicationRequestView> {
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
-  late final String fullname;
-  late final String efullname;
+  late String fullname;
+  late String efullname;
   late String roomId;
-  late final String email;
+  late String email;
   final formKey = GlobalKey<FormState>();
   Future<Map<String, dynamic>>? getRequest;
 
@@ -87,7 +88,6 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
         <body>
         <p style="color: #339199; font-size: 20px;>Dear $efullname,</p>
         <p style="color: #339199; font-size: 20px;text-align: right;">عزيزتي الطالبة $fullname,</p>
-        <p style="color: #339199; font-size: 20px;">Dear [Student Name],</p>
 
         <p style="font-size: 16px;">We are pleased to inform you that your housing application has been initially accepted. Congratulations! Your application is under review, and we would like to schedule a meeting through teams</p>
         <p style="font-size: 16px;text-align: right;">نحن سعداء بإبلاغك بأنه تم قبول طلب السكن بشكل مبدئي. تهانينا! طلبك قيد المراجعة، ونرغب في تحديد موعد للاجتماع معك خلاص تطبيق تيمز .</p>
@@ -97,15 +97,14 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
         <p style="font-size: 16px;">Time: $selectedTime</p>
 
         <p style="font-size: 16px;text-align: right;">يرجى العلم أن الاجتماع مقرر في:</p>
-        <p style="font-size: 16px;text-align: right;">التاريخ: $selectedDate</p>
-        <p style="font-size: 16px;text-align: right;">الوقت: $selectedTime</p>
+        <p style="font-size: 16px;text-align: right;">$selectedDate:التاريخ</p>
+        <p style="font-size: 16px;text-align: right;">$selectedTime:الوقت</p>
 
         <p style="font-size: 16px;">We look forward to meeting with you!</p>
         <p style="font-size: 16px;">Resident Student Affairs</p>
         <p>Best regards,</p>
         <p>Resident Students affairs,</p>
-        <p style="font-size: 16px;text-align: right;">نتطلع إلى لقائك!</p>
-        <p style="color: #339199; font-size: 20px;text-align: right;">مع أطيب التحيات،</p>
+        <p style="text-align: right;>مع أطيب التحيات،</p>
         <p style="text-align: right;">شوؤن طالبات السكن</p>
         </body>
         </html>
@@ -113,29 +112,7 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
           },
         });
         updated = true;
-
         print("Update successful for status 'Initial Accept'");
-      } else if (status == 'Waiting Availability' &&
-          rooreff is DocumentReference) {
-        DocumentSnapshot roomDoc = await rooreff.get();
-        String status = roomDoc['status'];
-        if (status == 'Maintenance' || status == 'Cleaning') {
-// rertive room status so maintance only wait
-          await requestId.update({
-            'status': status,
-          });
-          updated = true;
-        } else {
-          ErrorDialog(
-            "Failed to update request status $status, Since Room status is avaliable",
-            context,
-            buttons: [
-              {
-                "Ok": () => context.pop(),
-              }
-            ],
-          );
-        }
       } else if (status == 'Final Accept' && rooreff is DocumentReference) {
         await requestId.update({
           'status': status,
@@ -153,17 +130,17 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
         <body>
         <p style="color: #339199; font-size: 20px;>Dear $efullname,</p>
         <p style="color: #339199; font-size: 20px;text-align: right;">عزيزتي الطالبة $fullname,</p>
-        <p dir="rtl" style="font-size: 16px;">يسعدنا أن نعلمكم بأنه قد تم **قبول طلب السكن** الخاص بك نهائيًا.</p>
+        <p dir="rtl" style="font-size: 16px;text-align: right;">يسعدنا أن نعلمكم بأنه قد تم **قبول طلب السكن** الخاص بك نهائيًا.</p>
         <p style="font-size: 16px;">We are pleased to inform you that your housing application has been **finally accepted**.</p>
         <p dir="rtl" style="font-size: 16px;">هذا هو رقم غرفتك $roomId</p>
 
         <p style="font-size: 16px;">Here is your Room number $roomId</p>
-        <p style="font-size: 16px;">نتمنى لك الأفضل في رحلتك نحو المستقبل والراحة في منزلك الثاني</p>
+        <p style="font-size: 16px;text-align: right;">نتمنى لك الأفضل في رحلتك نحو المستقبل والراحة في منزلك الثاني</p>
 
         <p style="font-size: 16px;">Wishing you the best on your journey as you settle into your second home.</p>
         <p>Best regards,</p>
         <p>Resident Students affairs,</p>
-        <p style="color: #339199; font-size: 20px;text-align: right;">مع أطيب التحيات،</p>
+        <p style="text-align: right; >مع أطيب التحيات،</p>
         <p style="text-align: right;">شوؤن طالبات السكن</p>
           </body>
         </html>
@@ -201,7 +178,9 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
         context,
         buttons: [
           {
-            "Ok": () => context.pop(),
+            "Ok": () => {
+                  context.pop(),
+                }
           }
         ],
       );
@@ -236,7 +215,7 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
           'emiddleName': AppDoc['emiddleName'],
           'elastName': AppDoc['elastName'],
           'bloodType': AppDoc['bloodType'],
-          'Dob': AppDoc['DoB'],
+          'DoB': AppDoc['DoB'],
           'degree': AppDoc['degree'],
           'college': AppDoc['college'],
           'NID': AppDoc['NID'],
@@ -255,6 +234,7 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
           'socialSecurityCertificateUrl':
               AppDoc['socialSecurityCertificateUrl'],
           'roomKey': false,
+          'resident': true,
         };
         print("Prepared MovedData: $MovedData");
 
@@ -466,28 +446,6 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
                   buttons.add(
                     actionbutton(
                       onPressed: () {
-                        if (roomref != null &&
-                            (roomst == "Available" ||
-                                roomst == 'Partially Occupied')) {
-                          updateRequestStatus(
-                              reqref, 'Waiting Availability', roomref);
-                        } else {
-                          //error for avalible
-                          ErrorDialog(
-                              "this Student is not assigned to a room Or room is avaliable",
-                              context,
-                              buttons: [
-                                {'Ok': () => context.pop()}
-                              ]);
-                        }
-                      },
-                      text: 'Waiting',
-                      background: yellow1,
-                    ),
-                  );
-                  buttons.add(
-                    actionbutton(
-                      onPressed: () {
                         print(roomst);
 
                         if (roomref != null &&
@@ -507,34 +465,6 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
                       background: green1,
                     ),
                   );
-                } else if (status == 'Waiting Availability') {
-                  buttons.add(
-                    actionbutton(
-                      onPressed: () {
-                        print(roomst);
-                        if (roomref != null &&
-                            (roomst == "Available" &&
-                                roomst == 'Partially Occupied')) {
-                          updateRequestStatus(reqref, 'Final Accept', roomref);
-                        } else {
-                          ErrorDialog(
-                              "this Student is not assigned to a room", context,
-                              buttons: [
-                                {'Ok': () => context.pop()}
-                              ]);
-                        }
-                      },
-                      text: 'Final Accept',
-                      background: green1,
-                    ),
-                  );
-                } else if (status == 'Final Accept') {
-                  buttons.add(text(
-                    t: "Student Accpeted",
-                    align: TextAlign.center,
-                    color: green1,
-                    // on pressed shil afash
-                  ));
                 }
 
                 return WillPopScope(
@@ -618,7 +548,7 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
                           Heightsizedbox(h: 0.018),
 
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               // BloodType
                               Column(
@@ -645,7 +575,7 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
                                   ),
                                 ],
                               ),
-                              Widthsizedbox(w: 0.09),
+
                               // Dob
                               Column(
                                 children: [
@@ -676,6 +606,7 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
                           Heightsizedbox(h: 0.018),
                           // NID
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Column(
                                 children: [
@@ -701,7 +632,6 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
                                   ),
                                 ],
                               ),
-                              Widthsizedbox(w: 0.09),
                               // NID
                               Column(
                                 children: [
@@ -1028,7 +958,6 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
                             borderRadius: 15,
                           ),
                           Heightsizedbox(h: 0.018),
-
                           //Postal/Zip code
                           text(
                             t: "Postal/Zip code",
@@ -1284,6 +1213,7 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
                                         height: 0.04,
                                         onPressed: () {
                                           //saverooms();
+
                                           context.pushNamed('/assignroom',
                                               extra: Room(
                                                   sturef: sturef,

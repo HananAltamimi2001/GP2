@@ -60,7 +60,8 @@ class HousingServices extends StatelessWidget {
                         name: "Vacate Request",
                         onPressed: () async {
                           bool vacreq = await checkVacReqAndStatus();
-                          if (vacreq) {
+                          print("$vacreq vvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
+                          if (!vacreq) {
                             context.pushNamed('/vacate');
                           } else {
                             ErrorDialog(
@@ -96,6 +97,7 @@ class HousingServices extends StatelessWidget {
                     Service_button(
                       icon: Icons.calendar_month,
                       name: "Book Appointment",
+                         onPressed: () {context.pushNamed('/BookAppointment');}
                     ),
                     Heightsizedbox(h: 0.015),
                     Service_button(
@@ -170,12 +172,15 @@ class Service_button extends StatelessWidget {
     );
   }
 }
-
 Future<bool> checkVacReqAndStatus() async {
   try {
     String userId = FirebaseAuth.instance.currentUser?.uid ?? "";
+    print("User ID: $userId");
 
-    if (userId.isEmpty) return false;
+    if (userId.isEmpty) {
+      print("No user is logged in.");
+      return false;
+    }
 
     // Get the current user's document
     DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
@@ -184,20 +189,30 @@ Future<bool> checkVacReqAndStatus() async {
         .get();
 
     if (userSnapshot.exists) {
+      print("User document found.");
       final data = userSnapshot.data() as Map<String, dynamic>;
 
       // Check if the field exists and is a reference
       if (data.containsKey('VacateHousing') &&
           data['VacateHousing'] is DocumentReference) {
+        print("VacateHousing field exists and is a DocumentReference.");
+
         DocumentReference ref = data['VacateHousing'];
 
         // Get the referenced document
         DocumentSnapshot refSnapshot = await ref.get();
 
         if (refSnapshot.exists) {
+          print("VacateHousing document exists.");
           return true;
+        } else {
+          print("VacateHousing document does not exist.");
         }
+      } else {
+        print("VacateHousing field does not exist or is not a DocumentReference.");
       }
+    } else {
+      print("User document does not exist.");
     }
 
     return false;

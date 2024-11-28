@@ -19,11 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: OurAppBar(
-        icon: Icons.language_rounded,
-        onIconPressed: () {}, // For language
-      ),
+      appBar: OurAppBar(),
       body: LayoutBuilder(
         builder: (context, cons) {
           return ConstrainedBox(

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 
 class ViewFurnitureRequests extends StatefulWidget {
@@ -12,6 +13,7 @@ class ViewFurnitureRequests extends StatefulWidget {
 
 class ViewFurnitureRequestsState extends State<ViewFurnitureRequests> {
   final List<Map<String, dynamic>> requests = [];
+  bool isLoading = true; // Track loading state
 
   @override
   void initState() {
@@ -23,8 +25,16 @@ class ViewFurnitureRequestsState extends State<ViewFurnitureRequests> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: OurAppBar(title: 'View Requests'),
-      body: requests.isEmpty
-          ? Center(child: OurLoadingIndicator())
+      body:
+          isLoading
+          ? Center(child: OurLoadingIndicator()) // Show loading indicator
+          :  requests.isEmpty
+          ? Center( // Display message when no complaints
+        child: Text(
+          "No Request found.",
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      )
           : ListView.builder(
         padding: const EdgeInsets.all(16.0),
         itemCount: requests.length,
@@ -74,6 +84,7 @@ class ViewFurnitureRequestsState extends State<ViewFurnitureRequests> {
       setState(() {
         List<Map<String, dynamic>> nonRejectedRequests = [];
         List<Map<String, dynamic>> rejectedRequests = [];
+        isLoading = false;
 
         for (var doc in querySnapshot.docs) {
           var data = doc.data() as Map<String, dynamic>;
@@ -90,6 +101,18 @@ class ViewFurnitureRequestsState extends State<ViewFurnitureRequests> {
           ..addAll(rejectedRequests);
       });
     } catch (e) {
+      setState(() {
+        isLoading = false; // Stop loading on error
+      });
+      ErrorDialog(
+        'Error fetching furniture requests',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       print('Error fetching furniture requests: $e');
     }
   }

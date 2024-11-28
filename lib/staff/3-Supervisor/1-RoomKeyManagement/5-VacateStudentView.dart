@@ -40,7 +40,15 @@ class _VacateStudentViewState extends State<VacateStudentView> {
       }
     } catch (e) {
       // Handle any errors that occur
-      print("Error fetching document: $e");
+      ErrorDialog(
+        'Error fetching document: $e',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       rethrow; // Re-throw the exception to handle it outside the function if needed
     }
   }
@@ -48,9 +56,25 @@ class _VacateStudentViewState extends State<VacateStudentView> {
   Future<void> updateRoomKey(DocumentReference docRef) async {
     try {
       await docRef.update({"roomKey": false});
-      print("Field updated successfully");
+      InfoDialog(
+        'Field updated successfully',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
     } catch (e) {
-      print("Error updating field: $e");
+      ErrorDialog(
+        'Error updating field: $e',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
     }
   }
 

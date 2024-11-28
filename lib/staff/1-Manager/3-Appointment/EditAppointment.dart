@@ -71,9 +71,26 @@ class _EditAppointmentMScreenState extends State<EditAppointmentMScreen> {
           isLoading = false; // Data is fetched, stop loading
         });
       } else {
-        print("Document not found!");
+        ErrorDialog(
+          'Document not found!',
+          context,
+          buttons: [
+            {
+              "Ok": () => context.pop(),
+            },
+          ],
+        );
       }
     } catch (e) {
+      ErrorDialog(
+        'Error fetching appointment data',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       print("Error fetching appointment data: $e");
       setState(() {
         isLoading = false; // Stop loading even on error

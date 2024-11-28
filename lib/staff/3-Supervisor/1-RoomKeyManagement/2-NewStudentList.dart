@@ -37,17 +37,19 @@ class _NewStudentsListState extends State<NewStudentsList> {
 
       return requests;
     } catch (e) {
-      print("Error fetching requests: $e");
+      ErrorDialog(
+        'Error fetching requests: $e',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       return [];
     }
   }
 
-  TextEditingController _searchController = TextEditingController();
-  void _performSearch() {
-    String searchTerm = _searchController.text;
-
-    print("Searching for: $searchTerm");
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,42 +61,25 @@ class _NewStudentsListState extends State<NewStudentsList> {
         }
         if (snapshot.hasError) {
           return Scaffold(
-            appBar: OurAppBar(title: 'Application Requests'),
+            appBar: OurAppBar(title: 'New Students'),
             body: Center(
-                child: Text("An error occurred while fetching requests")),
+                child: Text("An error occurred while fetching data")),
           );
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Scaffold(
-            appBar: OurAppBar(title: 'Application Requests'),
-            body: Center(child: Text("No requests found")),
+            appBar: OurAppBar(title: 'New Students'),
+            body: Center(child: Text("No Data found")),
           );
         }
 
         List<Map<String, dynamic>> requests = snapshot.data!;
 
         return Scaffold(
-          appBar: OurAppBar(title: 'Application Requests'),
+          appBar: OurAppBar(title: 'New Students'),
           body: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    labelText: 'Search',
-                    labelStyle: TextStyle(color: Color(0xFF339199)),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () {
-                        _performSearch();
-                      },
-                    ),
-                  ),
-                ),
-              ),
-              // Use Expanded on OurListView to allow it to take available space
-              Expanded(
+             Expanded(
                 child: OurListView(
                   data: requests,
                   leadingWidget: (item) => text(
@@ -106,6 +91,7 @@ class _NewStudentsListState extends State<NewStudentsList> {
                     height: 0.044,
                     width: 0.19,
                     text: 'View',
+                    padding: 0,
                     background: blue1,
                     fontsize: 0.03,
                     onPressed: () {

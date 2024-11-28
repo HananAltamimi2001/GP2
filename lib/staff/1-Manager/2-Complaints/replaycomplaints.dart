@@ -52,6 +52,7 @@ class replaycomplaintsState extends State<replaycomplaints> {
                         ),
                         Heightsizedbox(h: 0.02),
                         OurContainer(
+                          wdth:MediaQuery.of(context).size.width,
                           child: text(
                             t: complaintIssues,
                             align: TextAlign.start,

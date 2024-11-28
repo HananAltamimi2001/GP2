@@ -18,15 +18,40 @@ class SetAppointmentDialogStateM extends State<SetAppointmentScreenM> {
 
   Future<void> saveAppointment() async {
     if (selectedTime == null || selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content:
-                Text('Please select both date and time for the appointment')),
+      ErrorDialog(
+        'Please select both date and time for the appointment',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
       );
+
       return;
     }
 
     try {
+      // Check for existing appointment with the same date and time
+      QuerySnapshot query = await appoint
+          .where('Date', isEqualTo: DateFormat('yyyy-MM-dd').format(selectedDate!))
+          .where('Time', isEqualTo: selectedTime!.format(context))
+          .get();
+
+      if (query.docs.isNotEmpty) {
+        // Appointment already exists at this date and time
+        ErrorDialog(
+          'An appointment is already scheduled at this time.',
+          context,
+          buttons: [
+            {
+              "Ok": () => context.pop(),
+            },
+          ],
+        );
+        return;
+      }
+
       await appoint.add({
         'Date': DateFormat('yyyy-MM-dd').format(selectedDate!),
         'Time': selectedTime!.format(context),
@@ -34,14 +59,20 @@ class SetAppointmentDialogStateM extends State<SetAppointmentScreenM> {
         'type': 'manager',
       });
 
-      Navigator.pop(context); // Close dialog
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Appointment saved successfully')),
-      );
+
+      Navigator.pop(context);
+
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save appointment: $e')),
+      ErrorDialog(
+        'Failed to save appointment',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
       );
+
     }
   }
 

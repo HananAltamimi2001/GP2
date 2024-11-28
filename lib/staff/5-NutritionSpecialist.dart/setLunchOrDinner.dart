@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 
 class setLunchOrDinner extends StatefulWidget {
@@ -167,33 +168,13 @@ class setLunchOrDinnerState extends State<setLunchOrDinner> {
       additives.clear();
 
       // Show a confirmation message
-      showDialog(
-        context: context,
-        builder: (context) => SimpleDialog(
-          backgroundColor: Color(0xFF339199),
-          contentPadding: const EdgeInsets.fromLTRB(20, 30, 20, 30),
-          children: [
-            Center(
-              child: Text(
-                "${widget.setmenutype} Menu created successfully",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text("OK", style: TextStyle(color: Colors.white)),
-                style: TextButton.styleFrom(
-                  backgroundColor: Color(0xFF007580),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
+      InfoDialog(
+        '${widget.setmenutype} Menu created successfully',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          }]);
     }
   }
 

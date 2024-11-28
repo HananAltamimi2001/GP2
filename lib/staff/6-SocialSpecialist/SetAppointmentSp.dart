@@ -43,8 +43,14 @@ class SetAppointmentDialogStateSp extends State<SetAppointmentScreenSp> {
   // Save the appointment with user data
   Future<void> saveAppointment() async {
     if (selectedTime == null || selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please select both date and time for the appointment')),
+      ErrorDialog(
+        'Please select both date and time for the appointment',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
       );
       return;
     }
@@ -66,12 +72,25 @@ class SetAppointmentDialogStateSp extends State<SetAppointmentScreenSp> {
       });
 
       Navigator.pop(context); // Close dialog
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Appointment saved successfully')),
+      InfoDialog(
+        'Appointment saved successfully',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
       );
+
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save appointment: $e')),
+      ErrorDialog(
+        'Failed to save appointment',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
       );
     }
   }

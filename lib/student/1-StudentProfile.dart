@@ -38,7 +38,9 @@ class studentprofileState extends State<studentprofile> {
 
       return documentSnapshot;
     } catch (e) {
-      print('Error fetching student data: $e');
+      ErrorDialog("Error fetching student data: $e", context, buttons: [
+        {"OK": () async => context.pop()},
+      ]);
       return null;
     }
   }

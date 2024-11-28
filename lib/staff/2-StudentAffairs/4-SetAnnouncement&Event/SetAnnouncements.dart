@@ -32,87 +32,89 @@ class _setAnnouncementState extends State<setAnnouncement> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0), // Padding around the form
-        child: Form(
-          key: formKey, // Form key for validation and state management
-          child: Column(
-            children: [
-              // Input text form field for the Announcement Title from our Design library
-              textform(
-                controller: AnnouncementTitle,
-                hinttext: "Announcement title",
-                lines: 1,
-                validator: (val) {
-                  if (val == null || val.trim().isEmpty) {
-                    return "Please Write Announcement title";
-                  }
-                  return null;
-                },
-              ),
-              Heightsizedbox(
-                  h: 0.02), // Add vertical spacing using a custom spacer from our design library
-
-              // Input text form field for the Announcement description from our Design library
-              textform(
-                controller: AnnouncementDescription,
-                hinttext: "Announcement Description",
-                lines: 5,
-                validator: (val) {
-                  if (val == null || val.trim().isEmpty) {
-                    return "Please Write Announcement Description";
-                  }
-                  return null;
-                },
-              ),
-
-              Heightsizedbox(h: 0.02),
-
-              // Row for uploading an image
-              Row(
-                children: [
-                  Text("Upload Picture:",
-                      style: TextStyle(
-                        color: dark1,
-                        fontSize: 16,
-                      )), // Label for image upload
-                  Widthsizedbox(
-                      w: 0.02), // Add horizontal spacing using a custom spacer from the design library
-
-                  image == null
-                      ? actionbutton(
-                          onPressed: () async {
-                            final File? pickimage = await pickImage(
-                                context); // the pickImage(context) it`s the function in the bellow (20 in this Design file)
-                            if (pickImage != null) {
-                              setState(() {
-                                image = pickimage; // Update the selected date
-                              });
-                            }
-                          },
-                          background: dark1,
-                          text: 'Upload',
-                          fontsize: 0.03)
-                      : Image.file(image!,
-                          width: MediaQuery.of(context).size.width *
-                              0.2, //adjust the width
-                          height: MediaQuery.of(context).size.height *
-                              0.2) // Show selected image if available
-                ],
-              ),
-              Heightsizedbox(h: 0.02),
-
-              Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.end, // Align button to the end of the row
-                children: [
-                  // use  custom button for action such as set from our design library
-                  actionbutton(
-                      onPressed: _uploadData,
-                      background: dark1,
-                      text: 'Set',
-                      fontsize: 0.047),
-                ],
-              ),
-            ],
+        child: SingleChildScrollView(
+          child: Form(
+            key: formKey, // Form key for validation and state management
+            child: Column(
+              children: [
+                // Input text form field for the Announcement Title from our Design library
+                textform(
+                  controller: AnnouncementTitle,
+                  hinttext: "Announcement title",
+                  lines: 1,
+                  validator: (val) {
+                    if (val == null || val.trim().isEmpty) {
+                      return "Please Write Announcement title";
+                    }
+                    return null;
+                  },
+                ),
+                Heightsizedbox(
+                    h: 0.02), // Add vertical spacing using a custom spacer from our design library
+          
+                // Input text form field for the Announcement description from our Design library
+                textform(
+                  controller: AnnouncementDescription,
+                  hinttext: "Announcement Description",
+                  lines: 5,
+                  validator: (val) {
+                    if (val == null || val.trim().isEmpty) {
+                      return "Please Write Announcement Description";
+                    }
+                    return null;
+                  },
+                ),
+          
+                Heightsizedbox(h: 0.02),
+          
+                // Row for uploading an image
+                Row(
+                  children: [
+                    Text("Upload Picture:",
+                        style: TextStyle(
+                          color: dark1,
+                          fontSize: 16,
+                        )), // Label for image upload
+                    Widthsizedbox(
+                        w: 0.02), // Add horizontal spacing using a custom spacer from the design library
+          
+                    image == null
+                        ? actionbutton(
+                            onPressed: () async {
+                              final File? pickimage = await pickImage(
+                                  context); // the pickImage(context) it`s the function in the bellow (20 in this Design file)
+                              if (pickImage != null) {
+                                setState(() {
+                                  image = pickimage; // Update the selected date
+                                });
+                              }
+                            },
+                            background: dark1,
+                            text: 'Upload',
+                            fontsize: 0.03)
+                        : Image.file(image!,
+                            width: MediaQuery.of(context).size.width *
+                                0.2, //adjust the width
+                            height: MediaQuery.of(context).size.height *
+                                0.2) // Show selected image if available
+                  ],
+                ),
+                Heightsizedbox(h: 0.02),
+          
+                Row(
+                  mainAxisAlignment:
+                      MainAxisAlignment.end, // Align button to the end of the row
+                  children: [
+                    // use  custom button for action such as set from our design library
+                    actionbutton(
+                        onPressed: _uploadData,
+                        background: dark1,
+                        text: 'Set',
+                        fontsize: 0.047),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

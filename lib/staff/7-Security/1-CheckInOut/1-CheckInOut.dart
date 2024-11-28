@@ -26,14 +26,14 @@ class _checkInOutState extends State<checkInOut> {
                   name: "Check-in",
                   onPressed: () {
                     context.pushNamed('/QrScanner1',
-                        extra: QrData(sturef: null, Ceckstatus: 'Check-in'));
+                        extra: QrData(sturef: null, Ceckstatus: 'Checked-in'));
                   }),
               Heightsizedbox(h: 0.02),
               PagesButton(
                   name: "Check-out",
                   onPressed: () {
                     context.pushNamed('/QrScanner1',
-                        extra: QrData(sturef: null, Ceckstatus: 'Check-out'));
+                        extra: QrData(sturef: null, Ceckstatus: 'Checked-out'));
                   }),
               Heightsizedbox(h: 0.02),
               PagesButton(

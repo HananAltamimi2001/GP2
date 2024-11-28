@@ -22,7 +22,7 @@ class menu extends StatelessWidget {
           name: 'Lunch',
           onPressed: () {
             context.pushNamed('/viewhmenu',
-                extra: menutype(type: "Lunch"));
+                extra: "Lunch");
           },
         ),
 
@@ -32,7 +32,7 @@ class menu extends StatelessWidget {
           name: 'Dinner',
           onPressed: () {
             context.pushNamed('/viewhmenu',
-                extra: menutype(type: "Dinner"));
+                extra: "Dinner");
           },
         ),
       ]),

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -55,16 +56,48 @@ class _VisitorReqStatusState extends State<VisitorReqStatus> {
             // Update the UI
             print('Value from referenced document: $fieldValue');
           } else {
-            print("Referenced document does not exist");
+            ErrorDialog(
+              'Referenced document does not exist',
+              context,
+              buttons: [
+                {
+                  "Ok": () => context.pop(),
+                },
+              ],
+            );
           }
         } else {
-          print(
-              "Field 'linkedDocRef' is null or does not exist in the user document");
+          ErrorDialog(
+            "Field 'linkedDocRef' is null or does not exist in the user document",
+            context,
+            buttons: [
+              {
+                "Ok": () => context.pop(),
+              },
+            ],
+          );
         }
       } else {
-        print("User document does not exist");
+        ErrorDialog(
+          'User document does not exist',
+          context,
+          buttons: [
+            {
+              "Ok": () => context.pop(),
+            },
+          ],
+        );
       }
     } catch (e) {
+      ErrorDialog(
+        'Error',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       print("Error: $e");
     }
   }

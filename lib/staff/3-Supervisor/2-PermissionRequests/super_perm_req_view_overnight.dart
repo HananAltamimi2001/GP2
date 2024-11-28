@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:pnustudenthousing/staff/3-Supervisor/2-PermissionRequests/super_overnight_req_list.dart';
-
 
 class SuperPermReqViewOvernight extends StatefulWidget {
   final overnightInfo args;
@@ -119,33 +117,32 @@ class _SuperPermReqViewOvernightState extends State<SuperPermReqViewOvernight> {
                             ),
                             Heightsizedbox(h: 0.010),
                             RowInfo.buildInfoRow(
-                              defaultLabel: 'Building number',
-                              value: requestData['buildingNumber'] ?? 'N/A',
-                            ),
-                            RowInfo.buildInfoRow(
-                              defaultLabel: 'Floor number',
-                              value: requestData['floorNumber'] ?? 'N/A',
-                            ),
-                            RowInfo.buildInfoRow(
-                              defaultLabel: 'Residential unit number:',
-                              value: requestData['residentialUnitNumber'] ?? 'N/A',
+                              defaultLabel: 'Room Number',
+                              value: requestData['roomInfo'] ?? 'N/A',
                             ),
                             Heightsizedbox(h: 0.032),
                             Container(
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   actionbutton(
                                     background: red1,
                                     text: "Reject",
                                     fontsize: 0.04,
                                     onPressed: () async {
-                                      await rejectVisitor(widget.args.overnight);
+                                      await rejectVisitor(
+                                          widget.args.overnight);
                                       InfoDialog(
                                           "Overnight request rejected successfully.",
                                           context,
                                           buttons: [
-                                            {"OK": () async => context.pop()}
+                                            {
+                                              "OK": () async => {
+                                                    context.pop(),
+                                                    context.pop(),
+                                                  }
+                                            }
                                           ]);
                                     },
                                   ),
@@ -154,12 +151,18 @@ class _SuperPermReqViewOvernightState extends State<SuperPermReqViewOvernight> {
                                     background: green1,
                                     fontsize: 0.04,
                                     onPressed: () async {
-                                      await acceptVisitor(widget.args.overnight);
+                                      await acceptVisitor(
+                                          widget.args.overnight);
                                       InfoDialog(
                                           "Overnight request accepted successfully.",
                                           context,
                                           buttons: [
-                                            {"OK": () async => context.pop()}
+                                            {
+                                              "OK": () async => {
+                                                    context.pop(),
+                                                    context.pop(),
+                                                  }
+                                            }
                                           ]);
                                     },
                                   ),
@@ -197,11 +200,13 @@ class _SuperPermReqViewOvernightState extends State<SuperPermReqViewOvernight> {
     // Fetch the student name
     DocumentSnapshot studentSnapshot = await studentInfoRef.get();
     String studentName = studentSnapshot['efullName'] ?? 'N/A';
+    String roomid = studentSnapshot['roomref'].id;
 
     // Return both the request details and student name
     return {
       'request': data,
       'studentName': studentName,
+      'room': roomid,
     };
   }
 }

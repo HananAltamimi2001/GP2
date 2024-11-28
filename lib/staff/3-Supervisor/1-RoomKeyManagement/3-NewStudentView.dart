@@ -37,7 +37,16 @@ class _NewStudentViewState extends State<NewStudentView> {
       }
     } catch (e) {
       // Handle any errors that occur
-      print("Error fetching document: $e");
+      ErrorDialog(
+        'Error fetching document: $e',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
+
       rethrow; // Re-throw the exception to handle it outside the function if needed
     }
   }
@@ -49,7 +58,9 @@ class _NewStudentViewState extends State<NewStudentView> {
       setState(() {
         getRequest = getDocumentData(widget.sturef);
       });
+      InfoDialog('New Student is confirmed', context, buttons: [{'Ok':()=>context.pop()}]);
     } catch (e) {
+       InfoDialog('Error Occured, Please try again later.', context, buttons: [{'Ok':()=>context.pop()}]);
       print("Error updating field: $e");
     }
   }
@@ -160,62 +171,62 @@ class _NewStudentViewState extends State<NewStudentView> {
                         ),
                         Heightsizedbox(h: 0.018),
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            // BloodType
-                            Column(
-                              children: [
-                                text(
-                                  t: "BloodType:",
-                                  align: TextAlign.center,
-                                  color: dark1,
-                                ),
-                                OurContainer(
-                                  child: Dtext(
-                                    t: BloodType,
-                                    align: TextAlign.center,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w400,
-                                    size: 0.055,
+                     Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // BloodType
+                                  Column(
+                                    children: [
+                                      text(
+                                        t: "BloodType:",
+                                        align: TextAlign.center,
+                                        color: dark1,
+                                      ),
+                                      OurContainer(
+                                        child: Dtext(
+                                          t: BloodType,
+                                          align: TextAlign.center,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w400,
+                                          size: 0.055,
+                                        ),
+                                        backgroundColor: grey2,
+                                        borderColor: green1,
+                                        wdth: 0.4,
+                                        hight: 0.12,
+                                        pddng: 6,
+                                        borderRadius: 15,
+                                      ),
+                                    ],
                                   ),
-                                  backgroundColor: grey2,
-                                  borderColor: green1,
-                                  wdth: 0.4,
-                                  hight: 0.12,
-                                  pddng: 6,
-                                  borderRadius: 15,
-                                ),
-                              ],
-                            ),
-                            Widthsizedbox(w: 0.09),
-                            // Dob
-                            Column(
-                              children: [
-                                text(
-                                  t: "Date Of Birth:",
-                                  align: TextAlign.center,
-                                  color: dark1,
-                                ),
-                                OurContainer(
-                                  child: Dtext(
-                                    t: DoB,
-                                    align: TextAlign.center,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w400,
-                                    size: 0.055,
+                                  // Dob
+                                  Column(
+                                    children: [
+                                      text(
+                                        t: "Date Of Birth:",
+                                        align: TextAlign.center,
+                                        color: dark1,
+                                      ),
+                                      OurContainer(
+                                        child: Dtext(
+                                          t: DoB,
+                                          align: TextAlign.center,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w400,
+                                          size: 0.055,
+                                        ),
+                                        backgroundColor: grey2,
+                                        borderColor: green1,
+                                        wdth: 0.4,
+                                        hight: 0.12,
+                                        pddng: 6,
+                                        borderRadius: 15,
+                                      ),
+                                    ],
                                   ),
-                                  backgroundColor: grey2,
-                                  borderColor: green1,
-                                  wdth: 0.4,
-                                  hight: 0.12,
-                                  pddng: 6,
-                                  borderRadius: 15,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                                ],
+                              ),
                         Heightsizedbox(h: 0.018),
                         //Student PNUID
                         text(
@@ -550,7 +561,7 @@ class _NewStudentViewState extends State<NewStudentView> {
                         Heightsizedbox(h: 0.018),
 
                         Heightsizedbox(h: 0.025),
-                        if (Data['roomKey'] == true)
+                        if (Data['roomKey'] == false)
                           Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [

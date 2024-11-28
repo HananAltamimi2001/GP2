@@ -20,6 +20,11 @@ import 'package:pnustudenthousing/student/3-StudentHome/1-Services/3-Permission/
 import 'package:pnustudenthousing/student/3-StudentHome/1-Services/3-Permission/status/visitor_req_status.dart';
 import 'package:pnustudenthousing/student/3-StudentHome/1-Services/3-Permission/view_requests.dart';
 import 'package:pnustudenthousing/student/3-StudentHome/1-Services/3-Permission/visitor_request.dart';
+import 'package:pnustudenthousing/student/3-StudentHome/1-Services/6-Appointment/BookAppointment.dart';
+import 'package:pnustudenthousing/student/3-StudentHome/1-Services/6-Appointment/TakeAppointmentWthSocialSpecialistState.dart';
+import 'package:pnustudenthousing/student/3-StudentHome/1-Services/6-Appointment/TakeAppointmentsHousingWthManager.dart';
+import 'package:pnustudenthousing/student/3-StudentHome/1-Services/6-Appointment/ViewReservedAppointments.dart';
+import 'package:pnustudenthousing/student/3-StudentHome/1-Services/6-Appointment/viewAppointmentDetails.dart';
 import 'package:pnustudenthousing/student/3-StudentHome/1-Services/7-Maintenance.dart';
 import 'package:pnustudenthousing/student/3-StudentHome/1-Services/9-Vacate.dart';
 import 'package:pnustudenthousing/student/3-StudentHome/1-Services/2-Emegrency.dart';
@@ -538,6 +543,39 @@ final GoRouter router = GoRouter(
                               ),
                             ]),
                       ]),
+                  GoRoute(
+                      name: '/BookAppointment',
+                      path: 'BookAppointment',
+                      builder: (context, state) => BookAppointment(),
+                      routes: [
+                        GoRoute(
+                          name: '/SetAppointmentWithHousingManager',
+                          path: 'SetAppointmentWithHousingManager',
+                          builder: (context, state) =>
+                              TakeAppointmentsHousingWthManager(),
+                        ),
+                        GoRoute(
+                          name: '/SetAppointmentWithSocialSpecialist',
+                          path: 'SetAppointmentWithSocialSpecialist',
+                          builder: (context, state) =>
+                              TakeAppointmentWthSocialSpecialist(),
+                        ),
+                        GoRoute(
+                            name: '/ViewReservedAppointments',
+                            path: 'ViewReservedAppointments',
+                            builder: (context, state) =>
+                                ViewReservedAppointments(),
+                            routes: [
+                              GoRoute(
+                                name: '/viewAppointmentDetails',
+                                path: 'viewAppointmentDetails',
+                                builder: (context, state) {
+                                  final args = state.extra as appointmentDatas;
+                                  return viewAppointmentDetails(args: args);
+                                },
+                              ),
+                            ]),
+                      ])
                 ]),
           ],
         ),
@@ -578,14 +616,16 @@ final GoRouter router = GoRouter(
           builder: (context, state) => SecurityNotifications(),
           routes: [
             //button 1 Emergency Request Details
-             //  3.1
+            //  3.1
             GoRoute(
-            name: '/EmergencyRequestDetails',
-            path: 'EmergencyRequestDetails',
-            builder: (context, state) {
-              final args = state.extra as EmregencyInfo;
-              return EmergencyRequestDetails(args: args);
-               },),],
+              name: '/EmergencyRequestDetails',
+              path: 'EmergencyRequestDetails',
+              builder: (context, state) {
+                final args = state.extra as EmregencyInfo;
+                return EmergencyRequestDetails(args: args);
+              },
+            ),
+          ],
         ),
 
         // 2 Staff routes
@@ -828,91 +868,91 @@ final GoRouter router = GoRouter(
                     ],
                   ),
                 ]),
-          ],
-        ),
 
-        // Permission Requests
-        GoRoute(
-            name: '/superpermrequests',
-            path: 'superpermrequests',
-            builder: (context, state) => const SuperPermissionRequests(),
-            routes: [
-              // Overnight
-              GoRoute(
-                name: '/superovernightlist',
-                path: 'superovernightlist',
-                builder: (context, state) => const SuperOvernightReqList(),
-                routes: [
-                  GoRoute(
-                      name: '/superovernightview',
-                      path: 'superovernightview',
-                      builder: (context, state) {
-                        final args = state.extra as overnightInfo;
-                        return SuperPermReqViewOvernight(args: args);
-                      })
-                ],
-              ),
-              // Visitor
-              GoRoute(
-                name: '/supervisitorlist',
-                path: 'supervisitorlist',
-                builder: (context, state) => const SuperVisitorReqList(),
-                routes: [
-                  GoRoute(
-                      name: '/supervisitorview',
-                      path: 'supervisitorview',
-                      builder: (context, state) {
-                        final args = state.extra as visitorInfo;
-                        return SuperPermReqViewVisit(args: args);
-                      })
-                ],
-              ),
-            ]),
-        // Room Key
-        GoRoute(
-          name: '/roomKey',
-          path: 'roomKey',
-          builder: (context, state) => RoomKeyManagement(),
-          routes: [
+            // Permission Requests
             GoRoute(
-              name: '/departingroomKeyList',
-              path: 'departingroomKeyList',
-              builder: (context, state) => VacateStudentsList(),
-              routes: [
-                GoRoute(
-                  name: '/VacateStudentView',
-                  path: 'VacateStudentView',
-                  builder: (context, state) {
-                    final args = state.extra as DocumentReference;
-                    return VacateStudentView(sturef: args);
-                  },
-                ),
-              ],
-            ),
-            GoRoute(
-              name: '/newroomKeyList',
-              path: 'newroomKeyList',
-              builder: (context, state) => NewStudentsList(),
-              routes: [
-                GoRoute(
-                    name: '/NewStudentView',
-                    path: 'NewStudentView',
-                    builder: (context, state) {
-                      final args = state.extra as DocumentReference;
-                      return NewStudentView(sturef: args);
-                    },
+                name: '/superpermrequests',
+                path: 'superpermrequests',
+                builder: (context, state) => const SuperPermissionRequests(),
+                routes: [
+                  // Overnight
+                  GoRoute(
+                    name: '/superovernightlist',
+                    path: 'superovernightlist',
+                    builder: (context, state) => const SuperOvernightReqList(),
                     routes: [
                       GoRoute(
-                          name: '/pdf4',
-                          path: 'pdf4',
+                          name: '/superovernightview',
+                          path: 'superovernightview',
                           builder: (context, state) {
-                            final args = state.extra as Pdf;
-                            return PdfViewerPage(
-                              Url: args.Url,
-                              title: args.title,
-                            );
-                          }),
-                    ]),
+                            final args = state.extra as overnightInfo;
+                            return SuperPermReqViewOvernight(args: args);
+                          })
+                    ],
+                  ),
+                  // Visitor
+                  GoRoute(
+                    name: '/supervisitorlist',
+                    path: 'supervisitorlist',
+                    builder: (context, state) => const SuperVisitorReqList(),
+                    routes: [
+                      GoRoute(
+                          name: '/supervisitorview',
+                          path: 'supervisitorview',
+                          builder: (context, state) {
+                            final args = state.extra as visitorInfo;
+                            return SuperPermReqViewVisit(args: args);
+                          })
+                    ],
+                  ),
+                ]),
+            // Room Key
+            GoRoute(
+              name: '/roomKey',
+              path: 'roomKey',
+              builder: (context, state) => RoomKeyManagement(),
+              routes: [
+                GoRoute(
+                  name: '/departingroomKeyList',
+                  path: 'departingroomKeyList',
+                  builder: (context, state) => VacateStudentsList(),
+                  routes: [
+                    GoRoute(
+                      name: '/VacateStudentView',
+                      path: 'VacateStudentView',
+                      builder: (context, state) {
+                        final args = state.extra as DocumentReference;
+                        return VacateStudentView(sturef: args);
+                      },
+                    ),
+                  ],
+                ),
+                GoRoute(
+                  name: '/newroomKeyList',
+                  path: 'newroomKeyList',
+                  builder: (context, state) => NewStudentsList(),
+                  routes: [
+                    GoRoute(
+                        name: '/NewStudentView',
+                        path: 'NewStudentView',
+                        builder: (context, state) {
+                          final args = state.extra as DocumentReference;
+                          return NewStudentView(sturef: args);
+                        },
+                        routes: [
+                          GoRoute(
+                              name: '/pdf4',
+                              path: 'pdf4',
+                              builder: (context, state) {
+                                final args = state.extra as Pdf;
+                                return PdfViewerPage(
+                                  Url: args.Url,
+                                  title: args.title,
+                                );
+                              }),
+                        ]),
+                  ],
+                ),
               ],
             ),
           ],

@@ -91,12 +91,20 @@ class _RoomDetailsState extends State<RoomDetails> {
         'studentInfo': null,
       };
     } catch (e) {
-      print("Error fetching room details: $e");
+      ErrorDialog(
+        'Error fetching room details',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       return {};
     }
   }
 
-  ////////////////////////Fetch Student////////////////////////
+  ///////////////////////////fetch studrnt info
   Future<Map<String, dynamic>> fetchStudentInfo(dynamic studentInfoData) async {
     try {
       // Initialize map to hold student data
@@ -106,22 +114,31 @@ class _RoomDetailsState extends State<RoomDetails> {
         // Handle single student document reference
         DocumentSnapshot studentSnapshot = await studentInfoData.get();
         if (studentSnapshot.exists) {
+          final data = studentSnapshot.data() as Map<String, dynamic>;
+
+          // Extract data safely
           studentInfo['studentInfo0'] = {
-            'fullName': studentSnapshot['efullName'] ?? 'N/A',
-            'email': studentSnapshot['email'] ?? 'N/A',
-            'phoneNumber': studentSnapshot['phoneNumber'] ?? 'N/A',
-            'VacateHousingStatus': studentSnapshot['VacateHousing'] ?? null,
+            'fullName': data['efullName'] ?? 'N/A',
+            'email': data['email'] ?? 'N/A',
+            'phoneNumber': data['phoneNumber'] ?? 'N/A',
+            'resident': data['resident'] ?? 'N/A',
+            'VacateHousing':
+                data.containsKey('VacateHousing') ? data['VacateHousing'] : '',
             'sturef': studentInfoData,
           };
-          if (studentSnapshot['VacateHousing'] is DocumentReference) {
+
+          // If VacateHousing is a DocumentReference, fetch its data
+          if (data['VacateHousing'] is DocumentReference) {
+            DocumentReference vacateHousingRef =
+                data['VacateHousing'] as DocumentReference;
             DocumentSnapshot vacateHousingSnapshot =
-                await (studentSnapshot['VacateHousing'] as DocumentReference)
-                    .get();
+                await vacateHousingRef.get();
             if (vacateHousingSnapshot.exists) {
               studentInfo['studentInfo0']['vacateHousingStatus'] =
-                  vacateHousingSnapshot['status'];
+                  vacateHousingSnapshot['status'] ?? 'Unknown';
             }
           }
+
           print(
               "Single student information extracted: ${studentInfo['studentInfo0']}");
         } else {
@@ -134,25 +151,33 @@ class _RoomDetailsState extends State<RoomDetails> {
           if (studentRef is DocumentReference) {
             DocumentSnapshot studentSnapshot = await studentRef.get();
             if (studentSnapshot.exists) {
+              final data = studentSnapshot.data() as Map<String, dynamic>;
+
               studentInfo['studentInfo${i + 1}'] = {
-                'fullName': studentSnapshot['efullName'] ?? 'N/A',
-                'email': studentSnapshot['email'] ?? 'N/A',
-                'phoneNumber': studentSnapshot['phoneNumber'] ?? 'N/A',
-                'VacateHousing': studentSnapshot['VacateHousing'] ?? null,
+                'fullName': data['efullName'] ?? 'N/A',
+                'email': data['email'] ?? 'N/A',
+                'phoneNumber': data['phoneNumber'] ?? 'N/A',
+                'resident': data['resident'] ?? 'N/A',
+                'VacateHousing': data.containsKey('VacateHousing')
+                    ? data['VacateHousing']
+                    : null,
                 'sturef': studentRef,
               };
-              if (studentSnapshot['VacateHousing'] is DocumentReference) {
+
+              // If VacateHousing is a DocumentReference, fetch its data
+              if (data['VacateHousing'] is DocumentReference) {
+                DocumentReference vacateHousingRef =
+                    data['VacateHousing'] as DocumentReference;
                 DocumentSnapshot vacateHousingSnapshot =
-                    await (studentSnapshot['VacateHousing']
-                            as DocumentReference)
-                        .get();
+                    await vacateHousingRef.get();
                 if (vacateHousingSnapshot.exists) {
                   studentInfo['studentInfo${i + 1}']['vacateHousingStatus'] =
-                      vacateHousingSnapshot['status'];
+                      vacateHousingSnapshot['status'] ?? 'Unknown';
                 }
               }
+
               print(
-                  "Assigned to studentInfo$i: ${studentInfo['studentInfo$i']}");
+                  "Assigned to studentInfo${i + 1}: ${studentInfo['studentInfo${i + 1}']}");
             } else {
               print("Student document at index $i does not exist");
             }
@@ -202,14 +227,17 @@ class _RoomDetailsState extends State<RoomDetails> {
             updatedStudentInfo.contains(sturef)) {
           // If there's only one student and it matches `studentRef`, remove the entire field.
           await roomref.update({'studentInfo': FieldValue.delete()});
+          updated = true;
         } else {
           // Otherwise, remove only the specific student reference.
           updatedStudentInfo.remove(sturef);
           await roomref.update({'studentInfo': updatedStudentInfo});
+          updated = true;
         }
       } else if (studentInfo is DocumentReference) {
         // `studentInfo` is a single document reference, remove the entire field.
         await roomref.update({'studentInfo': FieldValue.delete()});
+        updated = true;
       }
     } else if (status == 'Partially Occupied' && vacdoc != '') {
       // Fetch the room data to check the structure of `studentInfo`.
@@ -219,6 +247,8 @@ class _RoomDetailsState extends State<RoomDetails> {
       await roomref.update({
         'status': status,
       });
+      updated = true;
+
       if (studentInfo is List) {
         // `studentInfo` is a list, so we create a mutable copy to modify it.
         List updatedStudentInfo = List.from(studentInfo);
@@ -227,12 +257,26 @@ class _RoomDetailsState extends State<RoomDetails> {
             updatedStudentInfo.contains(sturef)) {
           updatedStudentInfo.remove(sturef);
           await roomref.update({'studentInfo': updatedStudentInfo});
+          updated = true;
         }
       }
     }
 
     if (updated == true) {
       InfoDialog("Room status ($status) updated successfully", context,
+          buttons: [
+            {
+              "Ok": () => {
+                    context.pop(),
+                    setState(() {
+                      fetchRoom();
+                    }),
+                  }
+            }
+          ]);
+    }
+    if (updated == false) {
+      ErrorDialog("Error, Room status ($status) is not updated, please try again later", context,
           buttons: [
             {
               "Ok": () => {
@@ -275,9 +319,9 @@ class _RoomDetailsState extends State<RoomDetails> {
                   var stu0;
                   var stu1;
                   var stu2;
-                  String? vacdoc0 = '';
-                  String? vacdoc1 = '';
-                  String? vacdoc2 = '';
+                  String vacdoc0 = '';
+                  String vacdoc1 = '';
+                  String vacdoc2 = '';
                   DocumentReference? sturef0 = null;
                   DocumentReference? sturef1 = null;
                   DocumentReference? sturef2 = null;
@@ -285,19 +329,25 @@ class _RoomDetailsState extends State<RoomDetails> {
                   if (studentData != null) {
                     stu0 = studentData['studentInfo0'];
                     if (stu0 != null) {
-                      vacdoc0 = stu0['vacateHousingStatus'];
+                      if (stu0['VacateHousing'] != null) {
+                        vacdoc0 = stu0['vacateHousingStatus'];
+                      }
                       sturef0 = stu0['sturef'];
                     }
 
                     stu1 = studentData['studentInfo1'];
                     if (stu1 != null) {
-                      vacdoc1 = stu1['vacateHousingStatus'];
+                      if (stu1['VacateHousing'] != null) {
+                        vacdoc1 = stu1['vacateHousingStatus'];
+                      }
                       sturef1 = stu1['sturef'];
                     }
 
                     stu2 = studentData['studentInfo2'];
                     if (stu2 != null) {
-                      vacdoc2 = stu2['vacateHousingStatus'];
+                      if (stu2['VacateHousing'] != null) {
+                        vacdoc2 = stu2['vacateHousingStatus'];
+                      }
                       sturef2 = stu2['sturef'];
                     }
                   }
@@ -452,13 +502,13 @@ class _RoomDetailsState extends State<RoomDetails> {
                         onPressed: () {
                           if (vacdoc0 != '') {
                             updateRoomStatus(roomref, 'Partially Occupied',
-                                vacdoc0!, sturef0);
+                                vacdoc0, sturef0);
                           } else if (vacdoc1 != '') {
                             updateRoomStatus(roomref, 'Partially Occupied',
-                                vacdoc1!, sturef1);
+                                vacdoc1, sturef1);
                           } else if (vacdoc2 != '') {
                             updateRoomStatus(roomref, 'Partially Occupied',
-                                vacdoc2!, sturef2);
+                                vacdoc2, sturef2);
                           }
                         },
                         text: 'Partially Occupied',

@@ -23,17 +23,18 @@ class _DailyAttendanceState extends State<DailyAttendance> {
   final double rightLongitude = 46.7153880;
 
   // Notification plugin initialization
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
     super.initState();
+    _requestPermission();
     resetDailyAttendance();
     initializeNotifications();
     checkUnconfirmedAttendance();
+    
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +91,6 @@ class _DailyAttendanceState extends State<DailyAttendance> {
   }
 
   Future<void> _takeAttendance() async {
-    await _requestPermission();
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     double userLatitude = position.latitude;
@@ -108,7 +108,8 @@ class _DailyAttendanceState extends State<DailyAttendance> {
   Future<void> saveAttendance() async {
     try {
       String docId = FirebaseAuth.instance.currentUser!.uid;
-      String todayDate = '${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}';
+      String todayDate =
+          '${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}';
 
       DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
           .collection('student')
@@ -118,8 +119,9 @@ class _DailyAttendanceState extends State<DailyAttendance> {
       if (documentSnapshot.exists) {
         // Update attendance map and lastAttendanceDate field
         await documentSnapshot.reference.update({
-          'attendance.$todayDate': 'Present',    // Update the attendance map
-          'lastAttendanceDate': todayDate,       // Keep track of the last confirmed attendance date
+          'attendance.$todayDate': 'Present', // Update the attendance map
+          'lastAttendanceDate':
+              todayDate, // Keep track of the last confirmed attendance date
         });
 
         InfoDialog("Attendance recorded successfully!", context, buttons: [
@@ -135,19 +137,20 @@ class _DailyAttendanceState extends State<DailyAttendance> {
 
   Future<void> resetDailyAttendance() async {
     String docId = FirebaseAuth.instance.currentUser!.uid;
-    String todayDate = '${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}';
+    String todayDate =
+        '${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}';
 
-    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
-        .collection('student')
-        .doc(docId)
-        .get();
+    DocumentSnapshot documentSnapshot =
+        await FirebaseFirestore.instance.collection('student').doc(docId).get();
 
     if (documentSnapshot.exists) {
-      String? lastAttendanceDate = documentSnapshot['lastAttendanceDate'];
+      String? lastAttendanceDate =
+          documentSnapshot['lastAttendanceDate'] ?? null;
       Map<String, dynamic> attendanceMap = documentSnapshot['attendance'] ?? {};
 
       // Reset attendance only if it's a new day and today's attendance hasn't been set
-      if (lastAttendanceDate != todayDate && !attendanceMap.containsKey(todayDate)) {
+      if (lastAttendanceDate != todayDate &&
+          !attendanceMap.containsKey(todayDate)) {
         await documentSnapshot.reference.update({
           'attendance.$todayDate': 'Absence',
           'lastAttendanceDate': todayDate,
@@ -156,40 +159,36 @@ class _DailyAttendanceState extends State<DailyAttendance> {
     }
   }
 
-
-
   void initializeNotifications() async {
     tz.initializeTimeZones();
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
     const InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid);
+        InitializationSettings(android: initializationSettingsAndroid);
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   void checkUnconfirmedAttendance() async {
     String docId = FirebaseAuth.instance.currentUser!.uid;
-    DocumentSnapshot studentSnapshot = await FirebaseFirestore.instance
-        .collection('student')
-        .doc(docId)
-        .get();
+    DocumentSnapshot studentSnapshot =
+        await FirebaseFirestore.instance.collection('student').doc(docId).get();
 
     if (studentSnapshot.exists) {
-      Map<String, dynamic> studentData = studentSnapshot.data() as Map<String, dynamic>;
+      Map<String, dynamic> studentData =
+          studentSnapshot.data() as Map<String, dynamic>;
 
       String? lastAttendanceDate = studentData['lastAttendanceDate'];
       bool hasOvernightRequest = studentData['overnightRequestRef'] != null;
 
-      String dayDate = '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
+      String dayDate =
+          '${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}';
 
       if (lastAttendanceDate != dayDate && !hasOvernightRequest) {
         scheduleMiddayNotification(); // Only send notification if no overnight request
       }
     }
   }
-
-
 
   void scheduleMiddayNotification() async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
@@ -203,9 +202,9 @@ class _DailyAttendanceState extends State<DailyAttendance> {
           'Daily Attendance Reminder',
         ),
       ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,  // Add this
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle, // Add this
       uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
+          UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }
@@ -213,12 +212,10 @@ class _DailyAttendanceState extends State<DailyAttendance> {
   tz.TZDateTime nextInstanceOfMidday() {
     final now = tz.TZDateTime.now(tz.local);
     var scheduledDate =
-    tz.TZDateTime(tz.local, now.year, now.month, now.day, 12);
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, 12);
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
     return scheduledDate;
   }
-
 }
-

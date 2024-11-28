@@ -42,7 +42,7 @@ class _VisitorRequestState extends State<VisitorRequest> {
               align: TextAlign.center,
             ),
             Heightsizedbox(
-              h: 0.030,
+              h: 0.020,
             ),
             // ***************USER INFO***************
 
@@ -67,7 +67,7 @@ class _VisitorRequestState extends State<VisitorRequest> {
                     ),
                   ),
                   Heightsizedbox(
-                    h: 0.018,
+                    h: 0.0018,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(15),
@@ -89,7 +89,7 @@ class _VisitorRequestState extends State<VisitorRequest> {
                     ),
                   ),
                   Heightsizedbox(
-                    h: 0.018,
+                    h: 0.0018,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(15),
@@ -108,7 +108,7 @@ class _VisitorRequestState extends State<VisitorRequest> {
                     ),
                   ),
                   Heightsizedbox(
-                    h: 0.018,
+                    h: 0.0018,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(15),
@@ -125,7 +125,7 @@ class _VisitorRequestState extends State<VisitorRequest> {
                     ),
                   ),
                   Heightsizedbox(
-                    h: 0.018,
+                    h: 0.0018,
                   ),
                 ],
               ),
@@ -254,11 +254,11 @@ class _VisitorRequestState extends State<VisitorRequest> {
                                           snapshot.docs[0]['status'] ==
                                               'pending') {
                                         // There's a pending request, prevent submission
-                                        InfoDialog(
+                                        ErrorDialog(
                                             "You have a pending visitor request. Please wait for it to be processed before submitting another.",
                                             context,
                                             buttons: [
-                                              {"OK": () async => context.pop()}
+                                              {"OK": () async => {context.pop(),context.pop()}}
                                             ]);
                                       } else {
                                         // No pending request, submit the new one
@@ -272,7 +272,7 @@ class _VisitorRequestState extends State<VisitorRequest> {
                                             "Your request has been\nsubmitted successfully",
                                             context,
                                             buttons: [
-                                              {"OK": () async => context.pop()}
+                                              {"OK": () async =>{context.pop(),context.pop()}}
                                             ]);
 
                                         setState(() {
@@ -280,10 +280,27 @@ class _VisitorRequestState extends State<VisitorRequest> {
                                         });
                                       }
                                     } catch (e) {
+                                      ErrorDialog(
+                                        'Error adding data',
+                                        context,
+                                        buttons: [
+                                          {
+                                            "Ok": () => context.pop(),
+                                          },
+                                        ],
+                                      );
                                       print('Error adding data: $e');
                                     }
                                   } else {
-                                    print('Student Data not found');
+                                    ErrorDialog(
+                                      'Student Data not found',
+                                      context,
+                                      buttons: [
+                                        {
+                                          "Ok": () => context.pop(),
+                                        },
+                                      ],
+                                    );
                                   }
                                 }
                               }

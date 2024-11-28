@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:pnustudenthousing/staff/1-Manager/3-Appointment/EditAppointment.dart';
 
@@ -9,11 +10,13 @@ class AppointmentDetailsScreenM extends StatefulWidget {
   AppointmentDetailsScreenM({required this.args});
 
   @override
-  _AppointmentDetailsScreenMState createState() => _AppointmentDetailsScreenMState();
+  _AppointmentDetailsScreenMState createState() =>
+      _AppointmentDetailsScreenMState();
 }
 
 class _AppointmentDetailsScreenMState extends State<AppointmentDetailsScreenM> {
-  final CollectionReference appointments = FirebaseFirestore.instance.collection("Appointments");
+  final CollectionReference appointments =
+      FirebaseFirestore.instance.collection("Appointments");
 
   // State variables
   late String date;
@@ -43,60 +46,70 @@ class _AppointmentDetailsScreenMState extends State<AppointmentDetailsScreenM> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 20),
-            Text('Date:', style: TextStyle(color: Color(0xFF339199), fontSize: 25)),
+            Text('Date:',
+                style: TextStyle(color: Color(0xFF339199), fontSize: 25)),
             buildInfoContainer(date),
             SizedBox(height: 20),
-            Text('Time:', style: TextStyle(color: Color(0xFF339199), fontSize: 25)),
+            Text('Time:',
+                style: TextStyle(color: Color(0xFF339199), fontSize: 25)),
             buildInfoContainer(time),
             SizedBox(height: 20),
-            Text('Reason:', style: TextStyle(color: Color(0xFF339199), fontSize: 25)),
+            Text('Reason:',
+                style: TextStyle(color: Color(0xFF339199), fontSize: 25)),
             buildInfoContainer(reason),
             SizedBox(height: 20),
-            studentRef != null
-                ? FutureBuilder<DocumentSnapshot>(
-              future: studentRef!.get(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || !snapshot.data!.exists) {
-                  return Center(child: Text('Student data not found.'));
-                } else {
-                  var studentData = snapshot.data!.data() as Map<String, dynamic>;
-                  String studentName = studentData['name'] ?? 'N/A';
-                  String pnuid = studentData['PNUID'] ?? 'N/A';
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Student Name:', style: TextStyle(color: Color(0xFF339199), fontSize: 25)),
-                      buildInfoContainer(studentName),
-                      SizedBox(height: 20),
-                      Text('PNUID:', style: TextStyle(color: Color(0xFF339199), fontSize: 25)),
-                      buildInfoContainer(pnuid),
-                    ],
-                  );
-                }
-              },
-            )
-                : SizedBox(),
-            Heightsizedbox(h: 0.02),
+            if( status == "Reserved")
+              FutureBuilder<DocumentSnapshot>(
+                future: studentRef!.get(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || !snapshot.data!.exists) {
+                    return Center(child: Text('Student data not found.'));
+                  } else {
+                    var studentData =
+                        snapshot.data!.data() as Map<String, dynamic>;
+                    String studentName = studentData['efullName'] ?? 'N/A';
+                    String pnuid = studentData['PNUID'] ?? 'N/A';
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Student Name:',
+                            style: TextStyle(
+                                color: Color(0xFF339199), fontSize: 25)),
+                        buildInfoContainer(studentName),
+                        SizedBox(height: 20),
+                        Text('PNUID:',
+                            style: TextStyle(
+                                color: Color(0xFF339199), fontSize: 25)),
+                        buildInfoContainer(pnuid),
+                      ],
+                    );
+                  }
+                },
+              ),
+            
+            if(status == "available")
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                actionbutton(
-                  onPressed: () => deleteAppointment(context, widget.args.appointmentId),
-                  text: 'Delete',
-                  background: red1,
-                ),
-                actionbutton(
-                  onPressed: () => showEditDialog(context),
-                  text: 'Edit',
-                  background: dark1,
-                ),
-              ],
-            ),
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  actionbutton(
+                    onPressed: () =>
+                        deleteAppointment(context, widget.args.appointmentId),
+                    text: 'Delete',
+                    background: red1,
+                  ),
+                  actionbutton(
+                    onPressed: () => showEditDialog(context),
+                    text: 'Edit',
+                    background: dark1,
+                  ),
+                ],
+              ),
+            
           ],
         ),
       ),
@@ -119,11 +132,19 @@ class _AppointmentDetailsScreenMState extends State<AppointmentDetailsScreenM> {
   }
 
   // Delete appointment
-  Future<void> deleteAppointment(BuildContext context, String appointmentId) async {
-    final CollectionReference appointmentsCollection = FirebaseFirestore.instance.collection("Appointments");
+  Future<void> deleteAppointment(
+      BuildContext context, String appointmentId) async {
+    final CollectionReference appointmentsCollection =
+        FirebaseFirestore.instance.collection("Appointments");
     await appointmentsCollection.doc(appointmentId).delete();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Appointment deleted successfully')),
+    InfoDialog(
+      'Appointment deleted successfully',
+      context,
+      buttons: [
+        {
+          "Ok": () => context.pop(),
+        },
+      ],
     );
     Navigator.pop(context); // Navigate back after deletion
   }
@@ -145,7 +166,8 @@ class _AppointmentDetailsScreenMState extends State<AppointmentDetailsScreenM> {
     // If appointment was updated, update the state
     if (updated == true) {
       // Re-fetch the updated appointment data here
-      final docSnapshot = await appointments.doc(widget.args.appointmentId).get();
+      final docSnapshot =
+          await appointments.doc(widget.args.appointmentId).get();
       final updatedData = docSnapshot.data() as Map<String, dynamic>;
 
       setState(() {
@@ -158,7 +180,6 @@ class _AppointmentDetailsScreenMState extends State<AppointmentDetailsScreenM> {
       });
     }
   }
-
 }
 
 class AppointmentInfoM {

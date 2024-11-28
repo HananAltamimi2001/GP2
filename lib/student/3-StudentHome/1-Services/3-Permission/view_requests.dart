@@ -58,16 +58,48 @@ class _ViewRequestsState extends State<ViewRequests> {
             // Update the UI
             print('Value from referenced document: $fieldValue1 ');
           } else {
-            print("Referenced document does not exist");
+            ErrorDialog(
+              'Referenced document does not exist',
+              context,
+              buttons: [
+                {
+                  "Ok": () => context.pop(),
+                },
+              ],
+            );
           }
         } else {
-          print(
-              "Field 'linkedDocRef' is null or does not exist in the user document");
+          ErrorDialog(
+            "Field 'linkedDocRef' is null or does not exist in the user document",
+            context,
+            buttons: [
+              {
+                "Ok": () => context.pop(),
+              },
+            ],
+          );
         }
       } else {
-        print("User document does not exist");
+        ErrorDialog(
+          'User document does not exist',
+          context,
+          buttons: [
+            {
+              "Ok": () => context.pop(),
+            },
+          ],
+        );
       }
     } catch (e) {
+      ErrorDialog(
+        'Error',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       print("Error: $e");
     }
     setState(() {});
@@ -108,16 +140,48 @@ class _ViewRequestsState extends State<ViewRequests> {
             // Update the UI
             print('Value from referenced document: $fieldValue2');
           } else {
-            print("Referenced document does not exist");
+            ErrorDialog(
+              'Referenced document does not exist',
+              context,
+              buttons: [
+                {
+                  "Ok": () => context.pop(),
+                },
+              ],
+            );
           }
         } else {
-          print(
-              "Field 'linkedDocRef' is null or does not exist in the user document");
+          ErrorDialog(
+            "Field 'linkedDocRef' is null or does not exist in the user document",
+            context,
+            buttons: [
+              {
+                "Ok": () => context.pop(),
+              },
+            ],
+          );
         }
       } else {
-        print("User document does not exist");
+        ErrorDialog(
+          'User document does not exist',
+          context,
+          buttons: [
+            {
+              "Ok": () => context.pop(),
+            },
+          ],
+        );
       }
     } catch (e) {
+      ErrorDialog(
+        'Error',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       print("Error: $e");
     }
   }

@@ -23,7 +23,7 @@ class _RoomKeyManagementState extends State<RoomKeyManagement> {
             children: [
               // PagesButton(name: "Resident Student", onPressed: () {}),
               PagesButton(
-                  name: "New Student",
+                  name: "New Students",
                   background: blue1,
                   onPressed: () {
                     context.pushNamed('/newroomKeyList');
@@ -31,7 +31,7 @@ class _RoomKeyManagementState extends State<RoomKeyManagement> {
               Heightsizedbox(h: 0.02),
 
               PagesButton(
-                  name: "Departing Student",
+                  name: "Departing Students",
                   background: red1,
                   onPressed: () {
                     context.pushNamed('/departingroomKeyList');

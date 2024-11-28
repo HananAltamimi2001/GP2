@@ -45,7 +45,6 @@ dependencies:
   firebase_storage: ^12.2.0
   flutter_launcher_icons: ^0.13.1
   string_extensions: ^0.7.3
-  flutter_native_splash: ^2.4.1
   auto_size_text: ^3.0.0
   qr_flutter: ^4.1.0
   mobile_scanner: ^5.2.3

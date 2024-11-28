@@ -80,10 +80,10 @@ class StudentDetails extends StatelessWidget {
                 OurContainer(borderColor: green1,
                   child: Column(
                     children: [
-                      RowInfo.buildInfoRow(
-                        defaultLabel: 'Attendance Status',
-                        value: studentData['attendance'] ?? 'N/A',
-                      ),
+                      // RowInfo.buildInfoRow(
+                      //   defaultLabel: 'Attendance Status',
+                      //   value: studentData['attendance'] ?? 'N/A',
+                      // ),
                       RowInfo.buildInfoRow(
                         defaultLabel: 'Last Attendance Date',
                         value: studentData['lastAttendanceDate'] ?? 'N/A',

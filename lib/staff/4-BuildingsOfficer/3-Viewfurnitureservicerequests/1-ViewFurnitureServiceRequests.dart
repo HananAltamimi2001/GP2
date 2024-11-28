@@ -111,7 +111,15 @@ class _ViewfurnitureservicerequestsState extends State<Viewfurnitureservicereque
 
       return requests;
     } catch (e) {
-      print("Error fetching requests: $e");
+      ErrorDialog(
+        'Error fetching requests: $e',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       return [];
     }
   }

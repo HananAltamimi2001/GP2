@@ -31,7 +31,7 @@ class RemainingFurniture extends StatelessWidget {
           return OurListView(
             data: remainingFurniture,
             leadingWidget: (item) => text(t:'0${remainingFurniture.indexOf(item) + 1}',color: dark1 , align: TextAlign.start,),// Index number in a circle
-            trailingWidget: (item) => CircleAvatar( backgroundColor: dark1,
+            trailingWidget: (item) => CircleAvatar( backgroundColor: red1,
             child:text(t:'${item['availableQuantity']}', color: Colors.white , align: TextAlign.start,),),
             title: (item)=>item['furnitureName'],
           );

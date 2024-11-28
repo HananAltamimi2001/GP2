@@ -32,7 +32,7 @@ class splashScreenState extends State<splashScreen>
   Widget build(BuildContext context) {
     
     return Scaffold(
-      backgroundColor: const Color(0xff007580),
+      appBar: OurAppBar(),
       body: SafeArea(
         child: Center(
           child: Column(children: [

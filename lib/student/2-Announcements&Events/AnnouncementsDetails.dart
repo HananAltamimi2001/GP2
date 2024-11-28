@@ -26,36 +26,37 @@ class AnnouncementsDetails extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // GestureDetector to allow image tap functionality
-            GestureDetector(
-              onTap: () {
-                // Show the image in a dialog (full-screen image) when tapped
-                showDialog(
-                  context: context,
-                  builder: (_) => Dialog(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context); // Close the dialog on tap
-                      },
-                      child: Image.network(
-                        Announcement['imageUrl'] ?? '', // Load image from the URL or show nothing if URL is null
-                        fit: BoxFit.contain, // Image will fit inside the container with original aspect ratio
-                        errorBuilder: (context, error, stackTrace) =>
-                         Icon(Icons.image, size: screenHeight * 0.2), // Show a default icon if image loading fails
+            if(Announcement['imageUrl'] != null && Announcement['imageUrl'].isNotEmpty)
+                  GestureDetector(
+                  onTap: () {
+                    // Show the image in a dialog (full-screen image) when tapped
+                    showDialog(
+                      context: context,
+                      builder: (_) => Dialog(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context); // Close the dialog on tap
+                          },
+                          child: Image.network(
+                            Announcement['imageUrl'] ?? '', // Load image from the URL or show nothing if URL is null
+                            fit: BoxFit.contain, // Image will fit inside the container with original aspect ratio
+                            errorBuilder: (context, error, stackTrace) =>
+                             Icon(Icons.image, size: screenHeight * 0.2), // Show a default icon if image loading fails
+                          ),
+                        ),
                       ),
-                    ),
+                    );
+                  },
+                  child: Image.network(
+                    // Display the image in the announcement body
+                    Announcement['imageUrl'] ?? '', // Load the image URL, or show nothing if URL is null
+                    height: screenHeight * 0.2, // Set a fixed height for the image
+                    width: double.infinity, // Make the image span the full width of the screen
+                    fit: BoxFit.cover, // Cover the container, cropping if necessary
+                    errorBuilder: (context, error, stackTrace) =>
+                     Icon(Icons.image, size: screenHeight * 0.2,), // Show an icon if image fails to load
                   ),
-                );
-              },
-              child: Image.network(
-                // Display the image in the announcement body
-                Announcement['imageUrl'] ?? '', // Load the image URL, or show nothing if URL is null
-                height: screenHeight * 0.2, // Set a fixed height for the image
-                width: double.infinity, // Make the image span the full width of the screen
-                fit: BoxFit.cover, // Cover the container, cropping if necessary
-                errorBuilder: (context, error, stackTrace) =>
-                 Icon(Icons.image, size: screenHeight * 0.2,), // Show an icon if image fails to load
-              ),
-            ),
+                ),
 
             // Adds vertical spacing using a custom height spacer from our design library
             Heightsizedbox(h: 0.02),

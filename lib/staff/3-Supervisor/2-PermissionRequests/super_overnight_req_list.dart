@@ -14,13 +14,7 @@ class _SuperOvernightReqListState extends State<SuperOvernightReqList> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<QueryDocumentSnapshot<Map<String, dynamic>>> visitorData = [];
   List<QueryDocumentSnapshot<Map<String, dynamic>>> overnightData = [];
-  TextEditingController _searchController = TextEditingController();
 
-  void _performSearch() {
-    String searchTerm = _searchController.text;
-
-    print("Searching for: $searchTerm");
-  }
 
   @override
   void initState() {
@@ -46,8 +40,8 @@ class _SuperOvernightReqListState extends State<SuperOvernightReqList> {
         DocumentReference studentinfo = doc['studentInfo'];
         DocumentSnapshot studentSnapshot = await studentinfo.get();
 
-        String firstName = studentSnapshot['firstName'] ?? 'N/A';
-        String lastName = studentSnapshot['lastName'] ?? 'N/A';
+        String firstName = studentSnapshot['efirstName'] ?? 'N/A';
+        String lastName = studentSnapshot['elastName'] ?? 'N/A';
         String status = doc['status'];
 
         print(
@@ -63,7 +57,15 @@ class _SuperOvernightReqListState extends State<SuperOvernightReqList> {
 
       return requests;
     } catch (e) {
-      print("Error fetching requests: $e");
+      ErrorDialog(
+        'Error fetching requests: $e',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       return [];
     }
   }
@@ -95,22 +97,7 @@ class _SuperOvernightReqListState extends State<SuperOvernightReqList> {
           appBar: OurAppBar(title: 'Visitor Requests'),
           body: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    labelText: 'Search',
-                    labelStyle: TextStyle(color: Color(0xFF339199)),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () {
-                        _performSearch();
-                      },
-                    ),
-                  ),
-                ),
-              ),
+              
               Expanded(
                 child: OurListView(
                   data: requests,
@@ -123,6 +110,7 @@ class _SuperOvernightReqListState extends State<SuperOvernightReqList> {
                     height: 0.044,
                     width: 0.19,
                     text: 'View',
+                    padding: 0,
                     background: dark1,
                     fontsize: 0.03,
                     onPressed: () {

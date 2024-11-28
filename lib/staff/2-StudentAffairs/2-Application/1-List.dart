@@ -35,10 +35,10 @@ class _ApplicationRequestsListState extends State<ApplicationRequestsList> {
           statusColor = dark1;
         } else if (status == 'Initial Accept') {
           statusColor = blue1;
-        } else if (status == 'Waiting Availability') {
-          statusColor = yellow1;
         } else if (status == 'Final Accept') {
           statusColor = green1;
+        }else{
+           statusColor = grey1;
         }
         requests.add({
           'fullname': '${doc['efirstName']} ${doc['elastName']}',
@@ -52,13 +52,6 @@ class _ApplicationRequestsListState extends State<ApplicationRequestsList> {
       print("Error fetching requests: $e");
       return [];
     }
-  }
-
-  TextEditingController _searchController = TextEditingController();
-  void _performSearch() {
-    String searchTerm = _searchController.text;
-
-    print("Searching for: $searchTerm");
   }
 
   Future<void> DeleteHousingAplication() async {
@@ -120,22 +113,6 @@ class _ApplicationRequestsListState extends State<ApplicationRequestsList> {
           appBar: OurAppBar(title: 'Application Requests'),
           body: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    labelText: 'Search',
-                    labelStyle: TextStyle(color: Color(0xFF339199)),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () {
-                        _performSearch();
-                      },
-                    ),
-                  ),
-                ),
-              ),
               // Use Expanded on OurListView to allow it to take available space
               Expanded(
                 child: OurListView(
@@ -149,6 +126,7 @@ class _ApplicationRequestsListState extends State<ApplicationRequestsList> {
                     height: 0.044,
                     width: 0.19,
                     text: 'View',
+                    padding: 0,
                     background: item['color'],
                     fontsize: 0.03,
                     onPressed: () {

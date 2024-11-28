@@ -164,7 +164,7 @@ class _ViewRequestDetailsState extends State<ViewRequestDetails> {
 
     // Fetch the student name
     DocumentSnapshot studentSnapshot = await studentInfoRef.get();
-    String studentName = studentSnapshot['efullname'] ?? 'N/A';
+    String studentName = studentSnapshot['efullName'] ?? 'N/A';
     String roomNo = studentSnapshot['roomref'].id ?? 'N/A';
 
     // Return both the request details and student name

@@ -50,6 +50,7 @@ class _viewstudentComplaintsState extends State<viewstudentComplaints> {
               align: TextAlign.start,
             ),
             trailingWidget: (item) => Dactionbutton(
+              padding: 0.0,
               height: 0.044,
               width: 0.19,
               text: 'View',
@@ -90,13 +91,22 @@ class _viewstudentComplaintsState extends State<viewstudentComplaints> {
             'complaintId': doc.id,
             'complaintsData': doc.data() as Map<String, dynamic>,
             'studentData': studentData,
-            'studentName': studentData['efullName'],
+            'studentName': '${studentData['efirstName']} ${studentData['elastName']}',
           });
         }
       }
 
       return complaints;
     } catch (e) {
+      ErrorDialog(
+        'Error fetching complaints',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
       print("Error fetching complaints: $e");
       return [];
     }

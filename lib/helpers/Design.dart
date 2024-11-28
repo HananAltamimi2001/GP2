@@ -53,10 +53,9 @@ Color blue1 = Color(0xff00a6ce); // for information
 Color red1 = Color(
     0xffC83434); // for error massages , text form field not fill , reject or delete or cancel buttons
 Color red2 = Color(0xffAf0303);
-Color pink1 =Color.fromARGB(255, 200, 52, 178);
+Color pink1 = Color.fromARGB(255, 200, 52, 178);
 Color yellow1 = Color(0xffF6cf7f); // for waiting
 Color yellow2 = Color.fromARGB(255, 253, 195, 78); // for waiting
-
 
 /* example for used it :
 * first don`t forget the import: import 'package:pnustudenthousing/Design.dart';
@@ -502,45 +501,48 @@ class PagesButton extends StatelessWidget {
     super.key,
     required this.name,
     this.onPressed,
+    this.isDisabled = false, // New bool parameter for disabling
     this.background,
-    
   });
-  final String name; // Button text to display
-  final VoidCallback? onPressed; // Action triggered when the button is pressed
+
+  final String name;
+  final VoidCallback? onPressed;
+  final bool isDisabled; // Boolean to control disabled state
   final Color? background;
+
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context)
-        .size
-        .width; // Get screen width for dynamic sizing
-    double screenHeight = MediaQuery.of(context)
-        .size
-        .height; // Get screen height for dynamic sizing
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Center(
       child: Container(
-        height: screenHeight *
-            0.09, // Set dynamic container height based on the screen height
-        width: screenWidth *
-            0.9, // Set dynamic container width based on the screen width
+        height: screenHeight * 0.09,
+        width: screenWidth * 0.9,
         decoration: BoxDecoration(
-          color: (background ?? light1), // Background color for the button
-          borderRadius: const BorderRadius.all(
-              Radius.circular(40)), // Rounded corners for a softer look
+          color: isDisabled
+              ? grey1.withOpacity(0.4) // Dim the button when disabled
+              : (background ?? light1), // Normal background color
+          borderRadius: const BorderRadius.all(Radius.circular(40)),
         ),
         child: TextButton(
-          onPressed:
-              onPressed, // Assign the passed action to the button's onPressed event
+          onPressed: isDisabled
+              ? null
+              : onPressed, // Disable button if isDisabled is true
+          style: ButtonStyle(
+            overlayColor: MaterialStateProperty.all(
+                Colors.transparent), // Remove default button ripple effect
+          ),
           child: AutoSizeText(
-            name, // Display the name text
+            name,
             style: TextStyle(
-              color: Colors.white,
-              fontSize:
-                  SizeHelper.getSize(context) * 0.07, // Set dynamic font size
+              color: Colors.white.withOpacity(
+                  isDisabled ? 0.6 : 1.0), // Reduce text opacity when disabled
+              fontSize: SizeHelper.getSize(context) * 0.07,
             ),
             textAlign: TextAlign.center,
-            minFontSize: 16, // Minimum font size to maintain readability
-            maxFontSize: 22, // Maximum font size to maintain readability
+            minFontSize: 16,
+            maxFontSize: 22,
           ),
         ),
       ),
@@ -825,8 +827,23 @@ class textform extends StatelessWidget {
       controller:
           controller, // Bind the text field's input to the provided controller
       cursorColor: dark1, // Set the cursor color
-      validator:
-          validator, // Attach the validator function for validation logic
+      validator: (value) {
+        // Apply incoming validator logic
+        final validationError = validator(value);
+        if (validationError != null) {
+          return validationError; // Return the first error from the incoming validator
+        }
+
+        // Add special character validation
+        const String specialCharsPattern =
+            r'[!#$%^&*(),?":{}|<>]'; // Define special characters pattern
+        if (RegExp(specialCharsPattern).hasMatch(value ?? '')) {
+          return 'Input must not contain special characters.';
+        }
+
+        return null; // Return null if all validations pass
+      },
+
       decoration: InputDecoration(
         hintText: hinttext, // Display hint text
         focusedErrorBorder: OutlineInputBorder(
@@ -912,8 +929,7 @@ class PasswordField extends StatelessWidget {
         controller: passwordController, // Bind input to the password controller
         obscureText: isObsecure
             .value, // Hide or show the password based on isObsecure's value
-        validator:
-            validator, // Attach the validator function for validation logic
+        validator: validator,
         decoration: InputDecoration(
           prefixIcon: const Icon(
             Icons.vpn_key_sharp, // Icon for password input
@@ -972,7 +988,8 @@ Widget OurFormField({
   TimeOfDay? selectedTime,
   Future<void> Function()? onPickImage,
   Future<DateTime?> Function()? onSelectDate,
-  Future<DateTime?> Function()? onSelectDate1, // Callback for the new date picker
+  Future<DateTime?> Function()?
+      onSelectDate1, // Callback for the new date picker
   Future<TimeOfDay?> Function()? onSelectTime,
   required String labelText,
   String fieldType = 'text',
@@ -1214,12 +1231,13 @@ Future<TimeOfDay?> pickTime(BuildContext context) async {
 /// ------------------ pickDate Function -------------------  //20
 Future<DateTime?> pickDate(BuildContext context) async {
   final DateTime now = DateTime.now();
-  final DateTime lastSelectableDate = DateTime(now.year + 20, now.month, now.day);
+  final DateTime lastSelectableDate =
+      DateTime(now.year + 20, now.month, now.day);
   final DateTime? picked = await showDatePicker(
     context: context,
-    initialDate:now, // The default date is today's date.
-    firstDate:now, // The earliest selectable date.
-    lastDate:lastSelectableDate, // The latest selectable date.
+    initialDate: now, // The default date is today's date.
+    firstDate: now, // The earliest selectable date.
+    lastDate: lastSelectableDate, // The latest selectable date.
     builder: (BuildContext context, Widget? child) {
       return Theme(
         data: ThemeData.light().copyWith(
@@ -1233,15 +1251,19 @@ Future<DateTime?> pickDate(BuildContext context) async {
 
   return picked; // Return the picked date
 }
+
 // pick date 1
 Future<DateTime?> pickDate1(BuildContext context) async {
   final DateTime now = DateTime.now();
-  final DateTime firstSelectableDate = DateTime(now.year - 25, now.month, now.day);
-  final DateTime lastSelectableDate = DateTime(now.year - 15, now.month, now.day);
+  final DateTime firstSelectableDate =
+      DateTime(now.year - 25, now.month, now.day);
+  final DateTime lastSelectableDate =
+      DateTime(now.year - 15, now.month, now.day);
 
   final DateTime? picked = await showDatePicker(
     context: context,
-    initialDate: lastSelectableDate, // Default to the latest possible date (15 years before now).
+    initialDate:
+        lastSelectableDate, // Default to the latest possible date (15 years before now).
     firstDate: firstSelectableDate, // Earliest date (25 years before now).
     lastDate: lastSelectableDate, // Latest date (15 years before now).
     builder: (BuildContext context, Widget? child) {
@@ -1262,7 +1284,8 @@ Future<DateTime?> pickDate1(BuildContext context) async {
 
 /// ------------------ pickImage Function -------------------  //21
 // Picks an image from the gallery and returns a File object.
-// If no image is picked, returns null.
+// If no image 
+// picked, returns null.
 Future<File?> pickImage(BuildContext context) async {
   final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
 
@@ -1427,12 +1450,13 @@ class _DropdownListState extends State<DropdownList> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Container(
       // Dropdown button form field with validation and item selection logic.
       child: DropdownButtonFormField<String>(
         hint: Text(widget.hint), // Display hint.
         value: selectedItem, // Currently selected item.
-        
+        style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black),
         onChanged: (String? newValue) {
           setState(() {
             selectedItem = newValue; // Update selected item.
@@ -1475,9 +1499,10 @@ class _DropdownListState extends State<DropdownList> {
           return DropdownMenuItem<String>(
             value: value,
             child: Text(
-          value,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 2, ),
+              value,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
           );
         }).toList(),
         menuMaxHeight: 200.0, // Maximum height for the dropdown menu.
@@ -1555,7 +1580,6 @@ Widget OurListView({
     },
   );
 }
-
 
 /* Example usage of OurListView:
 * first don`t forget the imports: import 'package:pnustudenthousing/Design.dart';

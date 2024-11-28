@@ -98,15 +98,16 @@ class _HousingInformationState extends State<HousingInformation> {
       // You can now use the name variable as needed, e.g., to set a controller or display it
       print('Fetched Name: $email');
     } else {
-      print("Document does not exist in collection1.");
+      ErrorDialog("Document does not exist in collection1", context, buttons: [
+        {"OK": () async => context.pop()},
+      ]);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    return Scaffold(
+    return
+       Scaffold(
       // safearea
       body: SafeArea(
         // to scroll
@@ -592,6 +593,7 @@ class _HousingInformationState extends State<HousingInformation> {
                           // back button
                           actionbutton(
                               onPressed: () {
+                              //  handleBackButtonPress(context);
                                 context.goNamed('/instructions');
                               },
                               text: 'Back',
@@ -723,3 +725,28 @@ class studentInfoArgs {
       required this.Nationality,
       required this.DoB});
 }
+// void handleBackButtonPress(BuildContext context) {
+//   if (true) {
+//     InfoDialog('Are sure you wnat to go back', context, buttons: buttons)
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return AlertDialog(
+//           title: Text("Action Required"),
+//           content: Text(
+//             "This student is assigned to a room. Please update the request status.",
+//           ),
+//           actions: [
+//             TextButton(
+//               onPressed: () => Navigator.of(context).pop(),
+//               child: Text("OK"),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   } else {
+//     // Proceed with other logic or navigation
+//     Navigator.of(context).pop(); // Example: Go back
+//   }
+// }

@@ -14,7 +14,7 @@ class buildingsOfficerHome extends StatelessWidget {
     return Scaffold(
       appBar: OurAppBar(
         // Our Custom AppBar widget  from  our design library
-        title: "PNU Student Housing", // Setting the title of the AppBar
+        title: "Buildings Officer Services", // Setting the title of the AppBar
       ),
       body: SafeArea(
         // Ensuring the content is within the safe area (not overlapping with notches)

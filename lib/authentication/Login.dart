@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:pnustudenthousing/helpers/RouteUsers.dart';
@@ -18,14 +19,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final FirbaseAuthService _auth = FirbaseAuthService();
+   final isObsecure =
+      true.obs; // Create an observable variable to control password visibility
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: OurAppBar(
-        icon: Icons.language_rounded,
-        onIconPressed: () {},
-      ),
+      appBar: OurAppBar(),
       body: LayoutBuilder(
         builder: (context, cons) {
           return ConstrainedBox(
@@ -101,16 +101,129 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
 
                               // Password
-                              PasswordField(
-                                passwordController: passwordController,
-                                hintText: "password",
-                                validator: (String? val) {
-                                  if (val == null || val.isEmpty) {
-                                    return "Please write your password";
-                                  }
-                                  return null;
-                                },
-                              ),
+                              // Password
+                                Obx(
+                                  () => TextFormField(
+                                    controller:
+                                        passwordController, // Bind input to the password controller
+                                    obscureText: isObsecure
+                                        .value, // Hide or show the password based on isObsecure's value
+                                    validator: (String? value) {
+                                      String? validatePassword(String value) {
+                                        if (value.isEmpty) {
+                                          return 'Please enter your password';
+                                        }
+
+                                        if (value.length < 8) {
+                                          return 'Password must be at least 8 characters long';
+                                        }
+                                        const uppercaseRegex = r'[A-Z]';
+                                        const lowercaseRegex = r'[a-z]';
+                                        const digitRegex = r'[0-9]';
+                                        const symbolRegex = r'[!@#%^&*_-]';
+                                        const singleQuotePattern = r"[']";
+                                        const doubleQuotePattern = r'["]';
+
+                                        final RegExp singleQuoteRegex =
+                                            RegExp(singleQuotePattern);
+                                        final RegExp doubleQuoteRegex = RegExp(
+                                            doubleQuotePattern); // Store the regex object here
+
+                                        final bool hasUppercase =
+                                            RegExp(uppercaseRegex)
+                                                .hasMatch(value);
+                                        final bool hasLowercase =
+                                            RegExp(lowercaseRegex)
+                                                .hasMatch(value);
+                                        final bool hasDigit =
+                                            RegExp(digitRegex).hasMatch(value);
+                                        final bool hasSymbol =
+                                            RegExp(symbolRegex).hasMatch(value);
+                                        if (doubleQuoteRegex.hasMatch(value)) {
+                                          return 'Input must not contain special characters';
+                                        }
+                                        if (singleQuoteRegex.hasMatch(value)) {
+                                          return 'Input must not contain special characters';
+                                        }
+                                        if (!hasUppercase) {
+                                          return 'Password must contain at least one uppercase letter';
+                                        }
+
+                                        if (!hasLowercase) {
+                                          return 'Password must contain at least one lowercase letter';
+                                        }
+
+                                        if (!hasDigit) {
+                                          return 'Password must contain at least one digit';
+                                        }
+
+                                        if (!hasSymbol) {
+                                          return 'Password must contain at least one symbol !@#%^&*_-';
+                                        }
+
+                                        return null;
+                                      }
+
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                        Icons
+                                            .vpn_key_sharp, // Icon for password input
+                                        color: Color(
+                                            0xff007580), // Color of the icon
+                                      ),
+                                      suffixIcon: GestureDetector(
+                                        onTap: () {
+                                          isObsecure.value = !isObsecure
+                                              .value; // Toggle password visibility on tap
+                                        },
+                                        child: Icon(
+                                          isObsecure.value
+                                              ? Icons.visibility_off
+                                              : Icons
+                                                  .visibility, // Icon changes based on password visibility
+                                          color: const Color(0xff007580),
+                                        ),
+                                      ),
+                                      hintText: "Password", // Display hint text
+                                      focusedErrorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color:
+                                                red1, // Border color when there is a validation error
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: red2),
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color:
+                                                  green1), // Border when the input is focused
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color:
+                                                  light1), // Border when the input is enabled
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                        horizontal:
+                                            14, // Horizontal padding for input content
+                                        vertical:
+                                            6, // Vertical padding for input content
+                                      ),
+                                      fillColor: Colors
+                                          .white, // Background color of the input field
+                                      filled:
+                                          true, // Enable background color fill
+                                    ),
+                                  ),
+                                ),
                               Heightsizedbox(
                                 h: 0.0001,
                               ),

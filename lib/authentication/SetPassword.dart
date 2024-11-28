@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,15 +20,15 @@ class _SetPassState extends State<SetPass> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final FirbaseAuthService _auth = FirbaseAuthService();
+  final isObsecure =
+      true.obs; // Create an observable variable to control password visibility
+  final isObsecure2 =
+      true.obs; // Create an observable variable to control password visibility
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: OurAppBar(
-        icon: Icons.language_rounded,
-        onIconPressed: () {}, // For language
-      ),
+      appBar: OurAppBar(),
       body: LayoutBuilder(
         builder: (context, cons) {
           return ConstrainedBox(
@@ -79,9 +80,12 @@ class _SetPassState extends State<SetPass> {
                                   ),
                                 ),
                                 // Password
-                                PasswordField(
-                                    passwordController: passwordController,
-                                    hintText: "Password",
+                                Obx(
+                                  () => TextFormField(
+                                    controller:
+                                        passwordController, // Bind input to the password controller
+                                    obscureText: isObsecure
+                                        .value, // Hide or show the password based on isObsecure's value
                                     validator: (String? value) {
                                       String? validatePassword(String value) {
                                         if (value.isEmpty) {
@@ -91,23 +95,34 @@ class _SetPassState extends State<SetPass> {
                                         if (value.length < 8) {
                                           return 'Password must be at least 8 characters long';
                                         }
-
                                         const uppercaseRegex = r'[A-Z]';
                                         const lowercaseRegex = r'[a-z]';
                                         const digitRegex = r'[0-9]';
                                         const symbolRegex = r'[!@#%^&*_-]';
+                                        const singleQuotePattern = r"[']";
+                                        const doubleQuotePattern = r'["]';
 
-                                        final hasUppercase =
+                                        final RegExp singleQuoteRegex =
+                                            RegExp(singleQuotePattern);
+                                        final RegExp doubleQuoteRegex = RegExp(
+                                            doubleQuotePattern); // Store the regex object here
+
+                                        final bool hasUppercase =
                                             RegExp(uppercaseRegex)
                                                 .hasMatch(value);
-                                        final hasLowercase =
+                                        final bool hasLowercase =
                                             RegExp(lowercaseRegex)
                                                 .hasMatch(value);
-                                        final hasDigit =
+                                        final bool hasDigit =
                                             RegExp(digitRegex).hasMatch(value);
-                                        final hasSymbol =
+                                        final bool hasSymbol =
                                             RegExp(symbolRegex).hasMatch(value);
-
+                                        if (doubleQuoteRegex.hasMatch(value)) {
+                                          return 'Input must not contain special characters';
+                                        }
+                                        if (singleQuoteRegex.hasMatch(value)) {
+                                          return 'Input must not contain special characters';
+                                        }
                                         if (!hasUppercase) {
                                           return 'Password must contain at least one uppercase letter';
                                         }
@@ -128,26 +143,143 @@ class _SetPassState extends State<SetPass> {
                                       }
 
                                       return null;
-                                    }),
-
+                                    },
+                                    decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                        Icons
+                                            .vpn_key_sharp, // Icon for password input
+                                        color: Color(
+                                            0xff007580), // Color of the icon
+                                      ),
+                                      suffixIcon: GestureDetector(
+                                        onTap: () {
+                                          isObsecure.value = !isObsecure
+                                              .value; // Toggle password visibility on tap
+                                        },
+                                        child: Icon(
+                                          isObsecure.value
+                                              ? Icons.visibility_off
+                                              : Icons
+                                                  .visibility, // Icon changes based on password visibility
+                                          color: const Color(0xff007580),
+                                        ),
+                                      ),
+                                      hintText: "Password", // Display hint text
+                                      focusedErrorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color:
+                                                red1, // Border color when there is a validation error
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: red2),
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color:
+                                                  green1), // Border when the input is focused
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color:
+                                                  light1), // Border when the input is enabled
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                        horizontal:
+                                            14, // Horizontal padding for input content
+                                        vertical:
+                                            6, // Vertical padding for input content
+                                      ),
+                                      fillColor: Colors
+                                          .white, // Background color of the input field
+                                      filled:
+                                          true, // Enable background color fill
+                                    ),
+                                  ),
+                                ),
                                 Heightsizedbox(
                                   h: 0.018,
                                 ),
+                                // Password
+                                Obx(
+                                  () => TextFormField(
+                                    controller:
+                                        confirmPasswordController, // Bind input to the password controller
+                                    obscureText: isObsecure2
+                                        .value, // Hide or show the password based on isObsecure's value
+                                    validator: (String? val) {
+                                      if (val == "") {
+                                        return "Please confirm your password";
+                                      }
 
-                                // Confirm Password
-                                PasswordField(
-                                  passwordController: confirmPasswordController,
-                                  hintText: "Confirm Password",
-                                  validator: (String? val) {
-                                    if (val == "") {
-                                      return "Please confirm your password";
-                                    }
-
-                                    if (val != passwordController.text) {
-                                      return "Passwords do not match";
-                                    }
-                                    return null;
-                                  },
+                                      if (val != passwordController.text) {
+                                        return "Passwords do not match";
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                        Icons
+                                            .vpn_key_sharp, // Icon for password input
+                                        color: Color(
+                                            0xff007580), // Color of the icon
+                                      ),
+                                      suffixIcon: GestureDetector(
+                                        onTap: () {
+                                          isObsecure2.value = !isObsecure2
+                                              .value; // Toggle password visibility on tap
+                                        },
+                                        child: Icon(
+                                          isObsecure2.value
+                                              ? Icons.visibility_off
+                                              : Icons
+                                                  .visibility, // Icon changes based on password visibility
+                                          color: const Color(0xff007580),
+                                        ),
+                                      ),
+                                      hintText:
+                                          "Confirm Password", // Display hint text
+                                      focusedErrorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color:
+                                                red1, // Border color when there is a validation error
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      errorBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: red2),
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color:
+                                                  green1), // Border when the input is focused
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color:
+                                                  light1), // Border when the input is enabled
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                        horizontal:
+                                            14, // Horizontal padding for input content
+                                        vertical:
+                                            6, // Vertical padding for input content
+                                      ),
+                                      fillColor: Colors
+                                          .white, // Background color of the input field
+                                      filled:
+                                          true, // Enable background color fill
+                                    ),
+                                  ),
                                 ),
 
                                 Heightsizedbox(
@@ -180,88 +312,101 @@ class _SetPassState extends State<SetPass> {
       ),
     );
   }
+
 //signup
-void signUp() async {
-  try {
-    String password = passwordController.text;
+  void signUp() async {
+    try {
+      String password = passwordController.text;
 
-    User? user =
-        await _auth.signupWithEmailAndPassword(widget.args.email, password);
-    print('user added');
-    if (user != null) {
-      try {
-        // Name Capitalizer
-        String efullname = widget.args.efullName;
-        efullname = TextCapitalizer.CtextS(efullname);
+      User? user =
+          await _auth.signupWithEmailAndPassword(widget.args.email, password);
+      print('user added');
+      if (user != null) {
+        try {
+          // Name Capitalizer
+          String efullname = widget.args.efullName;
+          efullname = TextCapitalizer.CtextS(efullname);
 
-        List<String> enameParts = efullname.trim().split(" ");
-        String efirstName = '';
-        String emiddleName = '';
-        String elastName = '';
+          List<String> enameParts = efullname.trim().split(" ");
+          String efirstName = '';
+          String emiddleName = '';
+          String elastName = '';
 
-        for (int i = 0; i < enameParts.length; i++) {
-          switch (i) {
-            case 0:
-              efirstName = enameParts[i].trim();
-              break;
-            case 1:
-              emiddleName = enameParts[i].trim();
-              break;
-            case 2:
-              elastName = enameParts[i].trim();
-              break;
-            default:
-              elastName += ' ' + enameParts[i].trim();
-              break;
+          for (int i = 0; i < enameParts.length; i++) {
+            switch (i) {
+              case 0:
+                efirstName = enameParts[i].trim();
+                break;
+              case 1:
+                emiddleName = enameParts[i].trim();
+                break;
+              case 2:
+                elastName = enameParts[i].trim();
+                break;
+              default:
+                elastName += ' ' + enameParts[i].trim();
+                break;
+            }
           }
-        }
 
-        final String email = '${widget.args.email}';
-        final String pnuid = email.split('@')[0];
+          final String email = '${widget.args.email}';
+          final String pnuid = email.split('@')[0];
 
-        if (pnuid.length != 9 || !pnuid.contains(RegExp(r'^\d{9}$'))) {
-          print('Invalid PNUID: must be 9 digits and contain only numbers');
+          if (pnuid.length != 9 || !pnuid.contains(RegExp(r'^\d{9}$'))) {
+            print('Invalid PNUID: must be 9 digits and contain only numbers');
+            return;
+          }
+
+          await FirebaseFirestore.instance
+              .collection('student')
+              .doc(user.uid)
+              .set({
+            'fullName': widget.args.fullName,
+            'firstName': efirstName,
+            'middleName': emiddleName,
+            'lastName': elastName,
+            'efullName': efullname,
+            'PNUID': pnuid,
+            'email': email,
+            'resident': false,
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+
+          InfoDialog(
+            "Your registration is complete. Please log in to continue.",
+            context,
+            buttons: [
+              {
+                "Ok": () => context.go("/login"),
+              },
+            ],
+          );
+
+          print('Registration successful');
+        } catch (e) {
+          // Rollback Firestore document and Auth user in case of any Firestore error
+          print("Error saving data: $e");
+
+          // Check and delete the Firebase Authentication user
+          try {
+            await user.delete();
+            print("User deleted from authentication.");
+          } catch (authDeleteError) {
+            print("Error deleting user from authentication: $authDeleteError");
+          }
+
+          ErrorDialog(
+            "An error occurred. Please try again later.",
+            context,
+            buttons: [
+              {
+                "Ok": () => context.pop(),
+              },
+            ],
+          );
           return;
         }
-
-        await FirebaseFirestore.instance
-            .collection('student')
-            .doc(user.uid)
-            .set({
-          'fullName': widget.args.fullName,
-          'firstName': efirstName,
-          'middleName': emiddleName,
-          'lastName': elastName,
-          'efullName': efullname,
-          'PNUID': pnuid,
-          'email': email,
-          'resident': false,
-          'createdAt': FieldValue.serverTimestamp(),
-        });
-
-        InfoDialog(
-          "Your registration is complete. Please log in to continue.",
-          context,
-          buttons: [
-            {
-              "Ok": () => context.go("/login"),
-            },
-          ],
-        );
-
-        print('Registration successful');
-      } catch (e) {
-        // Rollback Firestore document and Auth user in case of any Firestore error
-        print("Error saving data: $e");
-
-        // Check and delete the Firebase Authentication user
-        try {
-          await user.delete();
-          print("User deleted from authentication.");
-        } catch (authDeleteError) {
-          print("Error deleting user from authentication: $authDeleteError");
-        }
-
+      } else {
         ErrorDialog(
           "An error occurred. Please try again later.",
           context,
@@ -271,9 +416,42 @@ void signUp() async {
             },
           ],
         );
-        return;
+        print('Registration failed');
       }
-    } else {
+    } catch (e) {
+      // Handle general registration errors
+      print('Registration failed: $e');
+
+      // Try deleting the Firestore document and Auth user if they exist
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        try {
+          DocumentSnapshot studentDoc = await FirebaseFirestore.instance
+              .collection('student')
+              .doc(currentUser.uid)
+              .get();
+
+          // Delete Firestore document if it exists
+          if (studentDoc.exists) {
+            await FirebaseFirestore.instance
+                .collection('student')
+                .doc(currentUser.uid)
+                .delete();
+            print("Firestore document deleted.");
+          }
+        } catch (firestoreDeleteError) {
+          print("Error deleting Firestore document: $firestoreDeleteError");
+        }
+
+        // Delete Firebase Authentication user
+        try {
+          await currentUser.delete();
+          print("User deleted from authentication.");
+        } catch (authDeleteError) {
+          print("Error deleting user from authentication: $authDeleteError");
+        }
+      }
+
       ErrorDialog(
         "An error occurred. Please try again later.",
         context,
@@ -283,54 +461,10 @@ void signUp() async {
           },
         ],
       );
-      print('Registration failed');
     }
-  } catch (e) {
-    // Handle general registration errors
-    print('Registration failed: $e');
-
-    // Try deleting the Firestore document and Auth user if they exist
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      try {
-        DocumentSnapshot studentDoc = await FirebaseFirestore.instance
-            .collection('student')
-            .doc(currentUser.uid)
-            .get();
-
-        // Delete Firestore document if it exists
-        if (studentDoc.exists) {
-          await FirebaseFirestore.instance
-              .collection('student')
-              .doc(currentUser.uid)
-              .delete();
-          print("Firestore document deleted.");
-        }
-      } catch (firestoreDeleteError) {
-        print("Error deleting Firestore document: $firestoreDeleteError");
-      }
-
-      // Delete Firebase Authentication user
-      try {
-        await currentUser.delete();
-        print("User deleted from authentication.");
-      } catch (authDeleteError) {
-        print("Error deleting user from authentication: $authDeleteError");
-      }
-    }
-
-    ErrorDialog(
-      "An error occurred. Please try again later.",
-      context,
-      buttons: [
-        {
-          "Ok": () => context.pop(),
-        },
-      ],
-    );
   }
 }
-}
+
 // arguments for the route
 class SetPassArguments {
   final String fullName;

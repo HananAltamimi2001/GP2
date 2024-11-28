@@ -9,17 +9,18 @@ class viewcomplaints extends StatefulWidget {
   const viewcomplaints({super.key});
 
   @override
-  State<viewcomplaints> createState() => _viewcomplaintsState();
+  State<viewcomplaints> createState() =>viewcomplaintsState();
 }
 
-class _viewcomplaintsState extends State<viewcomplaints> {
+class viewcomplaintsState extends State<viewcomplaints> {
+  final List<Map<String, dynamic>> complaints = [];
+  bool isLoading = true; // Track loading state
+
   @override
   void initState() {
     super.initState();
-    fetchUsercomplaints();
+    fetchUserComplaints();
   }
-
-  final List<Map<String, dynamic>> complaints = [];
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +28,15 @@ class _viewcomplaintsState extends State<viewcomplaints> {
       appBar: OurAppBar(
         title: "View Complaints",
       ),
-      body: complaints.isEmpty
-          ? Center(child: OurLoadingIndicator())
+      body: isLoading
+          ? Center(child: OurLoadingIndicator()) // Show loading indicator
+          : complaints.isEmpty
+          ? Center( // Display message when no complaints
+        child: Text(
+          "No complaints found.",
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      )
           : OurListView(
         data: complaints,
         leadingWidget: (item) => text(
@@ -36,8 +44,8 @@ class _viewcomplaintsState extends State<viewcomplaints> {
           color: dark1,
           align: TextAlign.start,
         ),
-        title: (item) => item['complaintTitle'],
-        trailingWidget: (item) => Dactionbutton(
+        title: (item) => item['complaintTitle'] ?? 'No Title',
+        trailingWidget: (item) => Dactionbutton(padding: 0.0,
           height: 0.044,
           width: 0.19,
           text: 'View',
@@ -54,12 +62,11 @@ class _viewcomplaintsState extends State<viewcomplaints> {
     );
   }
 
-  Future<void> fetchUsercomplaints() async {
+  Future<void> fetchUserComplaints() async {
     try {
       String userId = FirebaseAuth.instance.currentUser!.uid;
 
-      DocumentReference studentRef =
-      FirebaseFirestore.instance.collection('student').doc(userId);
+      DocumentReference studentRef = FirebaseFirestore.instance.collection('student').doc(userId);
 
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('complaints')
@@ -67,11 +74,22 @@ class _viewcomplaintsState extends State<viewcomplaints> {
           .get();
 
       setState(() {
-        complaints.addAll(querySnapshot.docs
-            .map((doc) => doc.data() as Map<String, dynamic>));
+        complaints.addAll(querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>));
+        isLoading = false; // Update loading state
       });
     } catch (e) {
-      print('Error fetching complaints: $e');
+      setState(() {
+        isLoading = false; // Stop loading on error
+      });
+      ErrorDialog(
+        'Error fetching complaints: $e',
+        context,
+        buttons: [
+          {
+            "Ok": () => context.pop(),
+          },
+        ],
+      );
     }
   }
 }
