@@ -99,15 +99,6 @@ class _SuperPermReqViewOvernightState extends State<SuperPermReqViewOvernight> {
                             ),
                             Heightsizedbox(h: 0.010),
                             RowInfo.buildInfoRow(
-                              defaultLabel: 'Arrival time',
-                              value: requestData['arrivalTime'] ?? 'N/A',
-                            ),
-                            RowInfo.buildInfoRow(
-                              defaultLabel: 'Arrival date',
-                              value: requestData['arrivalDate'] ?? 'N/A',
-                            ),
-                            Heightsizedbox(h: 0.010),
-                            RowInfo.buildInfoRow(
                               defaultLabel: 'Departure date',
                               value: requestData['departureDate'] ?? 'N/A',
                             ),
@@ -117,8 +108,20 @@ class _SuperPermReqViewOvernightState extends State<SuperPermReqViewOvernight> {
                             ),
                             Heightsizedbox(h: 0.010),
                             RowInfo.buildInfoRow(
+                              defaultLabel: 'Arrival date',
+                              value: requestData['arrivalDate'] ?? 'N/A',
+                            ),
+                            RowInfo.buildInfoRow(
+                              defaultLabel: 'Arrival time',
+                              value: requestData['arrivalTime'] ?? 'N/A',
+                            ),
+                            Heightsizedbox(h: 0.010),
+                            RowInfo.buildInfoRow(
                               defaultLabel: 'Room Number',
-                              value: requestData['roomInfo'] ?? 'N/A',
+                              value: requestData['roomInfo'].toString().replaceAll(
+                                      'DocumentReference<Map<String, dynamic>>',
+                                      "") ??
+                                  'N/A',
                             ),
                             Heightsizedbox(h: 0.032),
                             Container(

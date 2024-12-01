@@ -157,7 +157,7 @@ class _HousingVacateState extends State<HousingVacate> {
                       'reason': selectedReason == 'Others'
                           ? otherReason
                           : selectedReason,
-                      'status': 'pending',
+                      'status': 'Pending',
                       'studentInfo': studentDocRef,
                     };
 

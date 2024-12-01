@@ -11,6 +11,9 @@ import 'package:pnustudenthousing/authentication/Login.dart';
 import 'package:pnustudenthousing/authentication/Register.dart';
 import 'package:pnustudenthousing/authentication/SetPassword.dart';
 import 'package:pnustudenthousing/authentication/SplashScreen.dart';
+import 'package:pnustudenthousing/staff/6-SocialSpecialist/AppointmentDetailesSp.dart';
+import 'package:pnustudenthousing/staff/6-SocialSpecialist/StudentFiles.dart';
+import 'package:pnustudenthousing/staff/6-SocialSpecialist/viewfiles.dart';
 
 // Student
 import 'package:pnustudenthousing/student/3-StudentHome/1-Services/0-HousingServices.dart';
@@ -624,6 +627,18 @@ final GoRouter router = GoRouter(
                 final args = state.extra as EmregencyInfo;
                 return EmergencyRequestDetails(args: args);
               },
+              routes: [
+                GoRoute(
+                    name: '/pdf3',
+                    path: 'pdf3',
+                    builder: (context, state) {
+                      final args = state.extra as Pdf;
+                      return PdfViewerPage(
+                        Url: args.Url,
+                        title: args.title,
+                      );
+                    }),
+              ]
             ),
           ],
         ),
@@ -1069,12 +1084,41 @@ final GoRouter router = GoRouter(
                   name: '/AppointmentDetailsSp',
                   path: 'AppointmentDetailsSp',
                   builder: (context, state) {
-                    final args = state.extra as AppointmentInfoM;
-                    return AppointmentDetailsScreenM(args: args);
+                    final args = state.extra as AppointmentInfoSp;
+                    return AppointmentDetailesSp(args: args);
+                  },
+                  routes: [
+                    GoRoute(
+                        name: '/pdf5',
+                        path: 'pdf5',
+                        builder: (context, state) {
+                          final args = state.extra as Pdf;
+                          return PdfViewerPage(
+                            Url: args.Url,
+                            title: args.title,
+                          );
+                        }),
+                  ]
+                ),
+              ],
+            ),
+
+            GoRoute(
+              name: '/StudentFiles',
+              path: 'StudentFiles',
+              builder: (context, state) => StudentFiles(),
+              routes: [
+                GoRoute(
+                  name: '/viewfiles',
+                  path: 'viewfiles',
+                  builder: (context, state) {
+                    final args = state.extra as filesdata;
+                    return viewfiles(args: args);
                   },
                 ),
               ],
             ),
+
           ],
         ),
         // 2.7 Housing security guard

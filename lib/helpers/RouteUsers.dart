@@ -116,9 +116,10 @@ Future<bool> isResident() async {
     // Extract user data
     final userData = userDoc.data();
     final isResident = userData?['resident'] == true;
+    final isCheck = userData?['checkStatus'] != 'First Check-in';
 
     // Return true if both conditions are met
-    return isResident;
+    return isResident&&isCheck;
   } catch (e) {
     // Handle any errors (e.g., network issues)
     print("Error checking user role and status: $e");

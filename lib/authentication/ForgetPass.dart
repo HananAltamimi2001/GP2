@@ -189,15 +189,8 @@ class _ForgetpassState extends State<Forgetpass> {
         reseted = await _auth.resetPassword(
             emailController.text, context); // User verified
         if (reseted) {
-          InfoDialog(
-            "Reset password email was sent please check your email inbox",
-            context,
-            buttons: [
-              {
-                "Ok": () => context.pop(),
-              },
-            ],
-          );
+         
+         
         } else {
           ErrorDialog(
             "Error sending password reset email, Please try again later.",
@@ -211,6 +204,15 @@ class _ForgetpassState extends State<Forgetpass> {
         }
       }
     } catch (e) {
+       ErrorDialog(
+            "'Error Occured Please try again later",
+            context,
+            buttons: [
+              {
+                "Ok": () => context.pop(),
+              },
+            ],
+          );
       print('Error fetching user data: $e');
     }
   }

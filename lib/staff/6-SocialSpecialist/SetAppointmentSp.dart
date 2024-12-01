@@ -31,7 +31,7 @@ class SetAppointmentDialogStateSp extends State<SetAppointmentScreenSp> {
         DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('staff').doc(user.uid).get();
         if (userDoc.exists) {
           setState(() {
-            userName = '${userDoc['firstName']} ${userDoc['lastName']}';
+            userName = '${userDoc['efirstName']} ${userDoc['elastName']}';
           });
         }
       } catch (e) {
@@ -55,33 +55,37 @@ class SetAppointmentDialogStateSp extends State<SetAppointmentScreenSp> {
       return;
     }
 
-    if (userName == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('User data not available')),
-      );
-      return;
-    }
-
     try {
+      // Check for existing appointment with the same date and time
+      QuerySnapshot query = await appoint
+          .where('Date', isEqualTo: DateFormat('yyyy-MM-dd').format(selectedDate!))
+          .where('Time', isEqualTo: selectedTime!.format(context))
+          .get();
+
+      if (query.docs.isNotEmpty) {
+        // Appointment already exists at this date and time
+        ErrorDialog(
+          'An appointment is already scheduled at this time.',
+          context,
+          buttons: [
+            {
+              "Ok": () => context.pop(),
+            },
+          ],
+        );
+        return;
+      }
+
+      // Save the new appointment
       await appoint.add({
         'Date': DateFormat('yyyy-MM-dd').format(selectedDate!),
         'Time': selectedTime!.format(context),
         'Status': 'available',
         'type': 'Social Specialist',
-        'name': userName, // Use the full name of the user
+        'name': userName,
       });
 
       Navigator.pop(context); // Close dialog
-      InfoDialog(
-        'Appointment saved successfully',
-        context,
-        buttons: [
-          {
-            "Ok": () => context.pop(),
-          },
-        ],
-      );
-
     } catch (e) {
       ErrorDialog(
         'Failed to save appointment',
@@ -94,6 +98,7 @@ class SetAppointmentDialogStateSp extends State<SetAppointmentScreenSp> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

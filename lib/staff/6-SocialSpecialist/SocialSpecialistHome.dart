@@ -39,6 +39,9 @@ class SocialSpecialistHome extends StatelessWidget {
               HomeButton2(
                 icon: CupertinoIcons.doc_on_doc, // Icon for the button
                 name: "Students Files", // Button text
+                onPressed: (){
+                  context.pushNamed('/StudentFiles');
+                  },
               ),
             ],
           ),
