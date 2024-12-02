@@ -189,7 +189,15 @@ class _ForgetpassState extends State<Forgetpass> {
         reseted = await _auth.resetPassword(
             emailController.text, context); // User verified
         if (reseted) {
-         
+           InfoDialog(
+            "Reset password email was sent please check your email inbox",
+            context,
+            buttons: [
+              {
+                "Ok": () => context.pop(),
+              },
+            ],
+          );
          
         } else {
           ErrorDialog(
