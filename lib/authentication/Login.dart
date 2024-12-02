@@ -112,6 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       return 'Please enter your password';
                                     }
 
+
+
                                     // Check for invalid characters
                                     const singleQuotePattern = r"[']";
                                     const doubleQuotePattern = r'["]';
