@@ -146,11 +146,16 @@ class studentprofileState extends State<studentprofile> {
                                   defaultLabel: 'Resident Student',
                                   value: studentData['resident']?.toString(),
                                 ),
-                                // RowInfo.buildInfoRow(
-                                //   defaultLabel: 'Room No.',
-                                //   value:
-                                //       studentData['roomref'].id,
-                                // ),
+                                RowInfo.buildInfoRow(
+                                  defaultLabel: 'Room No.',
+                                  value:
+                                      studentData['roomref'].id,
+                                ),
+                              RowInfo.buildInfoRow(
+                                  defaultLabel: 'Check Status',
+                                  value:
+                                      studentData['checkStatus'],
+                                ),
                              
                               ],
                             ),

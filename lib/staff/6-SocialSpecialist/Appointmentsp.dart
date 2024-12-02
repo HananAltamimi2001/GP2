@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pnustudenthousing/helpers/Design.dart';
-import 'package:pnustudenthousing/staff/1-Manager/3-Appointment/AppointmentDetails.dart';
+import 'package:pnustudenthousing/staff/6-SocialSpecialist/AppointmentDetailesSp.dart';
 import 'package:pnustudenthousing/staff/6-SocialSpecialist/SetAppointmentSp.dart';
 
 class AppointmentsSp extends StatefulWidget {
@@ -30,7 +30,7 @@ class AppointmentsSpState extends State<AppointmentsSp> {
         DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('staff').doc(user.uid).get();
         if (userDoc.exists) {
           setState(() {
-            userName = '${userDoc['firstName']} ${userDoc['lastName']}';
+            userName = '${userDoc['efirstName']} ${userDoc['elastName']}';
           });
           // After setting the username, fetch the appointments
           getcomplaint();
@@ -112,7 +112,7 @@ class AppointmentsSpState extends State<AppointmentsSp> {
                       onPressed: () {
                         context.pushNamed(
                           '/AppointmentDetailsSp',
-                          extra: AppointmentInfoM(
+                          extra: AppointmentInfoSp(
                             appointmentId: documentSnapshot.id,
                             appointment: appointmentData,
                           ),

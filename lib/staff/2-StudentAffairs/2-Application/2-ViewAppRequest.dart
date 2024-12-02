@@ -235,6 +235,10 @@ class _ApplicationRequestViewState extends State<ApplicationRequestView> {
               AppDoc['socialSecurityCertificateUrl'],
           'roomKey': false,
           'resident': true,
+          'lastAttendanceDate': '0000-00-00',
+          'attendance': {
+            '0000-00-00': 'Absence', // Dynamic date key with content
+          }
         };
         print("Prepared MovedData: $MovedData");
 

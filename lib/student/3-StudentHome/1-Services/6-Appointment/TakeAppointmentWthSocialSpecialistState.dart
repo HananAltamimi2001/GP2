@@ -10,15 +10,15 @@ class TakeAppointmentWthSocialSpecialist extends StatefulWidget {
 }
 
 class TakeAppointmentWthSocialSpecialistState extends State<TakeAppointmentWthSocialSpecialist> {
-  final CollectionReference appdata =
-  FirebaseFirestore.instance.collection("Appointments");
+  final CollectionReference appdata = FirebaseFirestore.instance.collection("Appointments");
   final reasons = TextEditingController();
 
   late String docId;
   late DocumentReference studentDocRef;
 
-  DateTime? selectedDate ;
-  String? selectedTime; // Updated variable to store selected time
+  DateTime? selectedDate;
+  String? selectedTime;
+  String? selectedSpecialistName; // New state variable to store the selected specialist's name
 
   @override
   void initState() {
@@ -59,9 +59,8 @@ class TakeAppointmentWthSocialSpecialistState extends State<TakeAppointmentWthSo
                       child: Padding(
                         padding: const EdgeInsets.only(top: 1, bottom: 10),
                         child: text(
-                          t: selectedDate == null ?'Select Date' :'${selectedDate!.toLocal()}'.split(' ')[0],
-
-                      color: light1,
+                          t: selectedDate == null ? 'Select Date' : '${selectedDate!.toLocal()}'.split(' ')[0],
+                          color: light1,
                           align: TextAlign.center,
                         ),
                       ),
@@ -69,13 +68,15 @@ class TakeAppointmentWthSocialSpecialistState extends State<TakeAppointmentWthSo
                     onTap: () async {
                       final DateTime? newDate = await showDatePicker(
                         context: context,
-                        initialDate: selectedDate,
+                        initialDate: selectedDate ?? DateTime.now(),
                         firstDate: DateTime.now(),
                         lastDate: DateTime.now().add(Duration(days: 365)),
                       );
-                      if (newDate != null && newDate != selectedDate) {
+                      if (newDate != null) {
                         setState(() {
                           selectedDate = newDate;
+                          selectedTime = null; // Reset selected time when date changes
+                          selectedSpecialistName = null; // Reset specialist name when date changes
                         });
                       }
                     },
@@ -94,7 +95,7 @@ class TakeAppointmentWthSocialSpecialistState extends State<TakeAppointmentWthSo
                 Heightsizedbox(h: 0.01),
                 StreamBuilder<QuerySnapshot>(
                   stream: appdata
-                      .where('Date', isEqualTo: selectedDate.toString().split(' ')[0])
+                      .where('Date', isEqualTo: selectedDate?.toString().split(' ')[0])
                       .where('type', isEqualTo: 'Social Specialist')
                       .where('Status', isEqualTo: 'available')
                       .snapshots(),
@@ -118,7 +119,7 @@ class TakeAppointmentWthSocialSpecialistState extends State<TakeAppointmentWthSo
 
                       // Display each specialist with their available times
                       return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start, // Ensure titles align left
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: groupedAppointments.entries.map((entry) {
                           String specialistName = entry.key;
                           List<DocumentSnapshot> appointments = entry.value;
@@ -132,43 +133,39 @@ class TakeAppointmentWthSocialSpecialistState extends State<TakeAppointmentWthSo
                                 align: TextAlign.start,
                               ),
                               Heightsizedbox(h: 0.01),
-                              Row( // Ensure appointments align from the start
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Wrap(
-                                    spacing: 10.0,
-                                    runSpacing: 10.0,
-                                    children: appointments.map((doc) {
-                                      final time = doc['Time'];
-                                      final isSelected = selectedTime == time;
+                              Wrap(
+                                spacing: 10.0,
+                                runSpacing: 10.0,
+                                children: appointments.map((doc) {
+                                  final time = doc['Time'];
+                                  final isSelected = selectedTime == time;
 
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(25.0),
-                                        ),
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: isSelected ? light1 : dark1,
-                                            side: isSelected ? BorderSide(color: Colors.white, width: 2) : BorderSide.none,
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              selectedTime = time;
-                                            });
-                                          },
-                                          child: Dtext(
-                                            t: time,
-                                            align: TextAlign.center,
-                                            color: Colors.white,
-                                            size: 0.04,
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ],
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: isSelected ? light1 : dark1,
+                                        side: isSelected ? BorderSide(color: Colors.white, width: 2) : BorderSide.none,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedTime = time;
+                                          selectedSpecialistName = specialistName; // Capture the specialist's name
+                                        });
+                                      },
+                                      child: Dtext(
+                                        t: time,
+                                        align: TextAlign.center,
+                                        color: Colors.white,
+                                        size: 0.04,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
                               ),
-                              Heightsizedbox(h: 0.02), // Spacing between specialists
+                              Heightsizedbox(h: 0.02),
                             ],
                           );
                         }).toList(),
@@ -176,8 +173,6 @@ class TakeAppointmentWthSocialSpecialistState extends State<TakeAppointmentWthSo
                     }
                   },
                 ),
-
-
                 if (selectedTime != null) // Display selected time
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
@@ -212,25 +207,47 @@ class TakeAppointmentWthSocialSpecialistState extends State<TakeAppointmentWthSo
                 Heightsizedbox(h: 0.04),
                 actionbutton(
                   onPressed: () async {
-                    if (selectedTime != null && reasons.text.isNotEmpty) {
+                    if (selectedTime != null && reasons.text.isNotEmpty && selectedSpecialistName != null) {
                       try {
                         QuerySnapshot querySnapshot = await appdata
-                            .where('Date',
-                            isEqualTo:
-                            selectedDate.toString().split(' ')[0])
+                            .where('Date', isEqualTo: selectedDate?.toString().split(' ')[0])
                             .where('Time', isEqualTo: selectedTime)
                             .where('type', isEqualTo: 'Social Specialist')
                             .get();
 
                         if (querySnapshot.docs.isNotEmpty) {
-                          DocumentReference appointmentDocRef =
-                              querySnapshot.docs.first.reference;
+                          DocumentReference appointmentDocRef = querySnapshot.docs.first.reference;
 
+                          // Save or update the student file
+                          CollectionReference studentFiles = FirebaseFirestore.instance.collection('StudentFiles');
+                          QuerySnapshot studentFileSnapshot = await studentFiles.where('studentId', isEqualTo: docId).get();
+
+                          DocumentReference studentFileRef;
+
+                          if (studentFileSnapshot.docs.isEmpty) {
+                            // Create a new document if none exists
+                            DocumentSnapshot studentSnapshot = await studentDocRef.get(); // Fetch the document
+                            Map<String, dynamic> studentData = studentSnapshot.data() as Map<String, dynamic>;
+
+                            studentFileRef = await studentFiles.add({
+                              'studentId': studentData['PNUID'],  // Access the 'PNUID' field from the fetched data
+                              'Reports': [],
+                              'SpecialistName': selectedSpecialistName,
+                            });
+                          } else {
+                            studentFileRef = studentFileSnapshot.docs.first.reference;
+                            await studentFileRef.update({
+                              'SpecialistName': selectedSpecialistName,
+                            });
+                          }
+
+                          // Update the appointment status
                           await appointmentDocRef.update({
                             'Status': "Reserved",
                             'Reason': reasons.text,
                             'studentInfo': studentDocRef,
                           });
+
                           InfoDialog(
                             "Appointment Reserved successfully",
                             context,
@@ -238,13 +255,14 @@ class TakeAppointmentWthSocialSpecialistState extends State<TakeAppointmentWthSo
                               {
                                 "OK": () async => context.pop(),
                               },
-
                             ],
                           );
+
                           reasons.clear();
                           setState(() {
                             selectedDate = null;
                             selectedTime = null;
+                            selectedSpecialistName = null;
                           });
                         } else {
                           ErrorDialog(
@@ -270,7 +288,7 @@ class TakeAppointmentWthSocialSpecialistState extends State<TakeAppointmentWthSo
                       }
                     } else {
                       ErrorDialog(
-                        'Please select a time and enter a reason',
+                        'Please select a time and enter a reason.',
                         context,
                         buttons: [
                           {
@@ -282,7 +300,7 @@ class TakeAppointmentWthSocialSpecialistState extends State<TakeAppointmentWthSo
                   },
                   text: 'Save',
                   background: dark1,
-                )
+                ),
               ],
             ),
           ),

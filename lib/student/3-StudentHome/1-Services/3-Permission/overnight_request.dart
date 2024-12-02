@@ -55,7 +55,7 @@ class _OvernightRequestState extends State<OvernightRequest> {
                   children: [
                     Container(
                       child: Dtext(
-                        t: "Arrival Date:",
+                        t: "Departure Date:",
                         align: TextAlign.center,
                         color: dark1,
                         size: 0.04,
@@ -64,7 +64,7 @@ class _OvernightRequestState extends State<OvernightRequest> {
                     const Spacer(),
                     Container(
                       child: Dtext(
-                        t: "Departure Date:",
+                        t: "Arrival Date:",
                         align: TextAlign.center,
                         color: dark1,
                         size: 0.04,
@@ -77,23 +77,6 @@ class _OvernightRequestState extends State<OvernightRequest> {
                 padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                 child: Row(
                   children: [
-                    OurFormField(
-                      fieldType: 'date',
-                      selectedDate: ArrselectedDate,
-                      onSelectDate: () async {
-                        final DateTime? pickedDate = await pickDate(
-                            context); // the pickDate(context) it`s the function in the bellow (19 in this Design file)
-                        if (pickDate != null) {
-                          setState(() {
-                            ArrselectedDate =
-                                pickedDate; // Update the selected date
-                          });
-                        }
-                      },
-                      labelText:
-                          "", // if you don`t need labelText make it  empty : labelText: "",
-                    ),
-                    const Spacer(),
                     //***********Departure Date***********
                     OurFormField(
                       fieldType: 'date',
@@ -104,6 +87,23 @@ class _OvernightRequestState extends State<OvernightRequest> {
                         if (pickDate != null) {
                           setState(() {
                             DepselectedDate =
+                                pickedDate; // Update the selected date
+                          });
+                        }
+                      },
+                      labelText:
+                          "", // if you don`t need labelText make it  empty : labelText: "",
+                    ),
+                    const Spacer(),
+                    OurFormField(
+                      fieldType: 'date',
+                      selectedDate: ArrselectedDate,
+                      onSelectDate: () async {
+                        final DateTime? pickedDate = await pickDate(
+                            context); // the pickDate(context) it`s the function in the bellow (19 in this Design file)
+                        if (pickDate != null) {
+                          setState(() {
+                            ArrselectedDate =
                                 pickedDate; // Update the selected date
                           });
                         }
@@ -123,17 +123,17 @@ class _OvernightRequestState extends State<OvernightRequest> {
                 child: Row(
                   children: [
                     Dtext(
-                      t: "Arrival Time:",
-                      color: Color(0xff007580),
-                      size: 0.04,
-                      align: TextAlign.start,
-                    ),
-                    Spacer(),
-                    Dtext(
                       t: "Departure Time:",
                       align: TextAlign.start,
                       size: 0.04,
                       color: Color(0xff007580),
+                    ),
+                    Spacer(),
+                    Dtext(
+                      t: "Arrival Time:",
+                      color: Color(0xff007580),
+                      size: 0.04,
+                      align: TextAlign.start,
                     ),
                   ],
                 ),
@@ -144,13 +144,13 @@ class _OvernightRequestState extends State<OvernightRequest> {
                   children: [
                     OurFormField(
                       fieldType: 'time',
-                      selectedTime: ArrselectedTime,
+                      selectedTime: DepselectedTime,
                       onSelectTime: () async {
                         final TimeOfDay? pickedTime = await pickTime(
                             context); // the pickTime(context) it`s the function in the bellow (18 in this Design file)
                         if (pickedTime != null) {
                           setState(() {
-                            ArrselectedTime =
+                            DepselectedTime =
                                 pickedTime; // Update the selected time
                           });
                         }
@@ -161,13 +161,13 @@ class _OvernightRequestState extends State<OvernightRequest> {
                     const Spacer(),
                     OurFormField(
                       fieldType: 'time',
-                      selectedTime: DepselectedTime,
+                      selectedTime: ArrselectedTime,
                       onSelectTime: () async {
                         final TimeOfDay? pickedTime = await pickTime(
                             context); // the pickTime(context) it`s the function in the bellow (18 in this Design file)
                         if (pickedTime != null) {
                           setState(() {
-                            DepselectedTime =
+                            ArrselectedTime =
                                 pickedTime; // Update the selected time
                           });
                         }
@@ -233,91 +233,110 @@ class _OvernightRequestState extends State<OvernightRequest> {
                     onPressed: _canSubmitRequest
                         ? () async {
                             if (validateCheckboxes()) {
-                              if(ArrselectedDate!.isBefore(DepselectedDate!)){
-                              final firestore = FirebaseFirestore.instance;
-                              final String currentUserId =
-                                  await FirebaseAuth.instance.currentUser!.uid;
+                              if (DepselectedDate!.isBefore(ArrselectedDate!)) {
+                                final firestore = FirebaseFirestore.instance;
+                                final String currentUserId = await FirebaseAuth
+                                    .instance.currentUser!.uid;
 
-                              final studentDoc = await firestore
-                                  .collection('student')
-                                  .doc(currentUserId)
-                                  .get();
-                              final studentData = studentDoc.data();
+                                final studentDoc = await firestore
+                                    .collection('student')
+                                    .doc(currentUserId)
+                                    .get();
+                                final studentData = studentDoc.data();
 
-                              final DocumentReference studentDocRef =
-                                  FirebaseFirestore.instance
-                                      .collection('student')
-                                      .doc(currentUserId);
+                                final DocumentReference studentDocRef =
+                                    FirebaseFirestore.instance
+                                        .collection('student')
+                                        .doc(currentUserId);
 
-                              DocumentReference overnightReqDocRef =
-                                  FirebaseFirestore.instance
-                                      .collection('OvernightRequest')
-                                      .doc();
+                                DocumentReference overnightReqDocRef =
+                                    FirebaseFirestore.instance
+                                        .collection('OvernightRequest')
+                                        .doc();
 
-                              if (studentData != null) {
-                                final String fullName =
-                                    studentData['firstName'] +
-                                        ' ' +
-                                        studentData['lastName'];
+                                if (studentData != null) {
+                                  final String fullName =
+                                      studentData['firstName'] +
+                                          ' ' +
+                                          studentData['lastName'];
 
-                                final roomInfo = studentData['roomref'];
-                                final Studphone = studentData['phoneNumber'];
+                                  final roomInfo = studentData['roomref'];
+                                  final Studphone = studentData['phoneNumber'];
 
-                                final overnightdata = {
-                                  'studentId': studentData['PNUID'],
-                                  'departureDate':
-                                      DepselectedDate!.toString().split(' ')[0],
-                                  'arrivalDate':
-                                      ArrselectedDate!.toString().split(' ')[0],
-                                  'departureTime':
-                                      DepselectedTime!.format(context),
-                                  'arrivalTime':
-                                      ArrselectedTime!.format(context),
-                                  'status': 'pending',
-                                  'fullName': fullName,
-                                  'roomInfo': roomInfo,
-                                  'phoneNumber': Studphone,
-                                  'studentInfo': studentDocRef,
-                                };
+                                  final overnightdata = {
+                                    'studentId': studentData['PNUID'],
+                                    'departureDate': DepselectedDate!
+                                        .toString()
+                                        .split(' ')[0],
+                                    'arrivalDate': ArrselectedDate!
+                                        .toString()
+                                        .split(' ')[0],
+                                    'departureTime':
+                                        DepselectedTime!.format(context),
+                                    'arrivalTime':
+                                        ArrselectedTime!.format(context),
+                                    'status': 'pending',
+                                    'fullName': fullName,
+                                    'roomInfo': roomInfo,
+                                    'phoneNumber': Studphone,
+                                    'studentInfo': studentDocRef,
+                                  };
 
-                                try {
-                                  final snapshot = await firestore
-                                      .collection('OvernightRequest')
-                                      .where('studentId',
-                                          isEqualTo: studentData['PNUID'])
-                                      .where('status', isEqualTo: 'pending')
-                                      .get();
-                                  if (snapshot.docs.isNotEmpty &&
-                                      snapshot.docs[0]['status'] == 'pending') {
-                                    // There's a pending request, prevent submission
+                                  try {
+                                    final snapshot = await firestore
+                                        .collection('OvernightRequest')
+                                        .where('studentId',
+                                            isEqualTo: studentData['PNUID'])
+                                        .where('status', isEqualTo: 'pending')
+                                        .get();
+                                    if (snapshot.docs.isNotEmpty &&
+                                        snapshot.docs[0]['status'] ==
+                                            'pending') {
+                                      // There's a pending request, prevent submission
+                                      ErrorDialog(
+                                          "You have a pending overnight request. Please wait for it to be processed before submitting another.",
+                                          context,
+                                          buttons: [
+                                            {"OK": () async => context.pop()}
+                                          ]);
+                                    } else {
+                                      // No pending request, submit the new one
+                                      await overnightReqDocRef
+                                          .set(overnightdata);
+                                      await studentDocRef.update({
+                                        'OvernightRequest': overnightReqDocRef
+                                      });
+
+                                      print('Data added successfully!');
+                                      InfoDialog(
+                                          "Your request has been\nsubmitted successfully",
+                                          context,
+                                          buttons: [
+                                            {
+                                              "OK": () async =>
+                                                  {context.pop(), context.pop()}
+                                            }
+                                          ]);
+
+                                      setState(() {
+                                        _canSubmitRequest = false;
+                                      });
+                                    }
+                                  } catch (e) {
                                     ErrorDialog(
-                                        "You have a pending overnight request. Please wait for it to be processed before submitting another.",
-                                        context,
-                                        buttons: [
-                                          {"OK": () async => context.pop()}
-                                        ]);
-                                  } else {
-                                    // No pending request, submit the new one
-                                    await overnightReqDocRef.set(overnightdata);
-                                    await studentDocRef.update({
-                                      'OvernightRequest': overnightReqDocRef
-                                    });
-
-                                    print('Data added successfully!');
-                                    InfoDialog(
-                                        "Your request has been\nsubmitted successfully",
-                                        context,
-                                        buttons: [
-                                          {"OK": () async => {context.pop(),context.pop()}}
-                                        ]);
-
-                                    setState(() {
-                                      _canSubmitRequest = false;
-                                    });
+                                      'Error adding data',
+                                      context,
+                                      buttons: [
+                                        {
+                                          "Ok": () => context.pop(),
+                                        },
+                                      ],
+                                    );
+                                    print('Error adding data: $e');
                                   }
-                                } catch (e) {
+                                } else {
                                   ErrorDialog(
-                                    'Error adding data',
+                                    'Student Data not found',
                                     context,
                                     buttons: [
                                       {
@@ -325,28 +344,18 @@ class _OvernightRequestState extends State<OvernightRequest> {
                                       },
                                     ],
                                   );
-                                  print('Error adding data: $e');
                                 }
                               } else {
                                 ErrorDialog(
-                                  'Student Data not found',
-                                  context,
-                                  buttons: [
-                                    {
-                                      "Ok": () => context.pop(),
-                                    },
-                                  ],
-                                );
+                                    'Departure Date can not be after Arrival Date',
+                                    context,
+                                    buttons: [
+                                      {
+                                        "Ok": () => context.pop(),
+                                      },
+                                    ]);
                               }
-                            }else{
-                               ErrorDialog(
-                                  'Arrival Date can not be after Departure Date',
-                                  context,
-                                  buttons: [
-                                    {
-                                      "Ok": () => context.pop(),
-                                    },]);
-                            }}
+                            }
                           }
                         : null,
                   ),
@@ -359,8 +368,6 @@ class _OvernightRequestState extends State<OvernightRequest> {
     );
   }
 }
-
-
 
 void compareDates(String date1, String date2) {
   DateFormat format = DateFormat("dd/MM/yyyy");

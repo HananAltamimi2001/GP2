@@ -189,6 +189,7 @@ class _PledgeState extends State<Pledge> {
     setState(() {
       isLoading = true; // Start loading
     });
+
     // name Capitalizer
     String efirstName = args.efirstName;
     efirstName = TextCapitalizer.CtextS(efirstName);
@@ -242,7 +243,18 @@ class _PledgeState extends State<Pledge> {
         'createdAt': FieldValue.serverTimestamp(),
         'studentInfo': sturef
       };
-
+      InfoDialog(
+        "The request has been submitted Please wait for a response. The response will be sent via email",
+        context,
+        buttons: [
+          {
+            "Ok": () => {
+                  context.pop(),
+                  context.goNamed('/studenthome'),
+                }
+          },
+        ],
+      );
       // Save form data to Firestore with automatic reference creation
       await housingDocRef.set(housingAppData);
       print('Data added successfully!');
@@ -270,18 +282,6 @@ class _PledgeState extends State<Pledge> {
       setState(() {
         isLoading = false; // Start loading
       });
-      InfoDialog(
-        "The request has been submitted Please wait for a response. The response will be sent via email",
-        context,
-        buttons: [
-          {
-            "Ok": () => {
-                  context.pop(),
-                  context.goNamed('/studenthome'),
-                }
-          },
-        ],
-      );
     } catch (error) {
       print('Error saving application: $error');
     }
@@ -309,9 +309,33 @@ class _PledgeState extends State<Pledge> {
     final ref = FirebaseStorage.instance
         .ref()
         .child('Housing Application Files/$userId/$fileName');
+
     try {
-      await ref.putFile(file!);
+      // Get the current user's ID token for authentication
+      final token = await FirebaseAuth.instance.currentUser?.getIdToken();
+
+      // If the token is null, handle the error or prompt the user to log in
+      if (token == null) {
+        print('Failed to retrieve token');
+        return "";
+      }
+
+      // Upload the file with the token as metadata
+      final uploadTask = ref.putFile(
+        file!,
+        SettableMetadata(
+          customMetadata: {
+            'authorization': 'Bearer $token', // Pass the token as metadata
+          },
+        ),
+      );
+
+      // Wait for the upload to complete
+      await uploadTask;
+
+      // Get the download URL of the uploaded file
       final downloadUrl = await ref.getDownloadURL();
+
       print('$fileName uploaded successfully!');
       return downloadUrl;
     } catch (error) {

@@ -87,63 +87,59 @@ class _SetPassState extends State<SetPass> {
                                     obscureText: isObsecure
                                         .value, // Hide or show the password based on isObsecure's value
                                     validator: (String? value) {
-                                      String? validatePassword(String value) {
-                                        if (value.isEmpty) {
-                                          return 'Please enter your password';
-                                        }
-
-                                        if (value.length < 8) {
-                                          return 'Password must be at least 8 characters long';
-                                        }
-                                        const uppercaseRegex = r'[A-Z]';
-                                        const lowercaseRegex = r'[a-z]';
-                                        const digitRegex = r'[0-9]';
-                                        const symbolRegex = r'[!@#%^&*_-]';
-                                        const singleQuotePattern = r"[']";
-                                        const doubleQuotePattern = r'["]';
-
-                                        final RegExp singleQuoteRegex =
-                                            RegExp(singleQuotePattern);
-                                        final RegExp doubleQuoteRegex = RegExp(
-                                            doubleQuotePattern); // Store the regex object here
-
-                                        final bool hasUppercase =
-                                            RegExp(uppercaseRegex)
-                                                .hasMatch(value);
-                                        final bool hasLowercase =
-                                            RegExp(lowercaseRegex)
-                                                .hasMatch(value);
-                                        final bool hasDigit =
-                                            RegExp(digitRegex).hasMatch(value);
-                                        final bool hasSymbol =
-                                            RegExp(symbolRegex).hasMatch(value);
-                                        if (doubleQuoteRegex.hasMatch(value)) {
-                                          return 'Input must not contain special characters';
-                                        }
-                                        if (singleQuoteRegex.hasMatch(value)) {
-                                          return 'Input must not contain special characters';
-                                        }
-                                        if (!hasUppercase) {
-                                          return 'Password must contain at least one uppercase letter';
-                                        }
-
-                                        if (!hasLowercase) {
-                                          return 'Password must contain at least one lowercase letter';
-                                        }
-
-                                        if (!hasDigit) {
-                                          return 'Password must contain at least one digit';
-                                        }
-
-                                        if (!hasSymbol) {
-                                          return 'Password must contain at least one symbol !@#%^&*_-';
-                                        }
-
-                                        return null;
+                                      // Check if value is null
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter your password';
                                       }
 
-                                      return null;
+                                      // Password validation logic
+                                      const uppercaseRegex = r'[A-Z]';
+                                      const lowercaseRegex = r'[a-z]';
+                                      const digitRegex = r'[0-9]';
+                                      const symbolRegex = r'[!@#%^&*_-]';
+                                      const singleQuotePattern = r"[']";
+                                      const doubleQuotePattern = r'["]';
+
+                                      final RegExp singleQuoteRegex =
+                                          RegExp(singleQuotePattern);
+                                      final RegExp doubleQuoteRegex =
+                                          RegExp(doubleQuotePattern);
+
+                                      final bool hasUppercase =
+                                          RegExp(uppercaseRegex)
+                                              .hasMatch(value);
+                                      final bool hasLowercase =
+                                          RegExp(lowercaseRegex)
+                                              .hasMatch(value);
+                                      final bool hasDigit =
+                                          RegExp(digitRegex).hasMatch(value);
+                                      final bool hasSymbol =
+                                          RegExp(symbolRegex).hasMatch(value);
+
+                                      if (doubleQuoteRegex.hasMatch(value) ||
+                                          singleQuoteRegex.hasMatch(value)) {
+                                        return 'Input must not contain special characters';
+                                      }
+                                      if (!hasUppercase) {
+                                        return 'Must contain at least one uppercase letter';
+                                      }
+                                      if (!hasLowercase) {
+                                        return 'Must contain at least one lowercase letter';
+                                      }
+                                      if (!hasDigit) {
+                                        return 'Must contain at least one digit';
+                                      }
+                                      if (!hasSymbol) {
+                                        return 'Must contain at least one symbol !@#%^&*_-';
+                                      }
+
+                                      if (value.length < 8) {
+                                        return 'Must be at least 8 characters long';
+                                      }
+
+                                      return null; // Return null if all checks pass
                                     },
+
                                     decoration: InputDecoration(
                                       prefixIcon: const Icon(
                                         Icons
